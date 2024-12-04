@@ -1,0 +1,19 @@
+# Environment variables
+.env
+
+# IDE and editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Frontend
+frontend/node_modules/
+
+# Backend
+backend/node_modules/
+backend/.env
