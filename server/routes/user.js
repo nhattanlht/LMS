@@ -5,6 +5,7 @@ import {
   myProfile,
   register,
   resetPassword,
+  sendNotification,
   verifyUser,
 } from "../controllers/user.js";
 import { isAuth } from "../middlewares/isAuth.js";
@@ -20,5 +21,6 @@ router.post("/user/forgot", forgotPassword);
 router.post("/user/reset", resetPassword);
 router.post("/user/progress", isAuth, addProgress);
 router.get("/user/progress", isAuth, getYourProgress);
+router.post("/lecturer/notification", sendNotification);
 
 export default router;

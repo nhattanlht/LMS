@@ -1,4 +1,5 @@
 import { User } from "../models/User.js";
+import { Notification } from "../models/Notification.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import sendMail, { sendForgotMail } from "../middlewares/sendMail.js";
@@ -163,4 +164,27 @@ export const resetPassword = TryCatch(async (req, res) => {
   await user.save();
 
   res.json({ message: "Password Reset" });
+});
+
+export const sendNotification = TryCatch(async (req, res) => {
+  const { sender, recipient, subject, message, file } = req.body;
+
+  if (!sender || !recipient || !subject || !message) {
+    return res.status(400).json({ message: 'Missing required fields: sender, recipient, subject, or message.' });
+  }
+
+  const notification = new Notification({
+    sender,
+    recipient,
+    subject,
+    message,
+    file,
+  });
+
+  const savedNotification = await notification.save();
+
+  res.status(201).json({
+    message: 'Notification created successfully.',
+    notification: savedNotification,
+  });
 });

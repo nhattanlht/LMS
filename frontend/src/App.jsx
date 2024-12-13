@@ -83,7 +83,8 @@ const App = () => {
 
             <Route
               path="/admin/course"
-              element={isAuth ? <AdminCourses user={user} /> : <Login />}
+              // element={isAuth ? <AdminCourses user={user} /> : <Login />}
+              element={<AdminCourses />}
             />
             <Route
               path="/admin/users"

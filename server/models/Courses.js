@@ -11,24 +11,22 @@ const schema = new mongoose.Schema({
   },
 
   image: {
-    type: String,
-    required: true,
+    type: String
   },
-  price: {
-    type: Number,
-    required: true,
-  },
+  startTime: Date,
+  endTime: Date,
   duration: {
     type: Number,
     required: true,
   },
+  resources: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Resources' }],
+  assignments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Assignment' }],
   category: {
     type: String,
     required: true,
   },
   createdBy: {
-    type: String,
-    required: true,
+    type: mongoose.Schema.Types.ObjectId, ref: 'User',
   },
   createdAt: {
     type: Date,
