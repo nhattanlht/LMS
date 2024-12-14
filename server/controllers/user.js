@@ -23,7 +23,8 @@ export const register = TryCatch(async (req, res) => {
     password: hashPassword,
   };
 
-  const otp = Math.floor(Math.random() * 1000000);
+  // const otp = Math.floor(Math.random() * 1000000);
+  const otp = 123456;
 
   const activationToken = jwt.sign(
     {
@@ -41,7 +42,7 @@ export const register = TryCatch(async (req, res) => {
     otp,
   };
 
-  await sendMail(email, "E learning", data);
+  // await sendMail(email, "E learning", data);
 
   res.status(200).json({
     message: "Otp send to your mail",
@@ -109,6 +110,59 @@ export const myProfile = TryCatch(async (req, res) => {
   res.json({ user });
 });
 
+export const updateProfile = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    
+    // Get the updated profile data from the request body
+    const {
+      firstName,
+      lastName,
+      phoneNumber,
+      dateOfBirth,
+      gender,
+      address,
+      levelEducation,
+      typeEducation,
+      major,
+      faculty,
+    } = req.body;
+
+    // Find the user by their ID and update their profile
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      {
+        $set: {
+          "profile.firstName": firstName,
+          "profile.lastName": lastName,
+          "profile.phoneNumber": phoneNumber,
+          "profile.dateOfBirth": dateOfBirth,
+          "profile.gender": gender,
+          "profile.address": address,
+          "profile.levelEducation": levelEducation,
+          "profile.typeEducation": typeEducation,
+          "profile.major": major,
+          "profile.faculty": faculty,
+        },
+      },
+      { new: true } // This ensures that the updated document is returned
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Send the updated user profile as the response
+    res.status(200).json({
+      message: "Profile updated successfully",
+      user: updatedUser,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 export const forgotPassword = TryCatch(async (req, res) => {
   const { email } = req.body;
 
@@ -167,15 +221,15 @@ export const resetPassword = TryCatch(async (req, res) => {
 });
 
 export const sendNotification = TryCatch(async (req, res) => {
-  const { sender, recipient, subject, message, file } = req.body;
+  const { sender, recipients, subject, message, file } = req.body;
 
-  if (!sender || !recipient || !subject || !message) {
+  if (!sender || !recipients || !subject || !message) {
     return res.status(400).json({ message: 'Missing required fields: sender, recipient, subject, or message.' });
   }
 
   const notification = new Notification({
     sender,
-    recipient,
+    recipients,
     subject,
     message,
     file,

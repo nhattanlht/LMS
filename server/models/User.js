@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const schema = new mongoose.Schema(
   {
-    username: {
+    name: {
       type: String,
       required: true,
     },
@@ -30,7 +30,12 @@ const schema = new mongoose.Schema(
     role: {
       type: String,
       default: "user",
-      enum: ["user", "lecturer", "student", "admin"],
+      enum: ["user", "admin"],
+    },
+    mainrole: {
+      type: String,
+      default: "student",
+      enum: ["lecturer", "student", "admin", "superadmin"],
     },
     subscription: [
       {

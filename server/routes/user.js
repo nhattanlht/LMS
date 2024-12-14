@@ -6,6 +6,7 @@ import {
   register,
   resetPassword,
   sendNotification,
+  updateProfile,
   verifyUser,
 } from "../controllers/user.js";
 import { isAuth } from "../middlewares/isAuth.js";
@@ -17,6 +18,7 @@ router.post("/user/register", register);
 router.post("/user/verify", verifyUser);
 router.post("/user/login", loginUser);
 router.get("/user/me", isAuth, myProfile);
+router.put("/user/me", isAuth, updateProfile);
 router.post("/user/forgot", forgotPassword);
 router.post("/user/reset", resetPassword);
 router.post("/user/progress", isAuth, addProgress);
