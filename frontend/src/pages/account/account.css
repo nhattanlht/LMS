@@ -9,7 +9,7 @@
 
 .profile h2 {
   font-size: 30px;
-  color: #4caf50;
+  color: var(--primary-color);
   text-align: center;
   margin-bottom: 20px;
 }
