@@ -45,7 +45,8 @@ header {
       font-weight: 500;
       position: relative;
       transition: color 0.3s ease, transform 0.3s ease;
-
+      cursor: pointer;
+      
       &:hover {
         color: #6a2e8c;
         transform: translateY(-2px);

@@ -88,7 +88,7 @@ button.common-btn {
       display: inline-block;
       margin-top: 10px;
       padding: 10px 20px;
-      background-color: #4a90e2;
+      background-color: var(--primary-color);
       color: white;
       font-size: 14px;
       font-weight: bold;
@@ -97,7 +97,7 @@ button.common-btn {
       cursor: pointer;
 
       &:hover {
-        background-color: #357abd;
+        background-color: var(--secondary-color);
       }
     }
 

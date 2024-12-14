@@ -6,6 +6,7 @@ import { User } from "../models/User.js";
 import crypto from "crypto";
 import { Payment } from "../models/Payment.js";
 import { Progress } from "../models/Progress.js";
+import mongoose from "mongoose";
 
 export const getAllCourses = TryCatch(async (req, res) => {
   const courses = await Courses.find();
@@ -22,31 +23,49 @@ export const getSingleCourse = TryCatch(async (req, res) => {
   });
 });
 
-// Add a course
-export const addCourse = TryCatch(async (req, res) => {
-  const { title, description, image, startTime, endTime, duration, category } = req.body;
+export const joinCourse = async (req, res) => {
+  try {
+    const { courseId } = req.params; // Course ID from URL
+    const userId = req.user.id; // Authenticated student's ID
+    
+    if (!mongoose.Types.ObjectId.isValid(courseId)) {
+      return res.status(400).json({ message: "Invalid Course ID" });
+    }
 
-  if (!title || !description || !duration || !category) {
-    return res.status(400).json({ message: 'All fields except image, startTime and endTime are required.' });
+    // Find the user (student) and the course
+    const student = await User.findById(userId);
+    const course = await Courses.findById(courseId);
+
+    if (!student) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    // Check if the student has already joined the course
+    if (student.subscription.includes(courseId)) {
+      return res.status(400).json({ message: "You have already joined this course" });
+    }
+
+    // Add course to the student's subscription array
+    student.subscription.push(courseId);
+    await student.save();
+
+    // Optionally: Add student to the course's enrolled students
+    if (!course.attenders) {
+      course.attenders = [];
+    }
+    course.attenders.push(userId);
+    await course.save();
+
+    return res.status(200).json({ message: "Successfully joined the course", student });
+  } catch (error) {
+    console.error("Error joining course:", error);
+    res.status(500).json({ message: "Server error" });
   }
-
-  const newCourse = new Courses({
-    title,
-    description,
-    image,
-    startTime,
-    endTime,
-    duration,
-    category
-  });
-
-  await newCourse.save();
-
-  res.status(201).json({
-    message: 'Course added successfully.',
-    course: newCourse,
-  });
-});
+};
 
 export const fetchLectures = TryCatch(async (req, res) => {
   const lectures = await Lecture.find({ course: req.params.id });

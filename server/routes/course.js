@@ -2,18 +2,20 @@ import express from "express";
 import {
   getAllCourses,
   getSingleCourse,
+  joinCourse,
   fetchLectures,
   fetchLecture,
   getMyCourses,
   checkout,
   paymentVerification,
 } from "../controllers/course.js";
-import { isAuth } from "../middlewares/isAuth.js";
+import { isAuth, isStudent } from "../middlewares/isAuth.js";
 
 const router = express.Router();
 
 router.get("/course/all", getAllCourses);
 router.get("/course/:id", getSingleCourse);
+router.post("/course/join/:courseId", isAuth, isStudent, joinCourse);
 router.get("/lectures/:id", isAuth, fetchLectures);
 router.get("/lecture/:id", isAuth, fetchLecture);
 router.get("/mycourse", isAuth, getMyCourses);
