@@ -45,7 +45,7 @@ export const CourseContextProvider = ({ children }) => {
   useEffect(() => {
     fetchCourses();
     fetchMyCourse();
-  }, [courses, mycourse]);
+  }, []);
   return (
     <CourseContext.Provider
       value={{

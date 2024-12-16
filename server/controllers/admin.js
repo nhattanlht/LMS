@@ -5,18 +5,24 @@ import { rm } from "fs";
 import { promisify } from "util";
 import fs from "fs";
 import { User } from "../models/User.js";
+import { handleUpload } from "../config/cloudinary.js";
 
 export const createCourse = TryCatch(async (req, res) => {
-  const { title, description, image, startTime, endTime, duration, category } = req.body;
-
+  const { title, description, startTime, endTime, duration, category } = req.body;
+  const image = req.file.path;
+  
   if (!title || !description || !duration || !category) {
     return res.status(400).json({ message: 'All fields except image, startTime and endTime are required.' });
   }
 
+  const b64 = Buffer.from(req.file.buffer).toString("base64");
+  let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+  const cldRes = await handleUpload(dataURI, "courses");
+
   const newCourse = new Courses({
     title,
     description,
-    image,
+    image: cldRes.secure_url,
     startTime,
     endTime,
     duration,

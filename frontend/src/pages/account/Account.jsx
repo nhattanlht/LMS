@@ -52,6 +52,7 @@ const Account = ({ user }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    console.log(name, value);
     setProfileData((prevData) => ({
       ...prevData,
       [name]: value,
