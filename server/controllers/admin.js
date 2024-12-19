@@ -209,3 +209,29 @@ export const updateRole = TryCatch(async (req, res) => {
     });
   }
 });
+
+export const sendNotification = TryCatch(async (req, res) => {
+  const { sender, recipients, subject, message, file } = req.body;
+
+  if (!sender || !recipients || !subject || !message) {
+    return res.status(400).json({ message: 'Missing required fields: sender, recipient, subject, or message.' });
+  }
+
+  const notification = new Notification({
+    sender,
+    recipients,
+    subject,
+    message,
+    file,
+  });
+
+  const savedNotification = await notification.save();
+
+  const data = {sender, recipients, message, file}
+  await sendNotificationMail({ subject, data });
+
+  res.status(201).json({
+    message: 'Notification created successfully.',
+    notification: savedNotification,
+  });
+});

@@ -2,7 +2,7 @@ import { User } from "../models/User.js";
 import { Notification } from "../models/Notification.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import sendMail, { sendForgotMail } from "../middlewares/sendMail.js";
+import sendMail, { sendForgotMail, sendNotificationMail } from "../middlewares/sendMail.js";
 import TryCatch from "../middlewares/TryCatch.js";
 
 export const register = TryCatch(async (req, res) => {
@@ -42,7 +42,7 @@ export const register = TryCatch(async (req, res) => {
     otp,
   };
 
-  // await sendMail(email, "E learning", data);
+  await sendMail(email, "E learning", data);
 
   res.status(200).json({
     message: "Otp send to your mail",
@@ -237,8 +237,65 @@ export const sendNotification = TryCatch(async (req, res) => {
 
   const savedNotification = await notification.save();
 
+  const data = {sender, recipients, message, file}
+  await sendNotificationMail({ subject, data });
+
   res.status(201).json({
     message: 'Notification created successfully.',
     notification: savedNotification,
   });
 });
+
+export const getNotification = TryCatch(async (req, res) => {
+  const userId = req.user._id;
+  if (!userId) {
+    return res.status(400).json({ message: 'User ID is required to fetch notifications.' });
+  }
+
+  // Fetch notifications where the user is a recipient
+  const notifications = await Notification.find({ recipients: userId })
+    .sort({ createdAt: -1 })
+    .lean();
+
+  if (!notifications.length) {
+    return res.status(200).json({ message: 'No notifications found.', notifications: [] });
+  }
+
+  res.status(200).json({
+    message: 'Notifications retrieved successfully.',
+    notifications,
+  });
+});
+
+export const markAsRead = async (req, res) => {
+  try {
+    const { notificationId } = req.body;
+    const userId = req.user._id;
+
+    if (!userId || !notificationId) {
+      return res.status(400).json({ message: 'User ID and Notification ID are required.' });
+    }
+
+    // Update the notification's readBy field
+    const notification = await Notification.findByIdAndUpdate(
+      notificationId,
+      { $addToSet: { readBy: userId } }, // Add userId to readBy array if not already present
+      { new: true }
+    );
+
+    if (!notification) {
+      return res.status(404).json({ message: 'Notification not found.' });
+    }
+
+    res.status(200).json({
+      message: 'Notification marked as read.',
+      notification,
+    });
+  } catch (error) {
+    console.error('Error marking notification as read:', error.message);
+    res.status(500).json({
+      message: 'An error occurred while marking the notification as read.',
+      error: error.message,
+    });
+  }
+};

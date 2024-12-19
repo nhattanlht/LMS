@@ -19,25 +19,28 @@ const Register = () => {
       <div className="auth-form">
         <h2>Register</h2>
         <form onSubmit={submitHandler}>
-          <label htmlFor="name">Name</label>
+          <label htmlFor="name"></label>
           <input
             type="text"
+            placeholder="Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
           />
 
-          <label htmlFor="email">Email</label>
+          <label htmlFor="email"></label>
           <input
             type="email"
+            placeholder="Email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
 
-          <label htmlFor="password">Password</label>
+          <label htmlFor="password"></label>
           <input
             type="password"
+            placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required

@@ -24,7 +24,7 @@ export const isAuth = async (req, res, next) => {
 
 export const isAdmin = (req, res, next) => {
   try {
-    if (req.user.role !== "admin")
+    if (req.user.role !== "admin" && req.user.role !== "superadmin")
       return res.status(403).json({
         message: "You are not admin",
       });
@@ -39,9 +39,24 @@ export const isAdmin = (req, res, next) => {
 
 export const isStudent = (req, res, next) => {
   try {
-    if (req.user.mainrole !== "student")
+    if (req.user.role !== "student")
       return res.status(403).json({
         message: "You are not student",
+      });
+
+    next();
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+export const isLecturer = (req, res, next) => {
+  try {
+    if (req.user.role !== "lecturer")
+      return res.status(403).json({
+        message: "You are not lecturer",
       });
 
     next();

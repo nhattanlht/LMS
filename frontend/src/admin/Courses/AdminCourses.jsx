@@ -19,7 +19,7 @@ const categories = [
 const AdminCourses = ({ user }) => {
   const navigate = useNavigate();
 
-  if (user && user.role !== "admin") return navigate("/");
+  if (user && user.role !== "admin" && user.role !== "superadmin") return navigate("/");
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");

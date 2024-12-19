@@ -21,17 +21,19 @@ const Login = () => {
       <div className="auth-form">
         <h2>Login</h2>
         <form onSubmit={submitHandler}>
-          <label htmlFor="email">Email</label>
+          <label htmlFor="email"></label>
           <input
             type="email"
+            placeholder="Email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
 
-          <label htmlFor="password">Password</label>
+          <label htmlFor="password"></label>
           <input
             type="password"
+            placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -47,6 +49,9 @@ const Login = () => {
         <p>
           <Link to="/forgot">Forgot password?</Link>
         </p>
+      </div>
+      <div className="return-home">
+        <Link to="/">Return home</Link>
       </div>
     </div>
   );

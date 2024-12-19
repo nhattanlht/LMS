@@ -35,7 +35,7 @@
   padding-right: 15px;
 }
 
-.form-row input {
+.form-row input, .form-row select {
   width: 75%;
   padding: 12px;
   font-size: 16px;
@@ -44,6 +44,9 @@
   color: #333;
 }
 
+.form-row select{
+  width: 80%;
+}
 .form-row input:focus {
   border-color: #4caf50;
   outline: none;
