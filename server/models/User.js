@@ -30,10 +30,20 @@ const schema = new mongoose.Schema(
       },
     ],
     resetPasswordExpire: Date,
+    loginAttempts: {
+      type: Number,
+      default: 0
+    },
+    lockUntil: {
+      type: Date,
+      default: null
+    }
   },
   {
     timestamps: true,
   }
 );
-
+schema.methods.isLocked = function() {
+  return this.lockUntil && this.lockUntil > Date.now();
+};
 export const User = mongoose.model("User", schema);

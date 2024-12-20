@@ -25,14 +25,9 @@ export const register = TryCatch(async (req, res) => {
   const otp = Math.floor(Math.random() * 1000000);
 
   const activationToken = jwt.sign(
-    {
-      user,
-      otp,
-    },
+    { user: { name, email, password: hashPassword }, otp },
     process.env.Activation_Secret,
-    {
-      expiresIn: "5m",
-    }
+    { expiresIn: "5m" }
   );
 
   const data = {
@@ -55,14 +50,15 @@ export const verifyUser = TryCatch(async (req, res) => {
 
   if (!verify)
     return res.status(400).json({
-      message: "Otp Expired",
+      message: "OTP Expired",
     });
 
   if (verify.otp !== otp)
     return res.status(400).json({
-      message: "Wrong Otp",
+      message: "Wrong OTP",
     });
 
+// Creata a new user
   await User.create({
     name: verify.user.name,
     email: verify.user.email,
