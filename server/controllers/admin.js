@@ -7,22 +7,60 @@ import fs from "fs";
 import { User } from "../models/User.js";
 
 export const createCourse = TryCatch(async (req, res) => {
-  const { title, description, category, createdBy, duration, price } = req.body;
+  const { title, description, image, startTime, endTime, duration, category } = req.body;
 
-  const image = req.file;
+  if (!title || !description || !duration || !category) {
+    return res.status(400).json({ message: 'All fields except image, startTime and endTime are required.' });
+  }
 
-  await Courses.create({
+  const newCourse = new Courses({
     title,
     description,
-    category,
-    createdBy,
-    image: image?.path,
+    image,
+    startTime,
+    endTime,
     duration,
-    price,
+    category
   });
 
+  await newCourse.save();
+
   res.status(201).json({
-    message: "Course Created Successfully",
+    message: 'Course added successfully.',
+    course: newCourse,
+  });
+});
+
+// Add many courses
+export const createManyCourses = TryCatch(async (req, res) => {
+  const { courses } = req.body;
+
+  if (!Array.isArray(courses) || courses.length === 0) {
+    return res.status(400).json({ message: 'Please provide an array of courses.' });
+  }
+
+  const createdCourses = await Courses.insertMany(courses);
+
+  res.status(201).json({
+    message: 'Courses added successfully.',
+    courses: createdCourses,
+  });
+});
+
+// Modify course info
+export const modifyCourse = TryCatch(async (req, res) => {
+  const { id } = req.params;
+  const updates = req.body;
+
+  const updatedCourse = await Courses.findByIdAndUpdate(id, updates, { new: true });
+
+  if (!updatedCourse) {
+    return res.status(404).json({ message: 'Course not found.' });
+  }
+
+  res.json({
+    message: 'Course updated successfully.',
+    course: updatedCourse,
   });
 });
 
@@ -89,6 +127,30 @@ export const deleteCourse = TryCatch(async (req, res) => {
 
   res.json({
     message: "Course Deleted",
+  });
+});
+
+
+// Delete many courses
+export const deleteManyCourses = TryCatch(async (req, res) => {
+  const { ids } = req.body;
+
+  // Validate that ids is an array of ObjectId-like strings
+  if (!Array.isArray(ids) || ids.length === 0) {
+    return res.status(400).json({ message: 'Please provide a valid array of course IDs.' });
+  }
+
+  // Ensure all IDs are valid ObjectId strings
+  const isValidObjectId = ids.every(id => /^[a-fA-F0-9]{24}$/.test(id));
+  if (!isValidObjectId) {
+    return res.status(400).json({ message: 'Invalid course ID(s) provided.' });
+  }
+
+  const deletedCourses = await Courses.deleteMany({ _id: { $in: ids } });
+
+  res.json({
+    message: `${deletedCourses.deletedCount} course(s) deleted successfully.`,
+    result: deletedCourses,
   });
 });
 

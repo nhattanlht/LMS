@@ -35,9 +35,14 @@ const CourseCard = ({ course }) => {
     <div className="course-card">
       <img src={`${server}/${course.image}`} alt="" className="course-image" />
       <h3>{course.title}</h3>
+<<<<<<< HEAD
       <p>Start: {new Date(course.startTime).toLocaleDateString('en-GB', { timeZone: 'UTC' })}</p>
       <p>End: {new Date(course.endTime).toLocaleDateString('en-GB', { timeZone: 'UTC' })}</p>
 
+=======
+      <p>Instructor- {course.createdBy}</p>
+      <p>Duration- {course.duration} weeks</p>
+>>>>>>> 4666d7328af8b62f01d462e616897f30b51daeea
       {isAuth ? (
         <>
           {user && user.role !== "admin" ? (
