@@ -56,7 +56,8 @@ const App = () => {
             />
             <Route
               path="/course/:id"
-              element={isAuth ? <CourseDescription user={user} /> : <Login />}
+              //element={isAuth ? <CourseDescription user={user} /> : <Login />}
+              element={<CourseDescription />}
             />
             <Route
               path="/payment-success/:id"
@@ -68,7 +69,9 @@ const App = () => {
             />
             <Route
               path="/course/study/:id"
-              element={isAuth ? <CourseStudy user={user} /> : <Login />}
+              //element={isAuth ? <CourseStudy user={user} /> : <Login />}
+              element={ <CourseStudy /> }
+
             />
 
             <Route

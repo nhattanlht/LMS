@@ -20,15 +20,18 @@ const CourseStudy = ({ user }) => {
     <>
       {course && (
         <div className="course-study-page">
+        <div className="course-box">
           <img src={`${server}/${course.image}`} alt="" width={350} />
-          <h2>{course.title}</h2>
-          <h4>{course.description}</h4>
-          <h5>by - {course.createdBy}</h5>
-          <h5>Duration - {course.duration} weeks</h5>
+          <h4>Title: {course.title}</h4>
+          <h5>Description: {course.description}</h5>
+          <h5>Start: {new Date(course.startTime).toLocaleDateString('en-GB', { timeZone: 'UTC' })}</h5>
+          <h5>End: {new Date(course.endTime).toLocaleDateString('en-GB', { timeZone: 'UTC' })}</h5>
           <Link to={`/lectures/${course._id}`}>
-            <h2>Lectures</h2>
+           <a>Lecture</a>
           </Link>
         </div>
+      </div>
+      
       )}
     </>
   );

@@ -12,7 +12,7 @@ const CourseCard = ({ course }) => {
   const { user, isAuth } = UserData();
 
   const { fetchCourses } = CourseData();
-
+  {/*
   const deleteHandler = async (id) => {
     if (confirm("Are you sure you want to delete this course")) {
       try {
@@ -29,13 +29,15 @@ const CourseCard = ({ course }) => {
       }
     }
   };
+  */}
   return (
+    
     <div className="course-card">
       <img src={`${server}/${course.image}`} alt="" className="course-image" />
       <h3>{course.title}</h3>
-      <p>Instructor- {course.createdBy}</p>
-      <p>Duration- {course.duration} weeks</p>
-      <p>Price- ₹{course.price}</p>
+      <p>Start: {new Date(course.startTime).toLocaleDateString('en-GB', { timeZone: 'UTC' })}</p>
+      <p>End: {new Date(course.endTime).toLocaleDateString('en-GB', { timeZone: 'UTC' })}</p>
+
       {isAuth ? (
         <>
           {user && user.role !== "admin" ? (
@@ -72,7 +74,7 @@ const CourseCard = ({ course }) => {
       )}
 
       <br />
-
+      {/*
       {user && user.role === "admin" && (
         <button
           onClick={() => deleteHandler(course._id)}
@@ -82,6 +84,7 @@ const CourseCard = ({ course }) => {
           Delete
         </button>
       )}
+        */}
     </div>
   );
 };
