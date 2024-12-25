@@ -1,6 +1,6 @@
 import express from "express";
 const router = express.Router();
-import { protect } from "../middlewares/isAuth.js";
+import { isLecturer, isStudent } from "../middlewares/isAuth.js";
 import {
     createForum,
     createThread,
@@ -9,10 +9,10 @@ import {
     getThreads,
     getPosts,
 } from "../controllers/forum.js";            
-router.post('/forums', protect, createForum);
-router.post('/threads', protect, createThread);
-router.post('/posts', protect, createPost);
-router.get('/forums', protect, getForums);
-router.get('/threads/:forumId', protect, getThreads);
-router.get('/posts/:threadId', protect, getPosts);
+router.post('/forums', isStudent, isLecturer, createForum);
+router.post('/threads', isStudent, isLecturer, createThread);
+router.post('/posts', isStudent, isLecturer, createPost);
+router.get('/forums', isStudent, isLecturer, getForums);
+router.get('/threads/:forumId', isStudent, isLecturer, getThreads);
+router.get('/posts/:threadId', isStudent, isLecturer, getPosts);
 export default router;

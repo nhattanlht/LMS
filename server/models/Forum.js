@@ -1,18 +1,28 @@
 import mongoose from "mongoose";
 
 const forumSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true,
-  },
-  description: {
-    type: String,
-    required: true,
-  },
-  threads: [{
+  course: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Thread',
+    ref: 'Course',
+    required: true,
+  },
+  question: {
+    type: String,
+    required: true,
+  },
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
+  answers: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Answer',
   }],
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 export const Forum = mongoose.model('Forum', forumSchema);
