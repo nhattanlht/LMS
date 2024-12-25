@@ -5,7 +5,7 @@ import { rm } from "fs";
 import { promisify } from "util";
 import fs from "fs";
 import { User } from "../models/User.js";
-import { handleUpload } from "../config/cloudinary.js";
+import { handleUpload } from "../config/cloudinary2.js";
 
 export const createCourse = TryCatch(async (req, res) => {
   const { title, description, startTime, endTime, duration, category } = req.body;

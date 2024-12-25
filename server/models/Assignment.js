@@ -1,21 +1,19 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const assignmentSchema = new mongoose.Schema({
-    title: { type: String, required: true },
-    description: String,
-    type: { type: String, required: true, enum: ['assignment', 'test'] },
-    openAt: { type: Date, required: true },
-    endAt: { type: Date, required: true },
-    course: { type: mongoose.Schema.Types.ObjectId, ref: 'Courses', required: true },
-    submissions: [{
-      student: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-      file: { type: String },
-      status: String,
-      submitAt: { type: Date },
-      grade: { type: Number },
-      coefficient: { type: Number },
-    }],
-    createdAt: { type: Date, default: Date.now }
-});
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  instructorFile: { type: String, required: true },
+  startDate: { type: Date, required: true },
+  dueDate: { type: Date, required: true },
+  courseId: { type: mongoose.Schema.Types.ObjectId, ref: "Course", required: true }, // Thêm thông tin khóa học
+  instructor: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  submissions: [
+    {
+      student: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+      fileUrl: { type: String, required: true },
+    },
+  ],
+}, { timestamps: true });
 
-export const Assignment = mongoose.model('Assignment', assignmentSchema);
+export const Assignment = mongoose.model("Assignment", assignmentSchema);

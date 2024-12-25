@@ -29,10 +29,17 @@ app.get("/", (req, res) => {
 import userRoutes from "./routes/user.js";
 import courseRoutes from "./routes/course.js";
 import adminRoutes from "./routes/admin.js";
+import asssignmentRoutes from "./routes/assignment.js";
+import messageRoutes from "./routes/message.js";
+
 // using routes
 app.use("/api", userRoutes);
 app.use("/api", courseRoutes);
 app.use("/api", adminRoutes);
+app.use("/api", asssignmentRoutes);
+app.use("/api", messageRoutes);
+
+
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
