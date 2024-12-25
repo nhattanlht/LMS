@@ -31,7 +31,7 @@ const CourseCard = ({ course }) => {
   };
   return (
     <div className="course-card">
-      <img src={`${server}/${course.image}`} alt="" className="course-image" />
+      <img src={course.image} alt="" className="course-image" />
       <h3>{course.title}</h3>
       <p>Instructor- {course.createdBy}</p>
       <p>Duration- {course.duration} weeks</p>

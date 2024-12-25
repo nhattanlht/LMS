@@ -35,7 +35,7 @@
   padding-right: 15px;
 }
 
-.form-row input {
+.form-row input, .form-row select {
   width: 75%;
   padding: 12px;
   font-size: 16px;
@@ -44,26 +44,31 @@
   color: #333;
 }
 
+.form-row select{
+  width: 80%;
+}
 .form-row input:focus {
   border-color: #4caf50;
   outline: none;
 }
 
-.form-submit button {
-  padding: 12px 20px;
-  font-size: 16px;
+button{
   color: white;
-  background-color: #4caf50;
+  padding: 10px 20px;
   border: none;
-  border-radius: 8px;
+  border-radius: 5px;
+  font-size: 18px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  margin-top: 10px;
+}
+.form-submit button {
+  background-color: #4caf50; 
+  &:hover {
+    background-color: #45a049;
+  }
   display: flex;
   justify-self: center;
-}
-
-.form-submit button:hover {
-  background-color: #45a049;
 }
 
 @media (max-width: 768px) {
@@ -76,44 +81,22 @@
   }
 
   .form-row input {
-    font-size: 14px;
+    font-size: 16px;
   }
 
   .form-submit button {
-    font-size: 14px;
+    font-size: 16px;
+  }
+  
+  button.logout-btn {
+    font-size: 16px;
   }
 }
 
-button.common-btn {
-      display: inline-block;
-      margin-top: 10px;
-      padding: 10px 20px;
-      background-color: #4a90e2;
-      color: white;
-      font-size: 14px;
-      font-weight: bold;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
+button.logout-btn {
+  background-color: #e24a4a;
 
-      &:hover {
-        background-color: #357abd;
-      }
-    }
-
-    button.logout-btn {
-      display: inline-block;
-      margin-top: 10px;
-      padding: 10px 20px;
-      background-color: #e24a4a;
-      color: white;
-      font-size: 14px;
-      font-weight: bold;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-
-      &:hover {
-        background-color: #bd3535;
-      }
-    }
+  &:hover {
+    background-color: #bd3535;
+  }
+}

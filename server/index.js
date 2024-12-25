@@ -23,13 +23,12 @@ app.get("/", (req, res) => {
   res.send("Server is working");
 });
 
-app.use("/uploads", express.static("uploads"));
+// app.use("/uploads", express.static("uploads"));
 
 // importing routes
 import userRoutes from "./routes/user.js";
 import courseRoutes from "./routes/course.js";
 import adminRoutes from "./routes/admin.js";
-
 // using routes
 app.use("/api", userRoutes);
 app.use("/api", courseRoutes);
@@ -39,3 +38,19 @@ app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
   connectDb();
 });
+
+// import { uploadFiles } from "./middlewares/multer.js";
+// import { handleUpload } from "./config/cloudinary.js";
+// app.post("/upload", uploadFiles, async (req, res) => {
+//   try {
+//     const b64 = Buffer.from(req.file.buffer).toString("base64");
+//     let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+//     const cldRes = await handleUpload(dataURI);
+//     res.json(cldRes);
+//   } catch (error) {
+//     console.log(error);
+//     res.send({
+//       message: error.message,
+//     });
+//   }
+// });

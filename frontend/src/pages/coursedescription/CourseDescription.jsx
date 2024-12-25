@@ -22,67 +22,27 @@ const CourseDescription = ({ user }) => {
     fetchCourse(params.id);
   }, []);
 
-  const checkoutHandler = async () => {
-    const token = localStorage.getItem("token");
-    setLoading(true);
-
-    const {
-      data: { order },
-    } = await axios.post(
-      `${server}/api/course/checkout/${params.id}`,
-      {},
-      {
-        headers: {
-          token,
-        },
-      }
-    );
-
-    const options = {
-      key: "rzp_test_yOMeMyaj2wlvTt", // Enter the Key ID generated from the Dashboard
-      amount: order.id, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-      currency: "INR",
-      name: "E learning", //your business name
-      description: "Learn with us",
-      order_id: order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-
-      handler: async function (response) {
-        const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
-          response;
-
-        try {
-          const { data } = await axios.post(
-            `${server}/api/verification/${params.id}`,
-            {
-              razorpay_order_id,
-              razorpay_payment_id,
-              razorpay_signature,
-            },
-            {
-              headers: {
-                token,
-              },
-            }
-          );
-
-          await fetchUser();
-          await fetchCourses();
-          await fetchMyCourse();
-          toast.success(data.message);
-          setLoading(false);
-          navigate(`/payment-success/${razorpay_payment_id}`);
-        } catch (error) {
-          toast.error(error.response.data.message);
-          setLoading(false);
+  const joinHandler = async (courseId) => {
+    try {
+      const token = localStorage.getItem("token");
+  
+      const response = await axios.post(
+        `${server}/api/course/join/${courseId}`,
+        {},
+        {
+          headers: {
+            token,
+          },
         }
-      },
-      theme: {
-        color: "#8a4baf",
-      },
-    };
-    const razorpay = new window.Razorpay(options);
-
-    razorpay.open();
+      );
+  
+      console.log(response.data.message);
+      toast.success("Successfully joined the course!");
+      navigate(`/course/study/${course._id}`);
+    } catch (error) {
+      console.error("Error joining course:", error.response?.data?.message || error.message);
+      toast.error(error.response?.data?.message || "An error occurred");
+    }
   };
 
   return (
@@ -108,8 +68,6 @@ const CourseDescription = ({ user }) => {
 
               <p>{course.description}</p>
 
-              <p>Let's get started with course At ₹{course.price}</p>
-
               {user && user.subscription.includes(course._id) ? (
                 <button
                   onClick={() => navigate(`/course/study/${course._id}`)}
@@ -118,8 +76,8 @@ const CourseDescription = ({ user }) => {
                   Study
                 </button>
               ) : (
-                <button onClick={checkoutHandler} className="common-btn">
-                  Buy Now
+                <button onClick={() => joinHandler(course._id)} className="common-btn">
+                  Join Course
                 </button>
               )}
             </div>
