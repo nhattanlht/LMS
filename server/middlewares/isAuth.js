@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { User } from "../models/User.js";
-import { asyncHandler } from "./asyncHandler.js";
+// import { asyncHandler } from "./asyncHandler.js";
 
 export const isAuth = async (req, res, next) => {
   try {
@@ -38,7 +38,7 @@ export const isAdmin = (req, res, next) => {
   }
 };
 
-export const protect = asyncHandler(async (req, res, next) => {
+export const protect = async (req, res, next) => {
   let token;
 
   if (
@@ -48,7 +48,7 @@ export const protect = asyncHandler(async (req, res, next) => {
     try {
       token = req.headers.authorization.split(' ')[1];
 
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const decoded = jwt.verify(token, process.env.Jwt_Sec);
 
       req.user = await User.findById(decoded.id).select('-password');
 
@@ -64,6 +64,13 @@ export const protect = asyncHandler(async (req, res, next) => {
     res.status(401);
     throw new Error('Not authorized, no token');
   }
-});
+};
 
-module.exports = { isAuth, isAdmin, protect };
+export const authorize = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({ message: 'Forbidden' });
+    }
+    next();
+  };
+};

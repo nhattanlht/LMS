@@ -15,6 +15,4 @@ const forumSchema = new mongoose.Schema({
   }],
 });
 
-module.exports = mongoose.model('Forum', forumSchema);
-
-export const Message = mongoose.model('Forum', forumSchema);
+export const Forum = mongoose.model('Forum', forumSchema);
