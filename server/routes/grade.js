@@ -1,6 +1,6 @@
 import express from "express";
 const router = express.Router();
-import { protect, authorize } from "../middlewares/isAuth.js";
+import { isAuth, isLecturer, isStudent } from "../middlewares/isAuth.js";
 import {
   createGrade,
   getGrades,
@@ -9,11 +9,11 @@ import {
 } from "../controllers/grade.js";
 
 // Route cho giáo viên
-router.post('/', protect, authorize('teacher'), createGrade);
-router.put('/', protect, authorize('teacher'), updateGrade);
-router.delete('/:gradeId', protect, authorize('teacher'), deleteGrade);
+router.post('/grades', isAuth, isLecturer, createGrade);
+router.put('/grades/:gradeId', isAuth, isLecturer, updateGrade);
+router.delete('/grades/:gradeId', isAuth, isLecturer, deleteGrade);
 
 // Route cho sinh viên và giáo viên
-router.get('/', protect, getGrades);
+router.get('/grades', isAuth, getGrades);
 
 export default router;

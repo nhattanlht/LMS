@@ -1,16 +1,20 @@
-import { Grade } from '../models/Grade.js';
+import Grade from '../models/Grade.js';
 import TryCatch from '../middlewares/TryCatch.js';
 
 // Tạo điểm số
 export const createGrade = TryCatch(async (req, res) => {
-  const { studentId, courseId, grade } = req.body;
-  const createdBy = req.user._id;
+  const { student_id, activity_id, grade, coefficient } = req.body;
 
+  if (!student_id || !activity_id || !grade || !coefficient) {
+    return res.status(400).json({
+      message: 'Please fill in all fields',
+    });
+  }
   const newGrade = await Grade.create({
-    student: studentId,
-    course: courseId,
+    student_id,
+    activity_id,
     grade,
-    createdBy,
+    coefficient,
   });
 
   res.status(201).json({
@@ -21,13 +25,7 @@ export const createGrade = TryCatch(async (req, res) => {
 
 // Xem điểm số
 export const getGrades = TryCatch(async (req, res) => {
-  const { studentId, courseId } = req.query;
-
-  const query = {};
-  if (studentId) query.student = studentId;
-  if (courseId) query.course = courseId;
-
-  const grades = await Grade.find(query).populate('student course', 'name email title');
+  const grades = await Grade.find().populate('student_id activity_id');
 
   res.status(200).json({
     message: 'Grades retrieved successfully',
@@ -37,11 +35,12 @@ export const getGrades = TryCatch(async (req, res) => {
 
 // Chỉnh sửa điểm số
 export const updateGrade = TryCatch(async (req, res) => {
-  const { gradeId, grade } = req.body;
+  const { gradeId } = req.params;
+  const { grade, coefficient } = req.body;
 
   const updatedGrade = await Grade.findByIdAndUpdate(
     gradeId,
-    { grade, updatedAt: Date.now() },
+    { grade, coefficient },
     { new: true }
   );
 

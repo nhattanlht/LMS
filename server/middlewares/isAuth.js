@@ -23,6 +23,32 @@ export const isAuth = async (req, res, next) => {
   }
 };
 
+// export const protect = async (req, res, next) => {
+//   let token;
+
+//   if (
+//     req.headers.authorization &&
+//     req.headers.authorization.startsWith('Bearer')
+//   ) {
+//     try {
+//       token = req.headers.authorization.split(' ')[1];
+
+//       const decoded = jwt.verify(token, process.env.Jwt_Sec);
+
+//       req.user = await User.findById(decoded.id).select('-password');
+
+//       next();
+//     } catch (error) {
+//       console.error(error);
+//       res.status(401).json({ message: 'Not authorized, token failed' });
+//     }
+//   }
+
+//   if (!token) {
+//     res.status(401).json({ message: 'Not authorized, no token' });
+//   }
+// };
+
 export const isAdmin = (req, res, next) => {
   try {
     if (req.user.role !== "admin")
@@ -38,39 +64,41 @@ export const isAdmin = (req, res, next) => {
   }
 };
 
-export const protect = async (req, res, next) => {
-  let token;
+export const isStudent = (req, res, next) => {
+  try {
+    if (req.user.role !== "student")
+      return res.status(403).json({
+        message: "You are not student",
+      });
 
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith('Bearer')
-  ) {
-    try {
-      token = req.headers.authorization.split(' ')[1];
-
-      const decoded = jwt.verify(token, process.env.Jwt_Sec);
-
-      req.user = await User.findById(decoded.id).select('-password');
-
-      next();
-    } catch (error) {
-      console.error(error);
-      res.status(401);
-      throw new Error('Not authorized, token failed');
-    }
-  }
-
-  if (!token) {
-    res.status(401);
-    throw new Error('Not authorized, no token');
-  }
-};
-
-export const authorize = (...roles) => {
-  return (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
-      return res.status(403).json({ message: 'Forbidden' });
-    }
     next();
-  };
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
 };
+
+export const isLecturer = (req, res, next) => {
+  try {
+    if (req.user.role !== "lecturer")
+      return res.status(403).json({
+        message: "You are not lecturer",
+      });
+
+    next();
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+// export const authorize = (...roles) => {
+//   return (req, res, next) => {
+//     if (!roles.includes(req.user.role)) {
+//       return res.status(403).json({ message: 'Forbidden' });
+//     }
+//     next();
+//   };
+// };
