@@ -5,18 +5,24 @@ import { rm } from "fs";
 import { promisify } from "util";
 import fs from "fs";
 import { User } from "../models/User.js";
+import { handleUpload } from "../config/cloudinary2.js";
 
 export const createCourse = TryCatch(async (req, res) => {
-  const { title, description, image, startTime, endTime, duration, category } = req.body;
-
+  const { title, description, startTime, endTime, duration, category } = req.body;
+  const image = req.file.path;
+  
   if (!title || !description || !duration || !category) {
     return res.status(400).json({ message: 'All fields except image, startTime and endTime are required.' });
   }
 
+  const b64 = Buffer.from(req.file.buffer).toString("base64");
+  let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+  const cldRes = await handleUpload(dataURI, "courses");
+
   const newCourse = new Courses({
     title,
     description,
-    image,
+    image: cldRes.secure_url,
     startTime,
     endTime,
     duration,
@@ -202,4 +208,30 @@ export const updateRole = TryCatch(async (req, res) => {
       message: "Role updated",
     });
   }
+});
+
+export const sendNotification = TryCatch(async (req, res) => {
+  const { sender, recipients, subject, message, file } = req.body;
+
+  if (!sender || !recipients || !subject || !message) {
+    return res.status(400).json({ message: 'Missing required fields: sender, recipient, subject, or message.' });
+  }
+
+  const notification = new Notification({
+    sender,
+    recipients,
+    subject,
+    message,
+    file,
+  });
+
+  const savedNotification = await notification.save();
+
+  const data = {sender, recipients, message, file}
+  await sendNotificationMail({ subject, data });
+
+  res.status(201).json({
+    message: 'Notification created successfully.',
+    notification: savedNotification,
+  });
 });

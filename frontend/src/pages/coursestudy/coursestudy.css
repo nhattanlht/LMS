@@ -409,3 +409,11 @@ ul li {
 .edit-btn:hover, .delete-btn:hover, .download-btn:hover {
   background-color: #f5f3f5; /* Màu tím đậm khi hover */
 }
+
+.user{
+  display: flex;
+  justify-content: space-between;
+  align-items: right;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}

@@ -11,8 +11,9 @@ import {
   getAllStats,
   getAllUser,
   updateRole,
+  sendNotification,
 } from "../controllers/admin.js";
-import { uploadFiles } from "../middlewares/multer.js";
+import { uploadFiles } from "../middlewares/multer2.js";
 
 const router = express.Router();
 
@@ -26,5 +27,6 @@ router.delete("/lecture/:id", isAuth, isAdmin, deleteLecture);
 router.get("/stats", isAuth, isAdmin, getAllStats);
 router.put("/user/:id", isAuth, updateRole);
 router.get("/users", isAuth, isAdmin, getAllUser);
+router.post("/notification", isAuth, isAdmin, sendNotification);
 
 export default router;

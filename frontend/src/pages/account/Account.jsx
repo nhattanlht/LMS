@@ -52,6 +52,7 @@ const Account = ({ user }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    console.log(name, value);
     setProfileData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -153,12 +154,12 @@ const Account = ({ user }) => {
           <label>
             <strong>Gender</strong>
           </label>
-          <input
-            type="text"
-            name="gender"
-            value={profileData.gender}
-            onChange={handleInputChange}
-          />
+          <select id="gender" name="gender" onChange={handleInputChange} value={profileData.gender}>
+            <option value="">--Please choose an option--</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+          </select>
         </div>
 
         <div className="form-row">

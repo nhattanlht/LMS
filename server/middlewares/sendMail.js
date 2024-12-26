@@ -148,3 +148,89 @@ export const sendForgotMail = async (subject, data) => {
     html,
   });
 };
+
+export const sendNotificationMail = async (subject, data) => {
+  const transport = createTransport({
+    host: "smtp.gmail.com",
+    port: 465,
+    auth: {
+      user: process.env.Gmail,
+      pass: process.env.Password,
+    },
+  });
+
+  const html = `<!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${subject}</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        background-color: #ffffff;
+        padding: 20px;
+        margin: 20px auto;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+      }
+      h1 {
+        color: #333;
+      }
+      p {
+        color: #666;
+        line-height: 1.6;
+      }
+      .button {
+        display: inline-block;
+        padding: 10px 20px;
+        margin: 20px 0;
+        background-color: #007BFF;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 16px;
+      }
+      .footer {
+        margin-top: 20px;
+        color: #999;
+        text-align: center;
+        font-size: 14px;
+      }
+      .footer a {
+        color: #007BFF;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>${subject}</h1>
+      <p>Dear ${data.recipientName || 'Leaner'},</p>
+      <p>${data.message}</p>
+    </div>
+  </body>
+  </html>
+  `;
+  
+    await transport.sendMail({
+      from: data.sender,
+      to: data.recipients,
+      subject,
+      html,
+      ...(data.file && {
+        attachments: [
+          {
+            filename: data.file.filename,
+            path: data.file.path,
+          },
+        ],
+      }),
+    });
+  };

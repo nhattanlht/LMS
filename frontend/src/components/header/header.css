@@ -1,16 +1,12 @@
 header {
   display: flex;
+  flex-wrap: nowrap;
   justify-content: space-between;
   align-items: center;
   padding: 16px 30px;
   background-color: #fff;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   position: relative;
   transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: #f8f8f8;
-  }
 
   .logo {
     font-size: 28px;
@@ -19,6 +15,7 @@ header {
     text-decoration: none;
     letter-spacing: 1px;
     transition: color 0.3s ease;
+    margin-right:20px;
 
     &:hover {
       color: #6a2e8c;
@@ -45,7 +42,8 @@ header {
       font-weight: 500;
       position: relative;
       transition: color 0.3s ease, transform 0.3s ease;
-
+      cursor: pointer;
+      
       &:hover {
         color: #6a2e8c;
         transform: translateY(-2px);
@@ -68,4 +66,70 @@ header {
       }
     }
   }
+}
+.noti{
+  display: flex;
+  align-items: center;
+  color:purple;
+  cursor: pointer;
+  top: 20px; /* Khoảng cách từ trên xuống */
+  right: 20px; /* Khoảng cách từ phải vào */
+  padding: 10px 15px; /* Kích thước của nút */
+  font-size: 29px;
+  margin:0;
+  position: absolute; /* Đặt phần tử cuộn theo trang */
+
+
+}
+.search-bar {
+  display: flex;
+  flex-wrap: nowrap;
+  margin: 0 auto;  /* Canh giữa thanh tìm kiếm */
+  width:600px;
+}
+
+.search-bar input {
+  width:300px;
+
+  padding: 5px;
+  font-size: 16px;
+  margin-right: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.search-bar button {
+  width:120px;
+
+  padding: 5px 10px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.search-bar button:hover {
+  background-color: #dac2d2;
+}
+.search-results {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ccc;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 10;
+  width: 100%;
+}
+
+.search-results li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.search-results li:hover {
+  background-color: #f0f0f0;
 }

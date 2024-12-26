@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import "./auth.css";
-import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { server } from "../../main";
+import { Link, useNavigate } from "react-router-dom";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -29,9 +29,10 @@ const ForgotPassword = () => {
       <div className="auth-form">
         <h2>Forgot Password</h2>
         <form onSubmit={handleSubmit}>
-          <label htmlFor="text">Enter Email</label>
+          <label htmlFor="text"></label>
           <input
             type="email"
+            placeholder="Email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -40,6 +41,9 @@ const ForgotPassword = () => {
             {btnLoading ? "Please Wait..." : "Forgot Password"}
           </button>
         </form>
+        <p className="return-home">
+          <Link to="/">Return home</Link>
+        </p>
       </div>
     </div>
   );

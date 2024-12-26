@@ -6,6 +6,7 @@ import { User } from "../models/User.js";
 import crypto from "crypto";
 import { Payment } from "../models/Payment.js";
 import { Progress } from "../models/Progress.js";
+import mongoose from "mongoose";
 
 export const getAllCourses = TryCatch(async (req, res) => {
   const courses = await Courses.find();
@@ -22,30 +23,59 @@ export const getSingleCourse = TryCatch(async (req, res) => {
   });
 });
 
-// Add a course
-export const addCourse = TryCatch(async (req, res) => {
-  const { title, description, image, startTime, endTime, duration, category } = req.body;
-
-  if (!title || !description || !duration || !category) {
-    return res.status(400).json({ message: 'All fields except image, startTime and endTime are required.' });
+export const getCourseByName = TryCatch(async (req, res) => {
+  const { name } = req.query;
+  const courses = await Courses.find({
+    $or: [
+      { title: { $regex: name, $options: "i" } },
+      { description: { $regex: name, $options: "i" } },
+    ],
+  });
+  if (courses.length === 0) {
+    return res.status(404).json({ message: "No courses found" });
   }
 
-  const newCourse = new Courses({
-    title,
-    description,
-    image,
-    startTime,
-    endTime,
-    duration,
-    category
-  });
+  res.status(200).json({ courses });
+});
 
-  await newCourse.save();
+export const joinCourse = TryCatch(async (req, res) => {
 
-  res.status(201).json({
-    message: 'Course added successfully.',
-    course: newCourse,
-  });
+  const { courseId } = req.params; // Course ID from URL
+  const userId = req.user.id; // Authenticated student's ID
+  
+  if (!mongoose.Types.ObjectId.isValid(courseId)) {
+    return res.status(400).json({ message: "Invalid Course ID" });
+  }
+
+  // Find the user (student) and the course
+  const student = await User.findById(userId);
+  const course = await Courses.findById(courseId);
+
+  if (!student) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  if (!course) {
+    return res.status(404).json({ message: "Course not found" });
+  }
+
+  // Check if the student has already joined the course
+  if (student.subscription.includes(courseId)) {
+    return res.status(400).json({ message: "You have already joined this course" });
+  }
+
+  // Add course to the student's subscription array
+  student.subscription.push(courseId);
+  await student.save();
+
+  // Optionally: Add student to the course's enrolled students
+  if (!course.attenders) {
+    course.attenders = [];
+  }
+  course.attenders.push(userId);
+  await course.save();
+
+  return res.status(200).json({ message: "Successfully joined the course", student });
 });
 
 export const fetchLectures = TryCatch(async (req, res) => {
@@ -88,74 +118,6 @@ export const getMyCourses = TryCatch(async (req, res) => {
   res.json({
     courses,
   });
-});
-
-export const checkout = TryCatch(async (req, res) => {
-  const user = await User.findById(req.user._id);
-
-  const course = await Courses.findById(req.params.id);
-
-  if (user.subscription.includes(course._id)) {
-    return res.status(400).json({
-      message: "You already have this course",
-    });
-  }
-
-  const options = {
-    amount: Number(course.price * 100),
-    currency: "INR",
-  };
-
-  const order = await instance.orders.create(options);
-
-  res.status(201).json({
-    order,
-    course,
-  });
-});
-
-export const paymentVerification = TryCatch(async (req, res) => {
-  const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
-    req.body;
-
-  const body = razorpay_order_id + "|" + razorpay_payment_id;
-
-  const expectedSignature = crypto
-    .createHmac("sha256", process.env.Razorpay_Secret)
-    .update(body)
-    .digest("hex");
-
-  const isAuthentic = expectedSignature === razorpay_signature;
-
-  if (isAuthentic) {
-    await Payment.create({
-      razorpay_order_id,
-      razorpay_payment_id,
-      razorpay_signature,
-    });
-
-    const user = await User.findById(req.user._id);
-
-    const course = await Courses.findById(req.params.id);
-
-    user.subscription.push(course._id);
-
-    await Progress.create({
-      course: course._id,
-      completedLectures: [],
-      user: req.user._id,
-    });
-
-    await user.save();
-
-    res.status(200).json({
-      message: "Course Purchased Successfully",
-    });
-  } else {
-    return res.status(400).json({
-      message: "Payment Failed",
-    });
-  }
 });
 
 export const addProgress = TryCatch(async (req, res) => {

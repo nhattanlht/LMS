@@ -16,6 +16,7 @@ import PaymentSuccess from "./pages/paymentsuccess/PaymentSuccess";
 import Dashbord from "./pages/dashbord/Dashbord";
 import CourseStudy from "./pages/coursestudy/CourseStudy";
 import CourseNotStudy from "./pages/coursenotstudy/CourseNotStudy";
+import Search from "./pages/search/Search";
 
 import Lecture from "./pages/lecture/Lecture";
 import AdminDashbord from "./admin/Dashboard/AdminDashbord";
@@ -34,7 +35,7 @@ const App = () => {
         <BrowserRouter>
           <Header isAuth={isAuth} />
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={ isAuth ? <Dashbord user={user}/> :<Home />} />
             <Route path="/about" element={<About />} />
             <Route
               path="/account"
@@ -82,6 +83,10 @@ const App = () => {
               path="/lectures/:id"
               element={isAuth ? <Lecture user={user} /> : <Login />}
             />
+
+          
+              <Route path="/search" element={<Search />} />
+             
 
             <Route
               path="/admin/dashboard"

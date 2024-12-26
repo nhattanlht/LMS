@@ -79,6 +79,7 @@ const CourseDescription = () => {
   };
 
   useEffect(() => {
+<<<<<<< HEAD
     const storedResources = localStorage.getItem(`resources-${params.id}`);
     if (storedResources) {
       setResources(JSON.parse(storedResources));
@@ -89,6 +90,33 @@ const CourseDescription = () => {
     };
     loadCourseData();
   }, [params.id, fetchCourse]);
+=======
+    fetchCourse(params.id);
+  }, []);
+
+  const joinHandler = async (courseId) => {
+    try {
+      const token = localStorage.getItem("token");
+  
+      const response = await axios.post(
+        `${server}/api/course/join/${courseId}`,
+        {},
+        {
+          headers: {
+            token,
+          },
+        }
+      );
+  
+      console.log(response.data.message);
+      toast.success("Successfully joined the course!");
+      navigate(`/course/study/${course._id}`);
+    } catch (error) {
+      console.error("Error joining course:", error.response?.data?.message || error.message);
+      toast.error(error.response?.data?.message || "An error occurred");
+    }
+  };
+>>>>>>> 4901461b30b6e73d6fc2265cbf75d097e213437b
 
   return (
     <>
@@ -275,9 +303,27 @@ const CourseDescription = () => {
               </div>
             )}
 
+<<<<<<< HEAD
             {successMessage && <div className="success-message">{successMessage}</div>}
           </div>
         )
+=======
+              {user && user.subscription.includes(course._id) ? (
+                <button
+                  onClick={() => navigate(`/course/study/${course._id}`)}
+                  className="common-btn"
+                >
+                  Study
+                </button>
+              ) : (
+                <button onClick={() => joinHandler(course._id)} className="common-btn">
+                  Join Course
+                </button>
+              )}
+            </div>
+          )}
+        </>
+>>>>>>> 4901461b30b6e73d6fc2265cbf75d097e213437b
       )}
     </>
   );

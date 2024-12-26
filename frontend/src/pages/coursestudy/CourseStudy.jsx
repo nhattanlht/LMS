@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 
 const CourseStudy = () => {
-  const [role, setRole] = useState('L'); 
+  const [role, setRole] = useState('A'); 
   const params = useParams();
   const [loading, setLoading] = useState(true);
   const { fetchCourse, course } = CourseData();
