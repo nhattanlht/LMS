@@ -115,6 +115,7 @@ export const updateAssignment = TryCatch(async (req, res) => {
   const updateData = {
     title: req.body.title,
     description: req.body.description,
+    startDate: req.body.dueDate,
     dueDate: req.body.dueDate,
   };
 
