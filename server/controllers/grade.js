@@ -135,6 +135,7 @@ export const getGrades = TryCatch(async (req, res) => {
 export const updateGrade = TryCatch(async (req, res) => {
   const { gradeId } = req.params;
   const { grade, coefficient } = req.body;
+  const { activityId } = req.query;
 
   const user = await User.findById(req.user._id);
   if (!user) {
@@ -152,13 +153,14 @@ export const updateGrade = TryCatch(async (req, res) => {
     });
   }
 
-  const activityId = gradeToUpdate.activity_id;
+  // const activityId = gradeToUpdate.activity_id;
 
   // Nếu là giảng viên, kiểm tra giảng viên có dạy môn học có activity_id đó không
   if (user.role === 'lecturer') {
     // Tìm course_id từ activity_id trong Course_Has_Activities
     const courseActivity = await CourseHasActivities.findOne({ 'activities.activity_id': activityId });
     if (!courseActivity) {
+      console.log('Activity ID:', activityId);
       return res.status(404).json({
         success: false,
         message: 'Activity not found in any course'
