@@ -1,6 +1,6 @@
 import express from "express";
 const router = express.Router();
-import { isAuth, isLecturer, isStudent } from "../middlewares/isAuth.js";
+import { isAuth, isLecturer, isLecturerOrStudent, isStudent } from "../middlewares/isAuth.js";
 import {
   createGrade,
   getGrades,
@@ -14,6 +14,6 @@ router.put('/grades/:gradeId', isAuth, isLecturer, updateGrade);
 router.delete('/grades/:gradeId', isAuth, isLecturer, deleteGrade);
 
 // Route cho sinh viên và giáo viên
-router.get('/grades', isAuth, getGrades);
+router.get('/grades', isAuth, isLecturerOrStudent, getGrades);
 
 export default router;

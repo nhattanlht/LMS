@@ -17,7 +17,6 @@ const schema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['student', 'lecturer', 'admin'],
       default: "user",
     },
     mainrole: {
@@ -42,6 +41,7 @@ const schema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    collection: "users",
   }
 );
 schema.methods.isLocked = function() {
