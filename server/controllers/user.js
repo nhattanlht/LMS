@@ -300,14 +300,14 @@ export const markAsRead = async (req, res) => {
   }
 };
 
-// reset password dev
-async function resetPasswordtest(userId, newPassword) {
-  const hashedPassword = await bcrypt.hash(newPassword, 10);
+// // reset password dev
+// async function resetPasswordtest(userId, newPassword) {
+//   const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-  // Cập nhật mật khẩu mới trong cơ sở dữ liệu
-  await User.updateOne({ _id: userId }, { password: hashedPassword });
-  console.log("Mật khẩu đã được đặt lại thành công!");
-}
+//   // Cập nhật mật khẩu mới trong cơ sở dữ liệu
+//   await User.updateOne({ _id: userId }, { password: hashedPassword });
+//   console.log("Mật khẩu đã được đặt lại thành công!");
+// }
 
-// Gọi hàm với mật khẩu mới
-resetPasswordtest("676d55e77c09b2e53e79bddf", "newplaintextpassword");
+// // Gọi hàm với mật khẩu mới
+// resetPasswordtest("676d55e77c09b2e53e79bddf", "newplaintextpassword");
