@@ -2,8 +2,8 @@ import mongoose from 'mongoose';
 
 const GradeSchema = new mongoose.Schema({
   student_id: {
-    type: String,
-    ref: 'users',
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
     required: true,
   },
   activity_id: {
