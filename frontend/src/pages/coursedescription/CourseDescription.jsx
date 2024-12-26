@@ -4,6 +4,8 @@ import { CourseData } from "../../context/CourseContext";
 import { server } from "../../main";
 import Loading from "../../components/loading/Loading";
 import "./coursedescription.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit, faTrash, faDownload } from "@fortawesome/free-solid-svg-icons";
 
 const CourseDescription = () => {
   const [role, setRole] = useState(localStorage.getItem('userRole') || 'L'); // Lấy vai trò người dùng từ localStorage
