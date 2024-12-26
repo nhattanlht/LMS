@@ -153,8 +153,6 @@ export const updateGrade = TryCatch(async (req, res) => {
     });
   }
 
-  // const activityId = gradeToUpdate.activity_id;
-
   // Nếu là giảng viên, kiểm tra giảng viên có dạy môn học có activity_id đó không
   if (user.role === 'lecturer') {
     // Tìm course_id từ activity_id trong Course_Has_Activities
@@ -203,7 +201,55 @@ export const updateGrade = TryCatch(async (req, res) => {
 // Xóa điểm số
 export const deleteGrade = TryCatch(async (req, res) => {
   const { gradeId } = req.params;
+  const { activityId } = req.query;
 
+  const user = await User.findById(req.user._id);
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: 'User not found'
+    });
+  }
+
+  const gradeToUpdate = await Grade.findById(gradeId);
+  if (!gradeToUpdate) {
+    return res.status(404).json({
+      success: false,
+      message: 'Grade not found'
+    });
+  }
+
+  // Nếu là giảng viên, kiểm tra giảng viên có dạy môn học có activity_id đó không
+  if (user.role === 'lecturer') {
+    // Tìm course_id từ activity_id trong Course_Has_Activities
+    const courseActivity = await CourseHasActivities.findOne({ 'activities.activity_id': activityId });
+    if (!courseActivity) {
+      return res.status(404).json({
+        success: false,
+        message: 'Activity not found in any course'
+      });
+    }
+
+    // Kiểm tra giảng viên có dạy khóa học này không
+    const enrollment = await Enrollment.findOne({
+      course_id: courseActivity.course_id,
+      'participants.participant_id': user._id,
+      'participants.role': 'lecturer'
+    });
+
+    if (!enrollment) {
+      return res.status(403).json({
+        success: false,
+        message: 'You are not authorized to delete grades for this activity'
+      });
+    }
+  } else {
+    return res.status(403).json({
+      success: false,
+      message: 'Only lecturers can delete grades'
+    });
+  }
+  
   await Grade.findByIdAndDelete(gradeId);
 
   res.status(200).json({
