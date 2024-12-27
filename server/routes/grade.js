@@ -6,6 +6,7 @@ import {
   getGrades,
   updateGrade,
   deleteGrade,
+  getAllGradesForCourse,
 } from "../controllers/grade.js";
 
 // Route cho giáo viên
@@ -15,5 +16,6 @@ router.delete('/grades/:gradeId', isAuth, isLecturer, deleteGrade);
 
 // Route cho sinh viên và giáo viên
 router.get('/grades', isAuth, isLecturerOrStudent, getGrades);
+router.get('/grades/courses', isAuth, isLecturerOrStudent, getAllGradesForCourse);
 
 export default router;
