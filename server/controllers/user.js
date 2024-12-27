@@ -79,11 +79,11 @@ export const verifyUser = TryCatch(async (req, res) => {
 export const loginUser = TryCatch(async (req, res) => {
   const { email, password } = req.body;
 
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }).select("+password");
 
   if (!user)
     return res.status(400).json({
-      message: "No User with this email",
+      message: "Invalid Email or Password",
     });
 
   const mathPassword = await bcrypt.compare(password, user.password);
