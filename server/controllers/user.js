@@ -4,9 +4,25 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import sendMail, { sendForgotMail, sendNotificationMail } from "../middlewares/sendMail.js";
 import TryCatch from "../middlewares/TryCatch.js";
+import { validate, registerValidation } from "../middlewares/validateInput.js";
+import { validationResult } from "express-validator";
 
-export const register = TryCatch(async (req, res) => {
-  const { email, name, password, confirmPassword, role } = req.body;
+export const register = [
+  // Thêm các quy tắc validation
+  ...registerValidation, validate,
+
+  // Middleware để kiểm tra kết quả validation
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    next();
+  },
+
+  // Controller logic
+  TryCatch(async (req, res) => {
+    const { email, name, password, confirmPassword, role } = req.body;
 
   if (password !== confirmPassword) {
     return res.status(400).json({
@@ -60,7 +76,8 @@ export const register = TryCatch(async (req, res) => {
     message: "OTP sent to your mail. Please check your mail",
     activationToken,
   });
-});
+})
+];
 
 export const verifyUser = TryCatch(async (req, res) => {
   const { otp, activationToken } = req.body;
