@@ -234,14 +234,14 @@ export const forgotPassword = TryCatch(async (req, res) => {
 
   const data = { email, token };
 
-  await sendForgotMail("E learning", data);
+  await sendForgotMail("E learning System", data);
 
   user.resetPasswordExpire = Date.now() + 5 * 60 * 1000;
 
   await user.save();
 
   res.json({
-    message: "Reset password link is send to you mail",
+    message: "Reset password link is sent to you mail",
   });
 });
 
