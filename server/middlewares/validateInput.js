@@ -3,9 +3,10 @@ import { body, validationResult } from 'express-validator';
 // Validation for registration
 export const registerValidation = [
     body('name')
-      .trim()
-      .isLength({ min: 2 }).withMessage('Name must be at least 2 characters long')
-      .matches(/^[a-zA-Z\s]+$/).withMessage('Name can only contain letters and spaces'),
+    .trim()
+    .isLength({ min: 2 }).withMessage('Name must be at least 2 characters long')
+    .matches(/^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+$/)
+    .withMessage('Name can only contain Vietnamese or English letters and spaces'),
     
     body('email')
       .trim()

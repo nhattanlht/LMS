@@ -16,98 +16,63 @@ const sendMail = async (email, subject, data) => {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OTP Verification - E-Learning Website</title>
-    <style>
-        /* Root variables for easy color management */
-        :root {
-            --primary-color: #5a2d82;
-            --secondary-color: #333;
-            --text-color: #666;
-            --bg-color: #f4f4f4;
-            --white-color: #fff;
-            --shadow-color: rgba(0, 0, 0, 0.1);
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        .container {
-            background-color: var(--white-color);
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px var(--shadow-color);
-            text-align: center;
-            max-width: 500px;
-            width: 100%;
-        }
-
-        h1 {
-            color: var(--secondary-color);
-            margin-bottom: 20px;
-            font-size: 24px;
-        }
-
-        p {
-            margin-bottom: 20px;
-            color: var(--text-color);
-            line-height: 1.6;
-        }
-
-        .otp {
-            font-size: 36px;
-            color: var(--primary-color);
-            margin-bottom: 30px;
-            font-weight: bold;
-        }
-
-        .footer {
-            margin-top: 30px;
-            font-size: 12px;
-            color: var(--text-color);
-        }
-
-        .button {
-            display: inline-block;
-            padding: 10px 20px;
-            font-size: 16px;
-            color: var(--white-color);
-            background-color: var(--primary-color);
-            border-radius: 5px;
-            text-decoration: none;
-            margin-top: 20px;
-            transition: background-color 0.3s;
-        }
-
-        .button:hover {
-            background-color: #45a049;
-        }
-    </style>
 </head>
-<body>
-    <div class="container">
-        <h1>OTP Verification</h1>
-        <h1>E-Learning Website</h1>
-        <p>Hello <strong>${data.name}</strong>,</p>
-        <p>Your One-Time Password (OTP) for account verification is:</p>
-        <p class="otp">${data.otp}</p>
-        <a href="#" class="button" aria-label="Verify OTP">Verify Now</a>
-        <footer class="footer">
-            <p>If you did not request this OTP, please ignore this email.</p>
-            <p>Thank you,</p>
-            <p>LMS - Group 03 - Intro2SE CSC13002 CQ2022/1</p>
-        </footer>
-    </div>
+<body style="margin: 0; padding: 0; background-color: #f4f4f4; font-family: Arial, sans-serif;">
+
+    <!-- Email Wrapper -->
+    <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #f4f4f4; padding: 20px 0;">
+        <tr>
+            <td align="center">
+
+                <!-- Container -->
+                <table cellpadding="0" cellspacing="0" border="0" width="600" style="background-color: #fff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                    <tr>
+                        <td style="padding: 40px; text-align: center;">
+
+                            <!-- Title -->
+                            <h1 style="color: #333; margin-bottom: 10px; font-size: 24px; font-weight: bold;">OTP Verification</h1>
+                            <h2 style="color: #5a2d82; margin-top: 0; font-size: 18px; font-weight: normal;">E-Learning Website</h2>
+
+                            <!-- Greeting -->
+                            <p style="color: #666; font-size: 16px; line-height: 1.6; margin: 20px 0;">
+                                Hello <strong>${data.name}</strong>,
+                            </p>
+                            <p style="color: #666; font-size: 16px; line-height: 1.6; margin: 20px 0;">
+                                Your One-Time Password (OTP) for account verification is:
+                            </p>
+
+                            <!-- OTP Code -->
+                            <p style="font-size: 36px; color: #5a2d82; font-weight: bold; margin: 30px 0;">
+                                ${data.otp}
+                            </p>
+
+                            <!-- Button -->
+                            <a href="#" style="display: inline-block; padding: 10px 20px; font-size: 16px; color: #fff; background-color: #5a2d82; border-radius: 5px; text-decoration: none;">
+                                Verify Now
+                            </a>
+
+                            <!-- Footer -->
+                            <p style="color: #999; font-size: 12px; line-height: 1.6; margin-top: 40px;">
+                                If you did not request this OTP, please ignore this email.
+                            </p>
+                            <p style="color: #999; font-size: 12px; line-height: 1.6; margin-top: 5px;">
+                                Thank you,<br>
+                                LMS - Group 03 - Intro2SE CSC13002 CQ2022/1
+                            </p>
+
+                        </td>
+                    </tr>
+                </table>
+                <!-- End Container -->
+
+            </td>
+        </tr>
+    </table>
+    <!-- End Wrapper -->
+
 </body>
 </html>
-
-  `;
+`;
 
   await transport.sendMail({
     from: process.env.Gmail,
@@ -135,99 +100,63 @@ export const sendForgotMail = async (subject, data) => {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reset Your Password</title>
-  <style>
-    /* CSS Variables for better maintainability */
-    :root {
-      --primary-color: #5a2d82;
-      --text-color: #666666;
-      --bg-color: #f3f3f3;
-      --white-color: #ffffff;
-      --shadow-color: rgba(0, 0, 0, 0.1);
-      --footer-text-color: #999999;
-      --font-family: Arial, sans-serif;
-    }
-
-    body {
-      font-family: var(--font-family);
-      background-color: var(--bg-color);
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
-
-    .container {
-      background-color: var(--white-color);
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px var(--shadow-color);
-      max-width: 600px;
-      width: 100%;
-      text-align: center;
-    }
-
-    h1 {
-      color: var(--primary-color);
-      margin-bottom: 20px;
-      font-size: 24px;
-    }
-
-    p {
-      color: var(--text-color);
-      margin-bottom: 20px;
-      line-height: 1.6;
-    }
-
-    .button {
-      display: inline-block;
-      padding: 15px 30px;
-      background-color: var(--primary-color);
-      color: var(--white-color);
-      text-decoration: none;
-      border-radius: 6px;
-      font-size: 16px;
-      font-weight: bold;
-      transition: background-color 0.3s ease;
-    }
-
-    .button:hover {
-      background-color: #482064;
-    }
-
-    .footer {
-      margin-top: 30px;
-      color: var(--footer-text-color);
-      font-size: 14px;
-      text-align: center;
-    }
-
-    .footer a {
-      color: var(--primary-color);
-      text-decoration: none;
-    }
-
-    .footer a:hover {
-      text-decoration: underline;
-    }
-  </style>
 </head>
-<body>
-  <main class="container">
-    <h1>Reset Your Password</h1>
-    <p>Hello,</p>
-    <p>You have requested to reset your password. Please click the button below to proceed with resetting your password.</p>
-    <a href="${process.env.frontendurl}/reset-password/${data.token}" class="button" aria-label="Reset your password">Reset Password</a>
-    <p>If you did not request this, please ignore this email.</p>
-    <footer class="footer">
-      <p>Thank you,<br>LMS - Group 03 - Intro2SE CSC13002 CQ2022/1</p>
-      <p><a href="https://yourwebsite.com">yourwebsite.com</a></p>
-    </footer>
-  </main>
+<body style="margin: 0; padding: 0; background-color: #f3f3f3; font-family: Arial, sans-serif;">
+  <!-- Email Wrapper -->
+  <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #f3f3f3; padding: 20px 0;">
+    <tr>
+      <td align="center">
+
+        <!-- Container -->
+        <table cellpadding="0" cellspacing="0" border="0" width="600" style="background-color: #ffffff; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+          <tr>
+            <td style="padding: 30px; text-align: center;">
+
+              <!-- Title -->
+              <h1 style="color: #5a2d82; margin-bottom: 20px; font-size: 24px;">Reset Your Password</h1>
+
+              <!-- Greeting -->
+              <p style="color: #666666; margin-bottom: 20px; font-size: 16px; line-height: 1.6;">Hello <strong>${data.name}</strong>,</p>
+
+              <!-- Message -->
+              <p style="color: #666666; margin-bottom: 20px; font-size: 16px; line-height: 1.6;">
+                You have requested to reset your password. Please click the button below to proceed with resetting your password.
+              </p>
+
+              <!-- Button -->
+              <a href="${process.env.frontendurl}/reset-password/${data.token}" 
+                style="display: inline-block; padding: 15px 30px; background-color: #5a2d82; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">
+                Reset Password
+              </a>
+
+              <!-- Additional Info -->
+              <p style="color: #666666; margin-top: 30px; font-size: 14px; line-height: 1.6;">
+                If you did not request this, please ignore this email.
+              </p>
+
+            </td>
+          </tr>
+        </table>
+
+        <!-- Footer -->
+        <table cellpadding="0" cellspacing="0" border="0" width="600" style="margin-top: 20px;">
+          <tr>
+            <td align="center" style="color: #999999; font-size: 14px; text-align: center; padding: 10px;">
+              <p style="margin: 0;">Thank you,<br>LMS - Group 03 - Intro2SE CSC13002 CQ2022/1</p>
+              <p style="margin: 0;">
+                <a href="https://yourwebsite.com" style="color: #5a2d82; text-decoration: none;">yourwebsite.com</a>
+              </p>
+            </td>
+          </tr>
+        </table>
+        <!-- End Footer -->
+
+      </td>
+    </tr>
+  </table>
+  <!-- End Wrapper -->
 </body>
 </html>
-
 `;
 
   await transport.sendMail({

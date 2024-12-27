@@ -22,7 +22,7 @@ export const register = [
 
   // Controller logic
   TryCatch(async (req, res) => {
-    const { email, name, password, confirmPassword, role } = req.body;
+    const { email, name, password, confirmPassword, role, profile } = req.body;
 
   if (password !== confirmPassword) {
     return res.status(400).json({
@@ -49,6 +49,19 @@ export const register = [
     name,
     email,
     password: hashPassword,
+    role: role,
+    profile: {
+      firstName: profile.firstName,
+      lastName: profile.lastName,
+      phoneNumber: profile.phoneNumber,
+      dateOfBirth: profile.dateOfBirth,
+      gender: profile.gender,
+      address: profile.address,
+      levelEducation: profile.levelEducation,
+      typeEducation: profile.typeEducation,
+      major: profile.major,
+      faculty: profile.faculty,
+    }
   };
 
   // const otp = Math.floor(Math.random() * 1000000);
@@ -56,7 +69,7 @@ export const register = [
 
   const activationToken = jwt.sign(
     { 
-      user: { name, email, password: hashPassword }, 
+      user: { name, email, password: hashPassword, role, profile }, 
       otp 
     },
     process.env.Activation_Secret,
@@ -94,11 +107,26 @@ export const verifyUser = TryCatch(async (req, res) => {
       message: "Wrong OTP",
     });
 
-  await User.create({
-    name: verify.user.name,
-    email: verify.user.email,
-    password: verify.user.password,
-  });
+    const userProfile = verify.user.profile || {};
+
+    await User.create({
+      name: verify.user.name,
+      email: verify.user.email,
+      password: verify.user.password,
+      role: verify.user.role,
+      profile: {
+        firstName: userProfile.firstName || "",
+        lastName: userProfile.lastName || "",
+        phoneNumber: userProfile.phoneNumber || "",
+        dateOfBirth: userProfile.dateOfBirth,
+        gender: userProfile.gender || "",
+        address: userProfile.address || "",
+        levelEducation: userProfile.levelEducation || "",
+        typeEducation: userProfile.typeEducation || "",
+        major: userProfile.major || "",
+        faculty: userProfile.faculty || "",
+      }
+    });
 
   res.json({
     message: "User registered successfully",
@@ -106,13 +134,13 @@ export const verifyUser = TryCatch(async (req, res) => {
 });
 
 export const loginUser = TryCatch(async (req, res) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
 
-  const user = await User.findOne({ email });
+  let user = await User.findOne({ $or: [{ email: username }, { name: username }] });
 
   if (!user)
     return res.status(400).json({
-      message: "No user with this email",
+      message: "User not found",
     });
 
   const matchPassword = await bcrypt.compare(password, user.password);
