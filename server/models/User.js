@@ -32,14 +32,13 @@ const schema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["admin", "student", "lecturer"],
-      default: "user",
-      enum: ["user", "admin"],
+      default: "student",
+      enum: ["admin", "student", "lecturer", "superadmin"],
     },
     mainrole: {
       type: String,
-      default: "student",
-      enum: ["lecturer", "student", "admin", "superadmin"],
+      default: "user",
+      enum: ["user", "admin"],
     },
     subscription: [
       {
