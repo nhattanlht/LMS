@@ -13,7 +13,6 @@ import { UserData } from "./context/UserContext";
 import Loading from "./components/loading/Loading";
 import Courses from "./pages/courses/Courses";
 import CourseDescription from "./pages/coursedescription/CourseDescription";
-import PaymentSuccess from "./pages/paymentsuccess/PaymentSuccess";
 import Dashbord from "./pages/dashbord/Dashbord";
 import CourseStudy from "./pages/coursestudy/CourseStudy";
 import Lecture from "./pages/lecture/Lecture";
@@ -57,10 +56,6 @@ const App = () => {
             <Route
               path="/course/:id"
               element={isAuth ? <CourseDescription user={user} /> : <Login />}
-            />
-            <Route
-              path="/payment-success/:id"
-              element={isAuth ? <PaymentSuccess user={user} /> : <Login />}
             />
             <Route
               path="/:id/dashboard"
