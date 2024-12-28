@@ -8,6 +8,7 @@ import fs from "fs";
 import { User } from "../models/User.js";
 import { handleUpload } from "../config/cloudinary2.js";
 import { sendNotificationMail } from "../middlewares/sendMail.js";
+import { getReceiverSocketId, io } from "../config/socket.js";
 
 export const createCourse = TryCatch(async (req, res) => {
   const { title, description, startTime, endTime, duration, category } = req.body;
@@ -317,6 +318,19 @@ export const sendNotification = TryCatch(async (req, res) => {
     data = {sender, recipientEmails, message};
   }
   await sendNotificationMail(subject, data);
+
+  // // Notify users via socket
+  // recipientIds.forEach((recipientId) => {
+  //   const recipientSocketId = getReceiverSocketId(recipientId);
+  //   if (recipientSocketId) {
+  //     io.to(recipientSocketId).emit("newNotification", {
+  //       notificationId: notification._id,
+  //       subject,
+  //       message,
+  //       createdAt: notification.createdAt,
+  //     });
+  //   }
+  // });
 
   res.status(201).json({
     message: 'Notification created successfully.',
