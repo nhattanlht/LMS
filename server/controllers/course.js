@@ -4,6 +4,7 @@ import { Courses } from "../models/Courses.js";
 import { Lecture } from "../models/Lecture.js";
 import { User } from "../models/User.js";
 import { Progress } from "../models/Progress.js";
+import mongoose from "mongoose";
 
 export const getAllCourses = TryCatch(async (req, res) => {
   const courses = await Courses.find();
@@ -18,6 +19,61 @@ export const getSingleCourse = TryCatch(async (req, res) => {
   res.json({
     course,
   });
+});
+
+export const getCourseByName = TryCatch(async (req, res) => {
+  const { name } = req.query;
+  const courses = await Courses.find({
+    $or: [
+      { title: { $regex: name, $options: "i" } },
+      { description: { $regex: name, $options: "i" } },
+    ],
+  });
+  if (courses.length === 0) {
+    return res.status(404).json({ message: "No courses found" });
+  }
+
+  res.status(200).json({ courses });
+});
+
+export const joinCourse = TryCatch(async (req, res) => {
+
+  const { courseId } = req.params; // Course ID from URL
+  const userId = req.user.id; // Authenticated student's ID
+  
+  if (!mongoose.Types.ObjectId.isValid(courseId)) {
+    return res.status(400).json({ message: "Invalid Course ID" });
+  }
+
+  // Find the user (student) and the course
+  const student = await User.findById(userId);
+  const course = await Courses.findById(courseId);
+
+  if (!student) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  if (!course) {
+    return res.status(404).json({ message: "Course not found" });
+  }
+
+  // Check if the student has already joined the course
+  if (student.subscription.includes(courseId)) {
+    return res.status(400).json({ message: "You have already joined this course" });
+  }
+
+  // Add course to the student's subscription array
+  student.subscription.push(courseId);
+  await student.save();
+
+  // Optionally: Add student to the course's enrolled students
+  if (!course.attenders) {
+    course.attenders = [];
+  }
+  course.attenders.push(userId);
+  await course.save();
+
+  return res.status(200).json({ message: "Successfully joined the course", student });
 });
 
 export const fetchLectures = TryCatch(async (req, res) => {
@@ -59,30 +115,6 @@ export const getMyCourses = TryCatch(async (req, res) => {
 
   res.json({
     courses,
-  });
-});
-
-export const checkout = TryCatch(async (req, res) => {
-  const user = await User.findById(req.user._id);
-
-  const course = await Courses.findById(req.params.id);
-
-  if (user.subscription.includes(course._id)) {
-    return res.status(400).json({
-      message: "You already have this course",
-    });
-  }
-
-  const options = {
-    amount: Number(course.price * 100),
-    currency: "INR",
-  };
-
-  const order = await instance.orders.create(options);
-
-  res.status(201).json({
-    order,
-    course,
   });
 });
 

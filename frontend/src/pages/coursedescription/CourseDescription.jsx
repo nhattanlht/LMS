@@ -20,6 +20,32 @@ const CourseDescription = ({ user }) => {
     fetchCourse(params.id);
   }, []);
 
+<<<<<<< HEAD
+=======
+  const joinHandler = async (courseId) => {
+    try {
+      const token = localStorage.getItem("token");
+  
+      const response = await axios.post(
+        `${server}/api/course/join/${courseId}`,
+        {},
+        {
+          headers: {
+            token,
+          },
+        }
+      );
+  
+      console.log(response.data.message);
+      toast.success("Successfully joined the course!");
+      navigate(`/course/study/${course._id}`);
+    } catch (error) {
+      console.error("Error joining course:", error.response?.data?.message || error.message);
+      toast.error(error.response?.data?.message || "An error occurred");
+    }
+  };
+
+>>>>>>> 8bf06f39ca953e15a33fcf0be6478b1991aa9e9e
   return (
     <>
       {loading ? (
@@ -43,8 +69,6 @@ const CourseDescription = ({ user }) => {
 
               <p>{course.description}</p>
 
-              <p>Let's get started with course At ₹{course.price}</p>
-
               {user && user.subscription.includes(course._id) ? (
                 <button
                   onClick={() => navigate(`/course/study/${course._id}`)}
@@ -53,8 +77,8 @@ const CourseDescription = ({ user }) => {
                   Study
                 </button>
               ) : (
-                <button onClick={checkoutHandler} className="common-btn">
-                  Buy Now
+                <button onClick={() => joinHandler(course._id)} className="common-btn">
+                  Join Course
                 </button>
               )}
             </div>

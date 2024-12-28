@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { server } from "../main";
 import toast, { Toaster } from "react-hot-toast";
+import moment from "moment";
 
 const UserContext = createContext();
 
@@ -78,6 +79,12 @@ export const UserContextProvider = ({ children }) => {
           token: localStorage.getItem("token"),
         },
       });
+
+      const formattedDate = data.user.profile.dateOfBirth
+      ? moment(data.user.profile.dateOfBirth).format("yyyy-MM-DD")
+      : null;
+
+      data.user.profile.dateOfBirth = formattedDate;
 
       setIsAuth(true);
       setUser(data.user);

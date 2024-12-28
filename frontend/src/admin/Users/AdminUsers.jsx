@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 const AdminUsers = ({ user }) => {
   const navigate = useNavigate();
 
-  if (user && user.mainrole !== "superadmin") return navigate("/");
+  if (user && user.role !== "superadmin") return navigate("/");
 
   const [users, setUsers] = useState([]);
 

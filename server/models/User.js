@@ -15,14 +15,31 @@ const schema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    profile: {
+      type: {
+        firstName: { type: String, default: "" },
+        lastName: { type: String, default: "" },
+        phoneNumber: { type: String, default: "" },
+        dateOfBirth: { type: Date },
+        gender: { type: String, default: "" },
+        address: { type: String, default: "" },
+        levelEducation: String,
+        typeEducation: String,
+        major: String,
+        faculty: String,
+      },
+      default: {}, // Default to an empty object
+    },
     role: {
       type: String,
       enum: ["admin", "student", "lecturer"],
       default: "user",
+      enum: ["user", "admin"],
     },
     mainrole: {
       type: String,
-      default: "user",
+      default: "student",
+      enum: ["lecturer", "student", "admin", "superadmin"],
     },
     subscription: [
       {

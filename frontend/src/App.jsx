@@ -32,7 +32,7 @@ const App = () => {
         <BrowserRouter>
           <Header isAuth={isAuth} />
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={ isAuth ? <Dashbord user={user}/> :<Home />} />
             <Route path="/about" element={<About />} />
             <Route path="/courses" element={<Courses />} />
             <Route
