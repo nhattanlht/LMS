@@ -3,16 +3,16 @@ const router = express.Router();
 import { isAuth } from "../middlewares/isAuth.js";
 import {
     createForum,
-    createThread,
-    createPost,
+    createQuestion,
+    createAnswer,
     getForums,
-    getThreads,
-    getPosts,
+    getQuestions,
+    getAnswers,
 } from "../controllers/forum.js";            
 router.post('/forums', isAuth, createForum);
-router.post('/threads', isAuth, createThread);
-router.post('/posts', isAuth, createPost);
+router.post('/forums/question', isAuth, createQuestion);
+router.post('/forums/answer', isAuth, createAnswer);
 router.get('/forums', isAuth, getForums);
-router.get('/threads/:forumId', isAuth, getThreads);
-router.get('/posts/:threadId', isAuth, getPosts);
+router.get('/forums/:questionId', isAuth, getQuestions);
+router.get('/posts/:threadId', isAuth, getAnswers);
 export default router;
