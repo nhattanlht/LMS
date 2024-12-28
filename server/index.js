@@ -29,31 +29,25 @@ app.get("/", (req, res) => {
 import userRoutes from "./routes/user.js";
 import courseRoutes from "./routes/course.js";
 import adminRoutes from "./routes/admin.js";
-<<<<<<< HEAD
 import forumRoutes from "./routes/forum.js";
 import gradeRoutes from "./routes/grade.js";
-=======
 import asssignmentRoutes from "./routes/assignment.js";
 import messageRoutes from "./routes/message.js";
 import resourceRoutes from "./routes/resources.js";
 
->>>>>>> 8bf06f39ca953e15a33fcf0be6478b1991aa9e9e
 
 // using routes
 app.use("/api", userRoutes);
 app.use("/api", courseRoutes);
 app.use("/api", adminRoutes);
-<<<<<<< HEAD
 app.use("/api", forumRoutes);
 app.use("/api", gradeRoutes);
-=======
 app.use("/api", asssignmentRoutes);
 app.use("/api", messageRoutes);
 app.use("/api", resourceRoutes);
 
 
 
->>>>>>> 8bf06f39ca953e15a33fcf0be6478b1991aa9e9e
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
