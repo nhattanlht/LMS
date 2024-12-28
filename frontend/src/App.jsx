@@ -12,10 +12,12 @@ import Account from "./pages/account/Account";
 import { UserData } from "./context/UserContext";
 import Loading from "./components/loading/Loading";
 import Courses from "./pages/courses/Courses";
-import CourseDescription from "./pages/coursedescription/CourseDescription";
 import PaymentSuccess from "./pages/paymentsuccess/PaymentSuccess";
 import Dashbord from "./pages/dashbord/Dashbord";
 import CourseStudy from "./pages/coursestudy/CourseStudy";
+import CourseNotStudy from "./pages/coursenotstudy/CourseNotStudy";
+import Search from "./pages/search/Search";
+
 import Lecture from "./pages/lecture/Lecture";
 import AdminDashbord from "./admin/Dashboard/AdminDashbord";
 import AdminCourses from "./admin/Courses/AdminCourses";
@@ -35,7 +37,6 @@ const App = () => {
           <Routes>
             <Route path="/" element={ isAuth ? <Dashbord user={user}/> :<Home />} />
             <Route path="/about" element={<About />} />
-            <Route path="/courses" element={<Courses />} />
             <Route
               path="/account"
               element={isAuth ? <Account user={user} /> : <Login />}
@@ -54,10 +55,7 @@ const App = () => {
               path="/reset-password/:token"
               element={isAuth ? <Home /> : <ResetPassword />}
             />
-            <Route
-              path="/course/:id"
-              element={isAuth ? <CourseDescription user={user} /> : <Login />}
-            />
+           
             <Route
               path="/payment-success/:id"
               element={isAuth ? <PaymentSuccess user={user} /> : <Login />}
@@ -66,15 +64,29 @@ const App = () => {
               path="/:id/dashboard"
               element={isAuth ? <Dashbord user={user} /> : <Login />}
             />
+
+             <Route path="/courses" element={<Courses />} />
+
+             <Route
+              path="/course/:id/not-subscribed"
+              //element={isAuth ? <CourseDescription user={user} /> : <Login />}
+              element={<CourseNotStudy />}
+            />
+            
             <Route
               path="/course/study/:id"
-              element={isAuth ? <CourseStudy user={user} /> : <Login />}
+              //element={isAuth ? <CourseStudy user={user} /> : <Login />}
+              element={ <CourseStudy /> }
             />
 
             <Route
               path="/lectures/:id"
               element={isAuth ? <Lecture user={user} /> : <Login />}
             />
+
+          
+              <Route path="/search" element={<Search />} />
+             
 
             <Route
               path="/admin/dashboard"
