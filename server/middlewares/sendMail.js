@@ -168,60 +168,74 @@ export const sendNotificationMail = async (subject, data) => {
     <style>
       body {
         font-family: Arial, sans-serif;
-        background-color: #f9f9f9;
+        background-color: #f3f4f6;
         margin: 0;
         padding: 0;
       }
       .container {
         background-color: #ffffff;
         padding: 20px;
-        margin: 20px auto;
-        border-radius: 8px;
+        margin: 40px auto;
+        border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         max-width: 600px;
       }
       h1 {
-        color: #333;
+        color: #7b68ee;
+        font-size: 24px;
+        text-align: center;
       }
       p {
-        color: #666;
+        color: #555;
         line-height: 1.6;
+        font-size: 16px;
+        margin-bottom: 20px;
       }
       .button {
         display: inline-block;
-        padding: 10px 20px;
-        margin: 20px 0;
-        background-color: #007BFF;
+        padding: 12px 20px;
+        background-color: #7b68ee;
         color: white;
         text-decoration: none;
-        border-radius: 4px;
+        border-radius: 5px;
         font-size: 16px;
+        text-align: center;
+        margin: 20px auto;
+        display: block;
       }
       .footer {
         margin-top: 20px;
         color: #999;
         text-align: center;
         font-size: 14px;
+        line-height: 1.4;
       }
       .footer a {
-        color: #007BFF;
+        color: #7b68ee;
         text-decoration: none;
+      }
+      .footer a:hover {
+        text-decoration: underline;
       }
     </style>
   </head>
   <body>
     <div class="container">
       <h1>${subject}</h1>
-      <p>Dear ${data.recipientName || 'Leaner'},</p>
+      <p>Dear User,</p>
       <p>${data.message}</p>
+    </div>
+    <div class="footer">
+      <p>Thank you for your attention.</p>
+      <p>For further inquiries, please contact <a href="mailto:${process.env.Gmail}">support</a>.</p>
     </div>
   </body>
   </html>
   `;
   
     await transport.sendMail({
-      from: data.sender,
-      to: data.recipients,
+      from: process.env.Gmail,
+      to: data.recipientEmails,
       subject,
       html,
       ...(data.file && {

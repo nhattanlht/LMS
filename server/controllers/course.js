@@ -164,3 +164,64 @@ export const getYourProgress = TryCatch(async (req, res) => {
     progress,
   });
 });
+
+export const sendNotificationToCourseStudents = TryCatch(async (req, res) => {
+  const { courseId, subject, message } = req.body;
+  const sender = req.user._id;
+  let file = null;
+  if(req.file){
+    const b64 = Buffer.from(req.file.buffer).toString("base64");
+    let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+    const cldRes = await handleUpload(dataURI, "courses");
+    file = {
+      filename: req.file.originalname,
+      path: cldRes.secure_url,
+    };
+  }
+
+  if (!courseId || !subject || !message) {
+    return res.status(400).json({ message: "Course ID, subject, and message are required" });
+  }
+
+  // Find the course and populate the attenders field
+  const course = await Courses.findById(courseId).populate('attenders', 'email _id');
+
+  if (!course) {
+    return res.status(404).json({ message: "Course not found" });
+  }
+
+  // Get all student emails and IDs from the attenders
+  const recipients = course.attenders.map((attender) => ({
+    id: attender._id,
+    email: attender.email,
+  }));
+
+  if (recipients.length === 0) {
+    return res.status(400).json({ message: "No students enrolled in this course" });
+  }
+
+  // Send email notifications
+  const recipientEmails = recipients.map((recipient) => recipient.email);
+
+  let data;
+  if(file){
+    data = {sender, recipientEmails, message, file};
+  }else{
+    data = {sender, recipientEmails, message};
+  }
+  await sendNotificationMail(subject, data);
+
+  const recipientIds = recipients.map((recipient) => recipient.id);
+  const notification = await Notification.create({
+    sender: sender,
+    recipients: recipientIds,
+    subject,
+    message,
+    file: file,
+  });
+
+  res.status(200).json({
+    message: 'Notification created successfully.',
+    notification: notification,
+  });
+});
