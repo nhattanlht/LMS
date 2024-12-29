@@ -20,8 +20,6 @@ const CourseDescription = ({ user }) => {
     fetchCourse(params.id);
   }, []);
 
-<<<<<<< HEAD
-=======
   const joinHandler = async (courseId) => {
     try {
       const token = localStorage.getItem("token");
@@ -45,7 +43,6 @@ const CourseDescription = ({ user }) => {
     }
   };
 
->>>>>>> 8bf06f39ca953e15a33fcf0be6478b1991aa9e9e
   return (
     <>
       {loading ? (
