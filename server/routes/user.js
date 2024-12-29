@@ -10,6 +10,7 @@ import {
   sendNotification,
   updateProfile,
   verifyUser,
+  searchUserByEmail,
 } from "../controllers/user.js";
 import { isAuth, isLecturer } from "../middlewares/isAuth.js";
 import { addProgress, getYourProgress } from "../controllers/course.js";
@@ -28,5 +29,6 @@ router.get("/user/progress", isAuth, getYourProgress);
 router.post("/lecturer/notification", isAuth, isLecturer, sendNotification);
 router.get("/notification/me", isAuth, getNotification);
 router.post('/notification/mark-as-read', isAuth, markAsRead);
+router.get("/user/search", isAuth, searchUserByEmail);
 
 export default router;
