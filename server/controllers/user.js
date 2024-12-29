@@ -296,6 +296,20 @@ export const markAsRead = async (req, res) => {
   }
 };
 
+export const searchUserByEmail = async (req, res) => {
+  const { email } = req.query;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User  not found" });
+    }
+    res.json({ user });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 // // reset password dev
 // async function resetPasswordtest(userId, newPassword) {
 //   const hashedPassword = await bcrypt.hash(newPassword, 10);
