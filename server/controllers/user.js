@@ -2,136 +2,136 @@ import { User } from "../models/User.js";
 import { Notification } from "../models/Notification.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import sendMail, { sendForgotMail, sendNotificationMail } from "../middlewares/sendMail.js";
+import { sendForgotMail, sendNotificationMail } from "../middlewares/sendMail.js";
 import TryCatch from "../middlewares/TryCatch.js";
-import { validate, registerValidation } from "../middlewares/validateInput.js";
-import { validationResult } from "express-validator";
+// import { validate, registerValidation } from "../middlewares/validateInput.js";
+// import { validationResult } from "express-validator";
 
-export const register = [
-  // Thêm các quy tắc validation
-  ...registerValidation, validate,
+// export const register = [
+//   // Thêm các quy tắc validation
+//   ...registerValidation, validate,
 
-  // Middleware để kiểm tra kết quả validation
-  (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-    next();
-  },
+//   // Middleware để kiểm tra kết quả validation
+//   (req, res, next) => {
+//     const errors = validationResult(req);
+//     if (!errors.isEmpty()) {
+//       return res.status(400).json({ errors: errors.array() });
+//     }
+//     next();
+//   },
 
-  // Controller logic
-  TryCatch(async (req, res) => {
-    const { email, name, password, confirmPassword, role, profile } = req.body;
+//   // Controller logic
+//   TryCatch(async (req, res) => {
+//     const { email, name, password, confirmPassword, role, profile } = req.body;
 
-  if (password !== confirmPassword) {
-    return res.status(400).json({
-      message: "Password not match",
-    });
-  }
+//   if (password !== confirmPassword) {
+//     return res.status(400).json({
+//       message: "Password not match",
+//     });
+//   }
 
-  if (!['student', 'lecturer'].includes(role)) {
-    return res.status(400).json({
-      message: "Invalid role",
-    });
-  }
+//   if (!['student', 'lecturer'].includes(role)) {
+//     return res.status(400).json({
+//       message: "Invalid role",
+//     });
+//   }
 
-  let user = await User.findOne({ email });
+//   let user = await User.findOne({ email });
 
-  if (user)
-    return res.status(400).json({
-      message: "User already exists",
-    });
+//   if (user)
+//     return res.status(400).json({
+//       message: "User already exists",
+//     });
 
-  const hashPassword = await bcrypt.hash(password, 10);
+//   const hashPassword = await bcrypt.hash(password, 10);
 
-  user = {
-    name,
-    email,
-    password: hashPassword,
-    role: role,
-    profile: {
-      firstName: profile.firstName,
-      lastName: profile.lastName,
-      phoneNumber: profile.phoneNumber,
-      dateOfBirth: profile.dateOfBirth,
-      gender: profile.gender,
-      address: profile.address,
-      levelEducation: profile.levelEducation,
-      typeEducation: profile.typeEducation,
-      major: profile.major,
-      faculty: profile.faculty,
-    }
-  };
+//   user = {
+//     name,
+//     email,
+//     password: hashPassword,
+//     role: role,
+//     profile: {
+//       firstName: profile.firstName,
+//       lastName: profile.lastName,
+//       phoneNumber: profile.phoneNumber,
+//       dateOfBirth: profile.dateOfBirth,
+//       gender: profile.gender,
+//       address: profile.address,
+//       levelEducation: profile.levelEducation,
+//       typeEducation: profile.typeEducation,
+//       major: profile.major,
+//       faculty: profile.faculty,
+//     }
+//   };
 
-  // const otp = Math.floor(Math.random() * 1000000);
-  const otp = 123456;
+//   // const otp = Math.floor(Math.random() * 1000000);
+//   const otp = 123456;
 
-  const activationToken = jwt.sign(
-    { 
-      user: { name, email, password: hashPassword, role, profile }, 
-      otp 
-    },
-    process.env.Activation_Secret,
-    {
-      expiresIn: "5m",
-    }
-  );
+//   const activationToken = jwt.sign(
+//     { 
+//       user: { name, email, password: hashPassword, role, profile }, 
+//       otp 
+//     },
+//     process.env.Activation_Secret,
+//     {
+//       expiresIn: "5m",
+//     }
+//   );
 
-  const data = {
-    name,
-    otp,
-  };
+//   const data = {
+//     name,
+//     otp,
+//   };
 
-  await sendMail(email, "E learning", data);
+//   await sendMail(email, "E learning", data);
 
-  res.status(200).json({
-    message: "OTP sent to your mail. Please check your mail",
-    activationToken,
-  });
-})
-];
+//   res.status(200).json({
+//     message: "OTP sent to your mail. Please check your mail",
+//     activationToken,
+//   });
+// })
+// ];
 
-export const verifyUser = TryCatch(async (req, res) => {
-  const { otp, activationToken } = req.body;
+// export const verifyUser = TryCatch(async (req, res) => {
+//   const { otp, activationToken } = req.body;
 
-  const verify = jwt.verify(activationToken, process.env.Activation_Secret);
+//   const verify = jwt.verify(activationToken, process.env.Activation_Secret);
 
-  if (!verify)
-    return res.status(400).json({
-      message: "OTP expired",
-    });
+//   if (!verify)
+//     return res.status(400).json({
+//       message: "OTP expired",
+//     });
 
-  if (verify.otp !== otp)
-    return res.status(400).json({
-      message: "Wrong OTP",
-    });
+//   if (verify.otp !== otp)
+//     return res.status(400).json({
+//       message: "Wrong OTP",
+//     });
 
-    const userProfile = verify.user.profile || {};
+//     const userProfile = verify.user.profile || {};
 
-    await User.create({
-      name: verify.user.name,
-      email: verify.user.email,
-      password: verify.user.password,
-      role: verify.user.role,
-      profile: {
-        firstName: userProfile.firstName || "",
-        lastName: userProfile.lastName || "",
-        phoneNumber: userProfile.phoneNumber || "",
-        dateOfBirth: userProfile.dateOfBirth,
-        gender: userProfile.gender || "",
-        address: userProfile.address || "",
-        levelEducation: userProfile.levelEducation || "",
-        typeEducation: userProfile.typeEducation || "",
-        major: userProfile.major || "",
-        faculty: userProfile.faculty || "",
-      }
-    });
+//     await User.create({
+//       name: verify.user.name,
+//       email: verify.user.email,
+//       password: verify.user.password,
+//       role: verify.user.role,
+//       profile: {
+//         firstName: userProfile.firstName || "",
+//         lastName: userProfile.lastName || "",
+//         phoneNumber: userProfile.phoneNumber || "",
+//         dateOfBirth: userProfile.dateOfBirth,
+//         gender: userProfile.gender || "",
+//         address: userProfile.address || "",
+//         levelEducation: userProfile.levelEducation || "",
+//         typeEducation: userProfile.typeEducation || "",
+//         major: userProfile.major || "",
+//         faculty: userProfile.faculty || "",
+//       }
+//     });
 
-  res.json({
-    message: "User registered successfully",
-  });
-});
+//   res.json({
+//     message: "User registered successfully",
+//   });
+// });
 
 export const loginUser = TryCatch(async (req, res) => {
   const { username, password } = req.body;
