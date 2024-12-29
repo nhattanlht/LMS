@@ -22,12 +22,11 @@ const questionSchema = new mongoose.Schema({
 });
 const forumSchema = new mongoose.Schema({
   title: { type: String, required: true },
-  course: {
+  courseId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Courses",
     required: true,
   },
-  question: { type: String, required: true },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

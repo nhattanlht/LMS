@@ -1,12 +1,33 @@
 import { Forum } from "../models/Forum.js";
 import TryCatch from "../middlewares/TryCatch.js";
+import Enrollment from "../models/Enrollment.js";
+import { User } from "../models/User.js";
 
 export const createForum = TryCatch(async (req, res) => {
-  const { course, title } = req.body;
+  const { courseId, title } = req.body;
   const createdBy = req.user._id;
 
+  const user = await User.findById(req.user._id);
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: 'User not found'
+    });
+  }
+
+  const enroll = await Enrollment.findOne({ 
+    course_id: courseId, 
+    'participants.participant_id': user._id, 
+  });
+
+  if (!enroll) {
+    return res.status(403).json({
+      message: 'You are not enrolled in this course',
+    });
+  }
+
   const forum = await Forum.create({
-    course,
+    courseId,
     title,
     createdBy,
   });
@@ -18,14 +39,40 @@ export const createForum = TryCatch(async (req, res) => {
 });
 
 export const createQuestion = TryCatch(async (req, res) => {
-  const { forumId, title, content } = req.body;
+  const { forumId } = req.params;
+  const { title, content } = req.body;
   const createdBy = req.user._id;
+
+  const user = await User.findById(req.user._id);
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: 'User not found'
+    });
+  }
+
+  const forum = await Forum.findById(forumId).populate('courseId');
+  if (!forum) {
+    return res.status(404).json({
+      message: 'Forum not found',
+    });
+  }
+
+  const enroll = await Enrollment.findOne({ 
+    course_id: forum.courseId._id, 
+    'participants.participant_id': user._id,
+  });
+
+  if (!enroll) {
+    return res.status(403).json({
+      message: 'You are not enrolled in this course',
+    });
+  }
 
   const question = {
     title,
     content,
     createdBy,
-    createdAt,
   };
 
   await Forum.findByIdAndUpdate(forumId, {
@@ -39,19 +86,50 @@ export const createQuestion = TryCatch(async (req, res) => {
 });
 
 export const createAnswer = TryCatch(async (req, res) => {
-  const { forumId, questionId, content } = req.body;
+  const { forumId, questionId } = req.params
+  const { content } = req.body;
   const createdBy = req.user._id;
+
+  const user = await User.findById(req.user._id);
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: 'User not found'
+    });
+  }
+
+  const forum = await Forum.findById(forumId).populate('courseId');
+  if (!forum) {
+    return res.status(404).json({
+      message: 'Forum not found',
+    });
+  }
+  
+  const question = forum.questions.find(q => q._id == questionId);
+  if (!question) {
+    return res.status(404).json({
+      message: 'Question not found',
+    });
+  }
+
+  const enroll = await Enrollment.findOne({ 
+    course_id: forum.courseId._id, 
+    'participants.participant_id': user._id,
+  });
+
+  if (!enroll) {
+    return res.status(403).json({
+      message: 'You are not enrolled in this course',
+    });
+  }
 
   const answer = {
     content,
     createdBy,
-    createdAt,
   };
 
-  await Forum.updateOne(
-    { _id: forumId, "questions._id": questionId },
-    { $push: { "questions.$.answers": answer } }
-  );
+  question.answers.push(answer);
+  await forum.save();
 
   res.status(201).json({
     message: 'Answer added successfully',
@@ -62,6 +140,17 @@ export const createAnswer = TryCatch(async (req, res) => {
 export const getForums = TryCatch(async (req, res) => {
   const { courseId } = req.query;
   const forums = await Forum.find({ course: courseId}).populate('course createdBy');
+
+  const enroll = await Enrollment.findOne({ 
+    course_id: courseId, 
+    'participants.participant_id': createdBy, 
+  });
+
+  if (!enroll) {
+    return res.status(403).json({
+      message: 'You are not enrolled in this course',
+    });
+  }
 
   res.status(200).json({
     message: 'Forums retrieved successfully',
