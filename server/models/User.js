@@ -32,13 +32,13 @@ const schema = new mongoose.Schema(
     },
     role: {
       type: String,
-      default: "user",
-      enum: ["user", "admin"],
+      default: "student",
+      enum: ["lecturer", "student", "admin", "superadmin"],
     },
     mainrole: {
       type: String,
-      default: "student",
-      enum: ["lecturer", "student", "admin", "superadmin"],
+      default: "user",
+      enum: ["user", "admin"],
     },
     subscription: [
       {
@@ -47,10 +47,21 @@ const schema = new mongoose.Schema(
       },
     ],
     resetPasswordExpire: Date,
+    loginAttempts: {
+      type: Number,
+      default: 0
+    },
+    lockUntil: {
+      type: Date,
+      default: null
+    }
   },
   {
     timestamps: true,
+    collection: "users",
   }
 );
-
+schema.methods.isLocked = function() {
+  return this.lockUntil && this.lockUntil > Date.now();
+};
 export const User = mongoose.model("User", schema);

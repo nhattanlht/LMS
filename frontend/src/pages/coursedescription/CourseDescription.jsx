@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { CourseData } from "../../context/CourseContext";
 import { server } from "../../main";
+import { UserData } from "../../context/UserContext";
 import Loading from "../../components/loading/Loading";
 import "./coursedescription.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -79,7 +80,6 @@ const CourseDescription = () => {
   };
 
   useEffect(() => {
-<<<<<<< HEAD
     const storedResources = localStorage.getItem(`resources-${params.id}`);
     if (storedResources) {
       setResources(JSON.parse(storedResources));
@@ -90,7 +90,6 @@ const CourseDescription = () => {
     };
     loadCourseData();
   }, [params.id, fetchCourse]);
-=======
     fetchCourse(params.id);
   }, []);
 
@@ -116,7 +115,6 @@ const CourseDescription = () => {
       toast.error(error.response?.data?.message || "An error occurred");
     }
   };
->>>>>>> 4901461b30b6e73d6fc2265cbf75d097e213437b
 
   return (
     <>
@@ -303,11 +301,9 @@ const CourseDescription = () => {
               </div>
             )}
 
-<<<<<<< HEAD
             {successMessage && <div className="success-message">{successMessage}</div>}
           </div>
         )
-=======
               {user && user.subscription.includes(course._id) ? (
                 <button
                   onClick={() => navigate(`/course/study/${course._id}`)}
@@ -323,7 +319,6 @@ const CourseDescription = () => {
             </div>
           )}
         </>
->>>>>>> 4901461b30b6e73d6fc2265cbf75d097e213437b
       )}
     </>
   );
