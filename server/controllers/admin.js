@@ -2,6 +2,7 @@ import TryCatch from "../middlewares/TryCatch.js";
 import { Courses } from "../models/Courses.js";
 import { Lecture } from "../models/Lecture.js";
 import { Notification } from "../models/Notification.js";
+import Enrollment from "../models/Enrollment.js";
 import { rm } from "fs";
 import { promisify } from "util";
 import fs from "fs";
@@ -74,57 +75,55 @@ export const modifyCourse = TryCatch(async (req, res) => {
   });
 });
 
-// export const addParticipantsToCourse = TryCatch(async (req, res) => {
-//   const { courseId, participants } = req.body;
+export const addParticipantsToCourse = TryCatch(async (req, res) => {
+  const { courseId, participants } = req.body;
 
-//   if (!courseId) {
-//     return res.status(400).json({ message: "Course ID is required" });
-//   }
+  if (!courseId) {
+    return res.status(400).json({ message: "Course ID is required" });
+  }
 
-//   if (!participants || (!Array.isArray(participants) && typeof participants !== "object")) {
-//     return res.status(400).json({ message: "Participants must be an array or a single participant object." });
-//   }
+  if (!participants || (!Array.isArray(participants) && typeof participants !== "object")) {
+    return res.status(400).json({ message: "Participants must be an array or a single participant object." });
+  }
 
-//   const validRoles = ["student", "lecturer"];
+  const validRoles = ["student", "lecturer"];
 
-//   // Normalize participants to an array
-//   const participantList = Array.isArray(participants) ? participants : [participants];
+  // Normalize participants to an array
+  const participantList = Array.isArray(participants) ? participants : [participants];
 
-//   // Validate participants
-//   for (const participant of participantList) {
-//     if (!participant.participant_id || !validRoles.includes(participant.role)) {
-//       return res.status(400).json({
-//         message: "Each participant must have a valid participant_id and role (student or lecturer).",
-//       });
-//     }
-//   }
+  // Validate participants
+  for (const participant of participantList) {
+    if (!participant.participant_id || !validRoles.includes(participant.role)) {
+      return res.status(400).json({
+        message: "Each participant must have a valid participant_id and role (student or lecturer).",
+      });
+    }
+  }
 
-//   const enrollment = await Enrollment.findOne({ course_id: courseId });
+  const enrollment = await Enrollment.findOne({ course_id: courseId });
 
-//   if (!enrollment) {
-//     // If no enrollment exists, create a new one
-//     await Enrollment.create({
-//       course_id: courseId,
-//       participants: participantList,
-//       created_at: new Date(),
-//       updated_at: new Date(),
-//     });
-//   } else {
-//     // If enrollment exists, add participants to it
-//     const participantIds = enrollment.participants.map((p) => p.participant_id.toString());
+  if (!enrollment) {
+    // If no enrollment exists, create a new one
+    await Enrollment.create({
+      course_id: courseId,
+      participants: participantList,
+    });
+  } else {
+    // If enrollment exists, add participants to it
+    const participantIds = enrollment.participants.map((p) => p.participant_id.toString());
 
-//     participantList.forEach((participant) => {
-//       if (!participantIds.includes(participant.participant_id)) {
-//         enrollment.participants.push(participant);
-//       }
-//     });
+    participantList.forEach((participant) => {
+      if (!participantIds.includes(participant.participant_id)) {
+        enrollment.participants.push(participant);
+      }
+    });
 
-//     enrollment.updated_at = new Date();
-//     await enrollment.save();
-//   }
+    enrollment.updated_at = new Date();
+    await enrollment.save();
+  }
 
-//   res.status(200).json({ message: "Participants successfully added to the course." });
-// });
+  res.status(200).json({ message: "Participants successfully added to the course." });
+});
 
 export const addLectures = TryCatch(async (req, res) => {
   const course = await Courses.findById(req.params.id);
