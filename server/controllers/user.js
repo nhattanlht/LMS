@@ -2,91 +2,153 @@ import { User } from "../models/User.js";
 import { Notification } from "../models/Notification.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import sendMail, { sendForgotMail, sendNotificationMail } from "../middlewares/sendMail.js";
+import { sendForgotMail, sendNotificationMail } from "../middlewares/sendMail.js";
 import TryCatch from "../middlewares/TryCatch.js";
 
-export const register = TryCatch(async (req, res) => {
-  const { email, name, password } = req.body;
+// import { validate, registerValidation } from "../middlewares/validateInput.js";
+// import { validationResult } from "express-validator";
 
-  let user = await User.findOne({ email });
+// export const register = [
+//   // Thêm các quy tắc validation
+//   ...registerValidation, validate,
 
-  if (user)
-    return res.status(400).json({
-      message: "User Already exists",
-    });
+//   // Middleware để kiểm tra kết quả validation
+//   (req, res, next) => {
+//     const errors = validationResult(req);
+//     if (!errors.isEmpty()) {
+//       return res.status(400).json({ errors: errors.array() });
+//     }
+//     next();
+//   },
 
-  const hashPassword = await bcrypt.hash(password, 10);
+//   // Controller logic
+//   TryCatch(async (req, res) => {
+//     const { email, name, password, confirmPassword, role, profile } = req.body;
 
-  user = {
-    name,
-    email,
-    password: hashPassword,
-  };
+//   if (password !== confirmPassword) {
+//     return res.status(400).json({
+//       message: "Password not match",
+//     });
+//   }
 
-  // const otp = Math.floor(Math.random() * 1000000);
-  const otp = 123456;
+//   if (!['student', 'lecturer'].includes(role)) {
+//     return res.status(400).json({
+//       message: "Invalid role",
+//     });
+//   }
 
-  const activationToken = jwt.sign(
-    { user: { name, email, password: hashPassword }, otp },
-    process.env.Activation_Secret,
-    { expiresIn: "5m" }
-  );
+//   let user = await User.findOne({ email });
 
-  const data = {
-    name,
-    otp,
-  };
+//   if (user)
+//     return res.status(400).json({
+//       message: "User already exists",
+//     });
 
-  await sendMail(email, "E learning", data);
+//   const hashPassword = await bcrypt.hash(password, 10);
 
-  res.status(200).json({
-    message: "Otp send to your mail",
-    activationToken,
-  });
-});
+//   user = {
+//     name,
+//     email,
+//     password: hashPassword,
+//     role: role,
+//     profile: {
+//       firstName: profile.firstName,
+//       lastName: profile.lastName,
+//       phoneNumber: profile.phoneNumber,
+//       dateOfBirth: profile.dateOfBirth,
+//       gender: profile.gender,
+//       address: profile.address,
+//       levelEducation: profile.levelEducation,
+//       typeEducation: profile.typeEducation,
+//       major: profile.major,
+//       faculty: profile.faculty,
+//     }
+//   };
 
-export const verifyUser = TryCatch(async (req, res) => {
-  const { otp, activationToken } = req.body;
+//   // const otp = Math.floor(Math.random() * 1000000);
+//   const otp = 123456;
 
-  const verify = jwt.verify(activationToken, process.env.Activation_Secret);
+//   const activationToken = jwt.sign(
+//     { 
+//       user: { name, email, password: hashPassword, role, profile }, 
+//       otp 
+//     },
+//     process.env.Activation_Secret,
+//     {
+//       expiresIn: "5m",
+//     }
+//   );
 
-  if (!verify)
-    return res.status(400).json({
-      message: "OTP Expired",
-    });
+//   const data = {
+//     name,
+//     otp,
+//   };
 
-  if (verify.otp !== otp)
-    return res.status(400).json({
-      message: "Wrong OTP",
-    });
+//   await sendMail(email, "E learning", data);
 
-// Creata a new user
-  await User.create({
-    name: verify.user.name,
-    email: verify.user.email,
-    password: verify.user.password,
-  });
+//   res.status(200).json({
+//     message: "OTP sent to your mail. Please check your mail",
+//     activationToken,
+//   });
+// })
+// ];
 
-  res.json({
-    message: "User Registered",
-  });
-});
+// export const verifyUser = TryCatch(async (req, res) => {
+//   const { otp, activationToken } = req.body;
+
+//   const verify = jwt.verify(activationToken, process.env.Activation_Secret);
+
+//   if (!verify)
+//     return res.status(400).json({
+//       message: "OTP expired",
+//     });
+
+//   if (verify.otp !== otp)
+//     return res.status(400).json({
+//       message: "Wrong OTP",
+//     });
+
+//     const userProfile = verify.user.profile || {};
+
+//     await User.create({
+//       name: verify.user.name,
+//       email: verify.user.email,
+//       password: verify.user.password,
+//       role: verify.user.role,
+//       profile: {
+//         firstName: userProfile.firstName || "",
+//         lastName: userProfile.lastName || "",
+//         phoneNumber: userProfile.phoneNumber || "",
+//         dateOfBirth: userProfile.dateOfBirth,
+//         gender: userProfile.gender || "",
+//         address: userProfile.address || "",
+//         levelEducation: userProfile.levelEducation || "",
+//         typeEducation: userProfile.typeEducation || "",
+//         major: userProfile.major || "",
+//         faculty: userProfile.faculty || "",
+//       }
+//     });
+
+//   res.json({
+//     message: "User registered successfully",
+//   });
+// });
 
 export const loginUser = TryCatch(async (req, res) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
 
-  const user = await User.findOne({ email });
+  let user = await User.findOne({ $or: [{ email: username }, { name: username }] });
 
   if (!user)
     return res.status(400).json({
-      message: "No User with this email",
+      message: "User not found",
     });
 
-  const mathPassword = await bcrypt.compare(password, user.password);
+  const matchPassword = await bcrypt.compare(password, user.password);
 
-  if (!mathPassword)
+  if (!matchPassword)
     return res.status(400).json({
-      message: "wrong Password",
+      message: "Wrong password",
     });
 
   const token = jwt.sign({ _id: user._id }, process.env.Jwt_Sec, {
@@ -166,21 +228,21 @@ export const forgotPassword = TryCatch(async (req, res) => {
 
   if (!user)
     return res.status(404).json({
-      message: "No User with this email",
+      message: "No user with this email",
     });
 
   const token = jwt.sign({ email }, process.env.Forgot_Secret);
 
   const data = { email, token };
 
-  await sendForgotMail("E learning", data);
+  await sendForgotMail("E learning System", data);
 
   user.resetPasswordExpire = Date.now() + 5 * 60 * 1000;
 
   await user.save();
 
   res.json({
-    message: "Reset Password Link is send to you mail",
+    message: "Reset password link is sent to you mail",
   });
 });
 
