@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./header.css";
 import { Link } from "react-router-dom";
-import { IoMdLogOut } from "react-icons/io";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { UserData } from "../../context/UserContext";

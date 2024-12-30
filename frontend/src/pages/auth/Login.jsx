@@ -7,26 +7,26 @@ import { CourseData } from "../../context/CourseContext";
 const Login = () => {
   const navigate = useNavigate();
   const { btnLoading, loginUser } = UserData();
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const { fetchMyCourse } = CourseData();
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    await loginUser(email, password, navigate, fetchMyCourse);
+    await loginUser(username, password, navigate, fetchMyCourse);
   };
   return (
     <div className="auth-page">
       <div className="auth-form">
         <h2>Login</h2>
         <form onSubmit={submitHandler}>
-          <label htmlFor="email"></label>
+          <label htmlFor="username"></label>
           <input
-            type="email"
-            placeholder="Email address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            type="text"
+            placeholder="Email or username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             required
           />
 
@@ -43,9 +43,6 @@ const Login = () => {
             {btnLoading ? "Please Wait..." : "Login"}
           </button>
         </form>
-        <p>
-          Don't have an account? <Link to="/register">Register</Link>
-        </p>
         <p>
           <Link to="/forgot">Forgot password?</Link>
         </p>
