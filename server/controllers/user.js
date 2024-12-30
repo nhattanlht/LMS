@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { sendForgotMail, sendNotificationMail } from "../middlewares/sendMail.js";
 import TryCatch from "../middlewares/TryCatch.js";
+
 // import { validate, registerValidation } from "../middlewares/validateInput.js";
 // import { validationResult } from "express-validator";
 

@@ -178,77 +178,126 @@ export const sendNotificationMail = async (subject, data) => {
   });
 
   const html = `<!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${subject}</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        background-color: #f3f4f6;
-        margin: 0;
-        padding: 0;
-      }
-      .container {
-        background-color: #ffffff;
-        padding: 20px;
-        margin: 40px auto;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        max-width: 600px;
-      }
-      h1 {
-        color: #7b68ee;
-        font-size: 24px;
-        text-align: center;
-      }
-      p {
-        color: #555;
-        line-height: 1.6;
-        font-size: 16px;
-        margin-bottom: 20px;
-      }
-      .button {
-        display: inline-block;
-        padding: 12px 20px;
-        background-color: #7b68ee;
-        color: white;
-        text-decoration: none;
-        border-radius: 5px;
-        font-size: 16px;
-        text-align: center;
-        margin: 20px auto;
-        display: block;
-      }
-      .footer {
-        margin-top: 20px;
-        color: #999;
-        text-align: center;
-        font-size: 14px;
-        line-height: 1.4;
-      }
-      .footer a {
-        color: #7b68ee;
-        text-decoration: none;
-      }
-      .footer a:hover {
-        text-decoration: underline;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <h1>${subject}</h1>
-      <p>Dear User,</p>
-      <p>${data.message}</p>
-    </div>
-    <div class="footer">
-      <p>Thank you for your attention.</p>
-      <p>For further inquiries, please contact <a href="mailto:${process.env.Gmail}">support</a>.</p>
-    </div>
-  </body>
-  </html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${subject}</title>
+  <style>
+    /* General resets */
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+      font-family: Arial, sans-serif;
+    }
+
+    table {
+      border-spacing: 0;
+      width: 100%;
+    }
+
+    td {
+      padding: 0;
+    }
+
+    /* Email container */
+    .email-container {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    /* Header */
+    .email-header {
+      background-color: #007BFF;
+      color: #ffffff;
+      text-align: center;
+      padding: 20px;
+      font-size: 24px;
+    }
+
+    /* Body */
+    .email-body {
+      padding: 20px;
+      color: #333333;
+    }
+
+    .email-body p {
+      margin: 0 0 20px;
+      line-height: 1.6;
+      color: #666666;
+    }
+
+    .email-body a.button {
+      display: inline-block;
+      padding: 12px 24px;
+      background-color: #007BFF;
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 4px;
+      font-size: 16px;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+
+    .email-body a.button:hover {
+      background-color: #0056b3;
+    }
+
+    /* Footer */
+    .email-footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #f1f1f1;
+      font-size: 14px;
+      color: #999999;
+    }
+
+    .email-footer a {
+      color: #007BFF;
+      text-decoration: none;
+    }
+
+    .email-footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <table class="email-container">
+    <!-- Header -->
+    <tr>
+      <td class="email-header">
+        ${subject}
+      </td>
+    </tr>
+
+    <!-- Body -->
+    <tr>
+      <td class="email-body">
+        <p>Dear ${data.recipientName || 'Learner'},</p>
+        <p>${data.message}</p>
+        ${data.actionUrl 
+          ? `<a href="${data.actionUrl}" class="button">Take Action</a>` 
+          : ''}
+      </td>
+    </tr>
+    
+    <!-- Footer -->
+    <tr>
+      <td class="email-footer">
+        <p>If you have any questions, please contact us at <a href="mailto:support@example.com">support@example.com</a>.</p>
+        <p>Thank you,<br>The LMS Team</p>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
   `;
   
     await transport.sendMail({

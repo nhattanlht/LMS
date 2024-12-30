@@ -29,6 +29,8 @@ app.get("/", (req, res) => {
 import userRoutes from "./routes/user.js";
 import courseRoutes from "./routes/course.js";
 import adminRoutes from "./routes/admin.js";
+import forumRoutes from "./routes/forum.js";
+import gradeRoutes from "./routes/grade.js";
 import asssignmentRoutes from "./routes/assignment.js";
 import messageRoutes from "./routes/message.js";
 import resourceRoutes from "./routes/resources.js";
@@ -38,6 +40,8 @@ import resourceRoutes from "./routes/resources.js";
 app.use("/api", userRoutes);
 app.use("/api", courseRoutes);
 app.use("/api", adminRoutes);
+app.use("/api", forumRoutes);
+app.use("/api", gradeRoutes);
 app.use("/api", asssignmentRoutes);
 app.use("/api", messageRoutes);
 app.use("/api", resourceRoutes);

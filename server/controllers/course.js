@@ -3,8 +3,6 @@ import TryCatch from "../middlewares/TryCatch.js";
 import { Courses } from "../models/Courses.js";
 import { Lecture } from "../models/Lecture.js";
 import { User } from "../models/User.js";
-import crypto from "crypto";
-import { Payment } from "../models/Payment.js";
 import { Progress } from "../models/Progress.js";
 import mongoose from "mongoose";
 
