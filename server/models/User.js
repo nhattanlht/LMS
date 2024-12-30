@@ -32,13 +32,13 @@ const schema = new mongoose.Schema(
     },
     role: {
       type: String,
-      default: "user",
-      enum: ["user", "admin"],
+      default: "student",
+      enum: ["lecturer", "student", "admin", "superadmin"],
     },
     mainrole: {
       type: String,
-      default: "student",
-      enum: ["lecturer", "student", "admin", "superadmin"],
+      default: "user",
+      enum: ["user", "admin"],
     },
     subscription: [
       {
@@ -50,6 +50,7 @@ const schema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    collection: "users",
   }
 );
 

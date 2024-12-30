@@ -5,11 +5,11 @@ import {
   loginUser,
   markAsRead,
   myProfile,
-  register,
+  //register,
   resetPassword,
   sendNotification,
   updateProfile,
-  verifyUser,
+  //verifyUser,
   searchUserByEmail,
 } from "../controllers/user.js";
 import { isAuth, isLecturer } from "../middlewares/isAuth.js";
@@ -17,8 +17,8 @@ import { addProgress, getYourProgress } from "../controllers/course.js";
 
 const router = express.Router();
 
-router.post("/user/register", register);
-router.post("/user/verify", verifyUser);
+// router.post("/user/register", register);
+// router.post("/user/verify", verifyUser);
 router.post("/user/login", loginUser);
 router.get("/user/me", isAuth, myProfile);
 router.put("/user/me", isAuth, updateProfile);
