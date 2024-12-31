@@ -122,6 +122,16 @@ export const addParticipantsToCourse = TryCatch(async (req, res) => {
     await enrollment.save();
   }
 
+   // Update subscription for each participant
+
+   for (const participant of participantList) {
+     const user = await User.findById(participant.participant_id);
+     if (user && !user.subscription.includes(courseId)) {
+       user.subscription.push(courseId);
+       await user.save();
+     }
+   }
+
   res.status(200).json({ message: "Participants successfully added to the course." });
 });
 
