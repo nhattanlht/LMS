@@ -287,7 +287,7 @@ export const sendNotificationMail = async (subject, data) => {
           : ''}
       </td>
     </tr>
-
+    
     <!-- Footer -->
     <tr>
       <td class="email-footer">
@@ -301,8 +301,8 @@ export const sendNotificationMail = async (subject, data) => {
   `;
   
     await transport.sendMail({
-      from: data.sender,
-      to: data.recipients,
+      from: process.env.Gmail,
+      to: data.recipientEmails,
       subject,
       html,
       ...(data.file && {
