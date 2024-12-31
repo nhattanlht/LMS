@@ -96,6 +96,7 @@ const Header = ({ isAuth }) => {
             {isDropdownOpen && (
               <div className="dropdown-menu">
                 <Link to="/account" className="dropdown-item">Account</Link>
+                <Link to="/messages" className="dropdown-item">Messages</Link>
                 <span onClick={logoutHandler} className="dropdown-item">Logout</span>
               </div>
             )}
