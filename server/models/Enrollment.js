@@ -15,7 +15,7 @@ const participantSchema = new mongoose.Schema({
 const enrollmentSchema = new mongoose.Schema({
   course_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Course',
+    ref: 'Courses',
     required: true
   },
   participants: [participantSchema],

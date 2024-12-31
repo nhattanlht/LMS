@@ -5,6 +5,8 @@ import { Lecture } from "../models/Lecture.js";
 import { User } from "../models/User.js";
 import { Progress } from "../models/Progress.js";
 import mongoose from "mongoose";
+import Enrollment from "../models/Enrollment.js";
+import { handleUpload } from "../config/cloudinary2.js";
 
 export const getAllCourses = TryCatch(async (req, res) => {
   const courses = await Courses.find();
@@ -111,11 +113,20 @@ export const fetchLecture = TryCatch(async (req, res) => {
 });
 
 export const getMyCourses = TryCatch(async (req, res) => {
-  const courses = await Courses.find({ _id: req.user.subscription });
-
-  res.json({
-    courses,
+  const enrollments = await Enrollment.find({
+    "participants.participant_id": req.user._id,
+  }).populate({
+    path: "course_id",
+    select: "title description startTime endTime",
   });
+
+  if (!enrollments || enrollments.length === 0) {
+    return res.status(404).json({ message: "No courses found for this user." });
+  }
+
+  const courses = enrollments.map((enrollment) => enrollment.course_id);
+
+  res.status(200).json({ courses });
 });
 
 export const addProgress = TryCatch(async (req, res) => {
