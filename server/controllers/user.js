@@ -2,7 +2,10 @@ import { User } from "../models/User.js";
 import { Notification } from "../models/Notification.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { sendForgotMail, sendNotificationMail } from "../middlewares/sendMail.js";
+import sendMail, {
+  sendForgotMail,
+  sendNotificationMail,
+} from "../middlewares/sendMail.js";
 import TryCatch from "../middlewares/TryCatch.js";
 
 // import { validate, registerValidation } from "../middlewares/validateInput.js";
@@ -171,7 +174,7 @@ export const myProfile = TryCatch(async (req, res) => {
 export const updateProfile = async (req, res) => {
   try {
     const userId = req.user.id;
-    
+
     // Get the updated profile data from the request body
     const {
       firstName,
@@ -282,7 +285,12 @@ export const sendNotification = TryCatch(async (req, res) => {
   const { sender, recipients, subject, message, file } = req.body;
 
   if (!sender || !recipients || !subject || !message) {
-    return res.status(400).json({ message: 'Missing required fields: sender, recipient, subject, or message.' });
+    return res
+      .status(400)
+      .json({
+        message:
+          "Missing required fields: sender, recipient, subject, or message.",
+      });
   }
 
   const notification = new Notification({
@@ -295,11 +303,11 @@ export const sendNotification = TryCatch(async (req, res) => {
 
   const savedNotification = await notification.save();
 
-  const data = {sender, recipients, message, file}
+  const data = { sender, recipients, message, file };
   await sendNotificationMail({ subject, data });
 
   res.status(201).json({
-    message: 'Notification created successfully.',
+    message: "Notification created successfully.",
     notification: savedNotification,
   });
 });
@@ -307,7 +315,9 @@ export const sendNotification = TryCatch(async (req, res) => {
 export const getNotification = TryCatch(async (req, res) => {
   const userId = req.user._id;
   if (!userId) {
-    return res.status(400).json({ message: 'User ID is required to fetch notifications.' });
+    return res
+      .status(400)
+      .json({ message: "User ID is required to fetch notifications." });
   }
 
   // Fetch notifications where the user is a recipient
@@ -316,11 +326,13 @@ export const getNotification = TryCatch(async (req, res) => {
     .lean();
 
   if (!notifications.length) {
-    return res.status(200).json({ message: 'No notifications found.', notifications: [] });
+    return res
+      .status(200)
+      .json({ message: "No notifications found.", notifications: [] });
   }
 
   res.status(200).json({
-    message: 'Notifications retrieved successfully.',
+    message: "Notifications retrieved successfully.",
     notifications,
   });
 });
@@ -331,7 +343,9 @@ export const markAsRead = async (req, res) => {
     const userId = req.user._id;
 
     if (!userId || !notificationId) {
-      return res.status(400).json({ message: 'User ID and Notification ID are required.' });
+      return res
+        .status(400)
+        .json({ message: "User ID and Notification ID are required." });
     }
 
     // Update the notification's readBy field
@@ -342,17 +356,17 @@ export const markAsRead = async (req, res) => {
     );
 
     if (!notification) {
-      return res.status(404).json({ message: 'Notification not found.' });
+      return res.status(404).json({ message: "Notification not found." });
     }
 
     res.status(200).json({
-      message: 'Notification marked as read.',
+      message: "Notification marked as read.",
       notification,
     });
   } catch (error) {
-    console.error('Error marking notification as read:', error.message);
+    console.error("Error marking notification as read:", error.message);
     res.status(500).json({
-      message: 'An error occurred while marking the notification as read.',
+      message: "An error occurred while marking the notification as read.",
       error: error.message,
     });
   }

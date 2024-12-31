@@ -23,9 +23,13 @@ import AdminCourses from "./admin/Courses/AdminCourses";
 import AdminUsers from "./admin/Users/AdminUsers";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPassword from "./pages/auth/ResetPassword";
+import AssignmentDetails from "./pages/assignment/AssignmentDetails";
+import Message from "./pages/message/message";
+import { useState } from "react";
 
 const App = () => {
   const { isAuth, user, loading } = UserData();
+  const [receiverId, setReceiverId] = useState(null);
   return (
     <>
       {loading ? (
@@ -34,7 +38,10 @@ const App = () => {
         <BrowserRouter>
           <Header isAuth={isAuth} />
           <Routes>
-            <Route path="/" element={ isAuth ? <Dashbord user={user}/> :<Home />} />
+            <Route
+              path="/"
+              element={isAuth ? <Dashbord user={user} /> : <Home />}
+            />
             <Route path="/about" element={<About />} />
             <Route
               path="/account"
@@ -70,8 +77,8 @@ const App = () => {
             
             <Route
               path="/course/study/:id"
-              //element={isAuth ? <CourseStudy user={user} /> : <Login />}
-              element={ <CourseStudy /> }
+              element={isAuth ? <CourseStudy user={user} /> : <Login />}
+              //element={ <CourseStudy /> }
             />
 
             <Route
@@ -96,6 +103,18 @@ const App = () => {
             <Route
               path="/admin/users"
               element={isAuth ? <AdminUsers user={user} /> : <Login />}
+            />
+            <Route
+              path="/admin/users"
+              element={isAuth ? <AdminUsers user={user} /> : <Login />}
+            />
+            <Route
+              path="/assignments/details/:assignmentId"
+              element={isAuth ? <AssignmentDetails user={user} /> : <Login />}
+            />
+            <Route
+              path="/messages"
+              element={isAuth ? <Message user={user} receiverId={receiverId} setReceiverId={setReceiverId} /> : <Login />}
             />
           </Routes>
           <Footer />

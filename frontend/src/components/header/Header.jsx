@@ -85,21 +85,13 @@ const Header = ({ isAuth }) => {
 
         {isAuth ? (
           <>
-          <div className="notification">
-            <FontAwesomeIcon icon={faBell} />
-          </div>
-
-          <div className="dropdown">
-            <button className="dropdown-button" onClick={toggleDropdown}>
-              {user?.profile?.firstName || "User"} ▾
-            </button>
-            {isDropdownOpen && (
-              <div className="dropdown-menu">
-                <Link to="/account" className="dropdown-item">Account</Link>
-                <span onClick={logoutHandler} className="dropdown-item">Logout</span>
-              </div>
-            )}
-          </div>
+          <Link to={"/account"}>Account</Link>
+          <a
+              onClick={logoutHandler}
+            >
+              Logout
+            </a>
+          <Link to={"/messages"}>Messages</Link>
           </>
         ) : (
           <Link to="/login" className="login-link">Login</Link>
