@@ -31,7 +31,7 @@ const sendMail = async (email, subject, data) => {
 
                             <!-- Title -->
                             <h1 style="color: #333; margin-bottom: 10px; font-size: 24px; font-weight: bold;">OTP Verification</h1>
-                            <h2 style="color: #5a2d82; margin-top: 0; font-size: 18px; font-weight: normal;">E-Learning Website</h2>
+                            <h2 style="color: #8a4baf; margin-top: 0; font-size: 18px; font-weight: normal;">E-Learning Website</h2>
 
                             <!-- Greeting -->
                             <p style="color: #666; font-size: 16px; line-height: 1.6; margin: 20px 0;">
@@ -42,12 +42,12 @@ const sendMail = async (email, subject, data) => {
                             </p>
 
                             <!-- OTP Code -->
-                            <p style="font-size: 36px; color: #5a2d82; font-weight: bold; margin: 30px 0;">
+                            <p style="font-size: 36px; color: #8a4baf; font-weight: bold; margin: 30px 0;">
                                 ${data.otp}
                             </p>
 
                             <!-- Button -->
-                            <a href="#" style="display: inline-block; padding: 10px 20px; font-size: 16px; color: #fff; background-color: #5a2d82; border-radius: 5px; text-decoration: none;">
+                            <a href="#" style="display: inline-block; padding: 10px 20px; font-size: 16px; color: #fff; background-color: #8a4baf; border-radius: 5px; text-decoration: none;">
                                 Verify Now
                             </a>
 
@@ -113,7 +113,7 @@ export const sendForgotMail = async (subject, data) => {
             <td style="padding: 30px; text-align: center;">
 
               <!-- Title -->
-              <h1 style="color: #5a2d82; margin-bottom: 20px; font-size: 24px;">Reset Your Password</h1>
+              <h1 style="color: #8a4baf; margin-bottom: 20px; font-size: 24px;">Reset Your Password</h1>
 
               <!-- Greeting -->
               <p style="color: #666666; margin-bottom: 20px; font-size: 16px; line-height: 1.6;">Hello <strong>${data.name}</strong>,</p>
@@ -125,7 +125,7 @@ export const sendForgotMail = async (subject, data) => {
 
               <!-- Button -->
               <a href="${process.env.frontendurl}/reset-password/${data.token}" 
-                style="display: inline-block; padding: 15px 30px; background-color: #5a2d82; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">
+                style="display: inline-block; padding: 15px 30px; background-color: #8a4baf; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">
                 Reset Password
               </a>
 
@@ -144,7 +144,7 @@ export const sendForgotMail = async (subject, data) => {
             <td align="center" style="color: #999999; font-size: 14px; text-align: center; padding: 10px;">
               <p style="margin: 0;">Thank you,<br>LMS - Group 03 - Intro2SE CSC13002 CQ2022/1</p>
               <p style="margin: 0;">
-                <a href="https://yourwebsite.com" style="color: #5a2d82; text-decoration: none;">yourwebsite.com</a>
+                <a href="https://yourwebsite.com" style="color: #8a4baf; text-decoration: none;">yourwebsite.com</a>
               </p>
             </td>
           </tr>
