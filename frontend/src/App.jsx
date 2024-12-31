@@ -12,8 +12,6 @@ import Account from "./pages/account/Account";
 import { UserData } from "./context/UserContext";
 import Loading from "./components/loading/Loading";
 import Courses from "./pages/courses/Courses";
-import PaymentSuccess from "./pages/paymentsuccess/PaymentSuccess";
-import CourseDescription from "./pages/coursedescription/CourseDescription";
 import Dashbord from "./pages/dashbord/Dashbord";
 import CourseStudy from "./pages/coursestudy/CourseStudy";
 import CourseNotStudy from "./pages/coursenotstudy/CourseNotStudy";

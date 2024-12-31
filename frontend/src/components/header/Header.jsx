@@ -1,19 +1,22 @@
 import React, { useState, useEffect } from "react";
 import "./header.css";
 import { Link } from "react-router-dom";
-import { IoMdLogOut } from "react-icons/io";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { UserData } from "../../context/UserContext";
-import {faBell} from "@fortawesome/free-solid-svg-icons";
+import {faBell, faSearch} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios"; 
-
+import { server } from "../../main";
 const Header = ({ isAuth }) => {
-  const { setIsAuth, setUser } = UserData();
+  const { user, setIsAuth, setUser } = UserData();
   const [searchTerm, setSearchTerm] = useState(""); 
   const [searchResults, setSearchResults] = useState([]);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
 
   const navigate = useNavigate();
 
@@ -34,7 +37,7 @@ const Header = ({ isAuth }) => {
   
     try { 
 
-      const { data } = await axios.get('http://localhost:3001/api/course/all');
+      const { data } = await axios.get(`${server}/api/course/all`);
       if (data.courses && typeof data.courses === "object") {
         const coursesArray = Object.values(data.courses);
   
@@ -55,48 +58,54 @@ const Header = ({ isAuth }) => {
     }
   };
   return (
-    <header>
-      <Link to={"/"} className="logo">E-Learning</Link>
+    <header className="header">
+      <Link to="/" className="logo">E-Learning</Link>
 
-      <div className="link">
-        <Link to={"/"}>Home</Link>
-        <Link to={"/courses"}>Courses</Link>
-        <Link to={"/about"}>About</Link>
+      <nav className="nav-links">
+        <Link to="/">Home</Link>
+        <Link to="/courses">Courses</Link>
+        <Link to="/about">About</Link>
+      </nav>
+
+      <div className="header-actions">
+        
+        <div className="search-bar">
+          <form onSubmit={handleSearchSubmit}>
+            <input
+              type="text"
+              placeholder="Search for courses..."
+              value={searchTerm}
+              onChange={handleSearchChange}
+            />
+            <button type="submit">
+              <FontAwesomeIcon icon={faSearch} />
+            </button>
+          </form>
+        </div>
+
         {isAuth ? (
           <>
-          <Link to={"/account"}>Account</Link>
-          <a
-              onClick={logoutHandler}
-            >
-              Logout
-            </a>
+          <div className="notification">
+            <FontAwesomeIcon icon={faBell} />
+          </div>
+
+          <div className="dropdown">
+            <button className="dropdown-button" onClick={toggleDropdown}>
+              {user?.profile?.firstName || "User"} ▾
+            </button>
+            {isDropdownOpen && (
+              <div className="dropdown-menu">
+                <Link to="/account" className="dropdown-item">Account</Link>
+                <span onClick={logoutHandler} className="dropdown-item">Logout</span>
+              </div>
+            )}
+          </div>
           </>
         ) : (
-          <Link to={"/login"}>Login</Link>
+          <Link to="/login" className="login-link">Login</Link>
         )}
       </div>
-
-      <div className="noti">
-        
-          <FontAwesomeIcon icon={faBell} />  
-      
-      </div>
-
-      <div className="search-bar">
-        <form onSubmit={handleSearchSubmit}>
-          <input
-            type="text"
-            placeholder="Search for courses..."
-            value={searchTerm}
-            onChange={handleSearchChange}
-          />
-          <button type="submit">Search</button>
-        </form>
-      </div>
-
     </header>
-
-    
   );
 };
 

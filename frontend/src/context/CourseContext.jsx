@@ -14,7 +14,7 @@ export const CourseContextProvider = ({ children }) => {
       
       console.log("Server:", server);
 
-      const { data } = await axios.get(`http://localhost:3001/api/course/all`);
+      const { data } = await axios.get(`${server}/api/course/all`);
 
       setCourses(data.courses);
     } catch (error) {
