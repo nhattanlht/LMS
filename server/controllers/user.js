@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { sendForgotMail, sendNotificationMail } from "../middlewares/sendMail.js";
 import TryCatch from "../middlewares/TryCatch.js";
+
 // import { validate, registerValidation } from "../middlewares/validateInput.js";
 // import { validationResult } from "express-validator";
 
@@ -354,6 +355,20 @@ export const markAsRead = async (req, res) => {
       message: 'An error occurred while marking the notification as read.',
       error: error.message,
     });
+  }
+};
+
+export const searchUserByEmail = async (req, res) => {
+  const { email } = req.query;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User  not found" });
+    }
+    res.json({ user });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
   }
 };
 

@@ -223,7 +223,7 @@ const Account = ({ user }) => {
         <div className="form-submit">
           <button
             onClick={handleSubmit}
-            className="update-btn"
+            className="update-btn account-btn"
           >
             Update Profile
           </button>
@@ -233,7 +233,7 @@ const Account = ({ user }) => {
       <div style={{ display: "flex", justifyContent: "space-around" }}>
         <button
           onClick={() => navigate(`/${user._id}/dashboard`)}
-          className="common-btn"
+          className="common-btn account-btn"
         >
           <MdDashboard />
           Dashboard
@@ -242,7 +242,7 @@ const Account = ({ user }) => {
         {user.role === "admin" && (
           <button
             onClick={() => navigate(`/admin/dashboard`)}
-            className="common-btn"
+            className="common-btn account-btn"
           >
             <MdDashboard />
             Admin Dashboard
@@ -251,7 +251,7 @@ const Account = ({ user }) => {
 
         <button
           onClick={logoutHandler}
-          className="logout-btn"
+          className="logout-btn account-btn"
         >
           <IoMdLogOut />
           Logout

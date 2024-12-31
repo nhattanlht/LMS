@@ -19,14 +19,6 @@ const enrollmentSchema = new mongoose.Schema({
     required: true
   },
   participants: [participantSchema],
-  created_at: {
-    type: Date,
-    required: true
-  },
-  updated_at: {
-    type: Date,
-    required: true
-  },
   created_by: {
     type: String,
     required: false
