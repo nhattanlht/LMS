@@ -99,9 +99,10 @@ ul li {
 .info{
   display: block;
 }
-.info p{
+.info a{
   font-size: 16px;
   color:purple;
+  text-decoration: none;
 }
 
 .course-title-bar {
