@@ -7,6 +7,9 @@ import { Progress } from "../models/Progress.js";
 import mongoose from "mongoose";
 import Enrollment from "../models/Enrollment.js";
 import { handleUpload } from "../config/cloudinary2.js";
+import {Notification} from "../models/Notification.js";
+import { sendNotificationMail } from "../middlewares/sendMail.js";
+import { getReceiverSocketId, io } from "../config/socket.js";
 
 export const getAllCourses = TryCatch(async (req, res) => {
   const courses = await Courses.find();
@@ -36,46 +39,6 @@ export const getCourseByName = TryCatch(async (req, res) => {
   }
 
   res.status(200).json({ courses });
-});
-
-export const joinCourse = TryCatch(async (req, res) => {
-
-  const { courseId } = req.params; // Course ID from URL
-  const userId = req.user.id; // Authenticated student's ID
-  
-  if (!mongoose.Types.ObjectId.isValid(courseId)) {
-    return res.status(400).json({ message: "Invalid Course ID" });
-  }
-
-  // Find the user (student) and the course
-  const student = await User.findById(userId);
-  const course = await Courses.findById(courseId);
-
-  if (!student) {
-    return res.status(404).json({ message: "User not found" });
-  }
-
-  if (!course) {
-    return res.status(404).json({ message: "Course not found" });
-  }
-
-  // Check if the student has already joined the course
-  if (student.subscription.includes(courseId)) {
-    return res.status(400).json({ message: "You have already joined this course" });
-  }
-
-  // Add course to the student's subscription array
-  student.subscription.push(courseId);
-  await student.save();
-
-  // Optionally: Add student to the course's enrolled students
-  if (!course.attenders) {
-    course.attenders = [];
-  }
-  course.attenders.push(userId);
-  await course.save();
-
-  return res.status(200).json({ message: "Successfully joined the course", student });
 });
 
 export const fetchLectures = TryCatch(async (req, res) => {
@@ -176,7 +139,14 @@ export const getYourProgress = TryCatch(async (req, res) => {
 
 export const sendNotificationToCourseStudents = TryCatch(async (req, res) => {
   const { courseId, subject, message } = req.body;
-  const sender = req.user._id;
+  const senderId = req.user._id;
+
+  if (!courseId || !senderId || !subject || !message) {
+    return res.status(400).json({
+      message: "Course ID, sender ID, subject, and message are required.",
+    });
+  }
+
   let file = null;
   if(req.file){
     const b64 = Buffer.from(req.file.buffer).toString("base64");
@@ -188,49 +158,60 @@ export const sendNotificationToCourseStudents = TryCatch(async (req, res) => {
     };
   }
 
-  if (!courseId || !subject || !message) {
-    return res.status(400).json({ message: "Course ID, subject, and message are required" });
+  // Find the course enrollment and populate participants
+  const enrollment = await Enrollment.findOne({ course_id: courseId }).populate(
+    "participants.participant_id",
+    "email _id"
+  );
+
+  if (!enrollment) {
+    return res.status(404).json({ message: "Course not found." });
   }
 
-  // Find the course and populate the attenders field
-  const course = await Courses.findById(courseId).populate('attenders', 'email _id');
+  // Filter students only
+  const students = enrollment.participants.filter((p) => p.role === "student");
 
-  if (!course) {
-    return res.status(404).json({ message: "Course not found" });
+  if (students.length === 0) {
+    return res.status(404).json({ message: "No students found in the course." });
   }
 
-  // Get all student emails and IDs from the attenders
-  const recipients = course.attenders.map((attender) => ({
-    id: attender._id,
-    email: attender.email,
-  }));
-
-  if (recipients.length === 0) {
-    return res.status(400).json({ message: "No students enrolled in this course" });
-  }
-
-  // Send email notifications
-  const recipientEmails = recipients.map((recipient) => recipient.email);
-
-  let data;
-  if(file){
-    data = {sender, recipientEmails, message, file};
-  }else{
-    data = {sender, recipientEmails, message};
-  }
-  await sendNotificationMail(subject, data);
-
-  const recipientIds = recipients.map((recipient) => recipient.id);
-  const notification = await Notification.create({
-    sender: sender,
+  // Create notification in the database
+  const recipientIds = students.map((s) => s.participant_id._id);
+  const notificationData = {
+    sender: senderId,
     recipients: recipientIds,
     subject,
     message,
-    file: file,
-  });
+    file,
+  };
 
-  res.status(200).json({
-    message: 'Notification created successfully.',
+  const notification = await Notification.create(notificationData);
+
+  // Notify students via email
+  const recipientEmails = students.map((s) => s.participant_id.email);
+  let data;
+  if(file){
+    data = {sender: senderId, recipientEmails, message, file};
+  }else{
+    data = {sender: senderId, recipientEmails, message};
+  }
+  await sendNotificationMail(subject, data);
+
+  // Notify students via socket
+  // students.forEach((student) => {
+  //   const studentSocketId = getReceiverSocketId(student.participant_id._id);
+  //   if (studentSocketId) {
+  //     io.to(studentSocketId).emit("newNotification", {
+  //       notificationId: notification._id,
+  //       subject,
+  //       message,
+  //       createdAt: notification.createdAt,
+  //     });
+  //   }
+  // });
+
+  res.status(200).json({ 
+    message: "Notification sent successfully.",
     notification: notification,
-  });
+   });
 });
