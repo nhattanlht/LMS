@@ -109,15 +109,39 @@
 
 /* Nội dung của thông báo */
 .notification-content {
-  text-align: center;
-  color: #333;
+  text-align:left;
+   color: #333;
   font-size: 1rem;
-  margin-left:80px;
-  margin-left:20px;
+  margin-left:50px;
+  margin-right:50px;
+
   margin-top:20px;
 
 
 }
+.notification-content-box2 a{
+  text-decoration: none; /* Bỏ gạch dưới */
+  align-self: flex-start; /* Đặt biểu tượng ở cuối container */
+  margin-top: auto; /* Đẩy biểu tượng xuống cuối */
+
+}
+.notification-content-box2 {
+  flex-wrap:wrap;
+  display:flex;
+  flex-direction: column;
+  justify-content: space-between; /* Đẩy các phần tử cách nhau */
+  height: 100%; /* Đảm bảo khung full chiều cao */
+  margin-right:10px;
+  margin-top:10px;
+  margin-left:10px;
+  font-size: 1rem;
+  color: black;
+  line-height: 1.6;
+  margin-bottom: 10px;
+  box-sizing: border-box; /* Đảm bảo kích thước bao gồm cả padding và border */
+
+}
+
 .notification-content-box {
   display:flex;
   justify-content: space-between;
@@ -172,6 +196,12 @@
   font-size:30px;
   text-align:center;
 }
-
+.iconD{
+  color:#8a4baf;
+  margin-left:10px;
+  margin-right:15px;
+  font-size:20px;
+  text-align:center;
+}
 
 

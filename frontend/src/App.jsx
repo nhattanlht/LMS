@@ -17,6 +17,7 @@ import Dashbord from "./pages/dashbord/Dashbord";
 import CourseStudy from "./pages/coursestudy/CourseStudy";
 import CourseNotStudy from "./pages/coursenotstudy/CourseNotStudy";
 import Search from "./pages/search/Search";
+import Noti from "./pages/notification/Noti";
 
 import Lecture from "./pages/lecture/Lecture";
 import AdminDashbord from "./admin/Dashboard/AdminDashbord";
@@ -87,6 +88,7 @@ const App = () => {
           
               <Route path="/search" element={<Search />} />
              
+              <Route path="/notification" element={<Noti />} />
 
             <Route
               path="/admin/dashboard"

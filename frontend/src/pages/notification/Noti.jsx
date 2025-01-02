@@ -4,6 +4,8 @@ import axios from "axios";
 import Loading from "../../components/loading/Loading";
 import { MdMail } from "react-icons/md"; // Import Mail Icon from React Icons
 import { FaBell } from "react-icons/fa";  // Import Bell Icon from React Icons
+import { FaDownload } from "react-icons/fa";
+
 
 
 
@@ -161,7 +163,7 @@ const Noti = () => {
                   </div>
                   </div>
                   <hr ></hr>
-                  <div className="notification-content-box">
+                  <div className="notification-content-box2">
 
 
                   <div className="notification-content">{selectedNotification.message}
@@ -169,9 +171,20 @@ const Noti = () => {
 
                   
                   {selectedNotification.file && (
-                    <a href={`http://localhost:3001/${selectedNotification.file.path}`} target="_blank" rel="noreferrer">
-                      Download attachment
-                    </a>
+                    <a
+                    href={
+                      selectedNotification.file.path.startsWith("http")
+                        ? selectedNotification.file.path
+                        : `${server}/${selectedNotification.file.path}`
+                    }
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <p>
+                    <FaDownload className="iconD" />
+                      {selectedNotification.file.path}
+                    </p>
+                  </a>
                   )}
                   </div>
                   
