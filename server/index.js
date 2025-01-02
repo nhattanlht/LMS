@@ -30,6 +30,7 @@ import courseRoutes from "./routes/course.js";
 import adminRoutes from "./routes/admin.js";
 import forumRoutes from "./routes/forum.js";
 import asssignmentRoutes from "./routes/assignment.js";
+import submissionRoutes from "./routes/submission.js";
 import messageRoutes from "./routes/message.js";
 import resourceRoutes from "./routes/resources.js";
 
@@ -40,6 +41,7 @@ app.use("/api", courseRoutes);
 app.use("/api", adminRoutes);
 app.use("/api", forumRoutes);
 app.use("/api", asssignmentRoutes);
+app.use("/api/", submissionRoutes);
 app.use("/api", messageRoutes);
 app.use("/api", resourceRoutes);
 
