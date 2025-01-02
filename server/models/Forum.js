@@ -27,7 +27,6 @@ const forumSchema = new mongoose.Schema({
     ref: "Courses",
     required: true,
   },
-  question: { type: String, required: true },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

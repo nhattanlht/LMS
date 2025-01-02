@@ -207,9 +207,9 @@ const CourseStudy = ({ user }) => {
                   {/*Forum*/}
                   <div className="col">
                     <div className="info">
-                      <p>
+                      <Link to={`/course/study/${params.id}/forums`}>
                         <FontAwesomeIcon icon={faComment} /> Discussion Forum{" "}
-                      </p>
+                      </Link>
                     </div>
                   </div>
                   {/* Resources Column */}

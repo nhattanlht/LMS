@@ -25,7 +25,6 @@ export const createQuestion = TryCatch(async (req, res) => {
     title,
     content,
     createdBy,
-    createdAt,
   };
 
   await Forum.findByIdAndUpdate(forumId, {
@@ -45,7 +44,6 @@ export const createAnswer = TryCatch(async (req, res) => {
   const answer = {
     content,
     createdBy,
-    createdAt,
   };
 
   await Forum.updateOne(
@@ -61,7 +59,7 @@ export const createAnswer = TryCatch(async (req, res) => {
 
 export const getForums = TryCatch(async (req, res) => {
   const { courseId } = req.query;
-  const forums = await Forum.find({ course: courseId}).populate('course createdBy');
+  const forums = await Forum.find({ course: courseId}).populate('course createdBy', 'title name');
 
   res.status(200).json({
     message: 'Forums retrieved successfully',
@@ -71,7 +69,7 @@ export const getForums = TryCatch(async (req, res) => {
 
 export const getQuestions = TryCatch(async (req, res) => {
   const { forumId } = req.params;
-  const forum = await Forum.findById(forumId).populate('questions.createdBy');
+  const forum = await Forum.findById(forumId).populate('questions.createdBy', 'name');
 
   if (!forum) {
     return res.status(404).json({
@@ -90,7 +88,7 @@ export const getAnswers = TryCatch(async (req, res) => {
   const forum = await Forum.findOne(
     { _id: forumId, "questions._id": questionId },
     { "questions.$": 1 }
-  ).populate('questions.answers.createdBy');
+  ).populate('questions.answers.createdBy', 'name');
 
   if (!forum || forum.questions.length === 0) {
     return res.status(404).json({

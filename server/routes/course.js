@@ -3,7 +3,6 @@ import {
   getAllCourses,
   getSingleCourse,
   getCourseByName,
-  joinCourse,
   fetchLectures,
   fetchLecture,
   getMyCourses,
@@ -17,9 +16,8 @@ const router = express.Router();
 router.get("/course/all", getAllCourses);
 router.get("/course/one", getCourseByName);
 router.get("/course/:id", getSingleCourse);
-router.post("/course/join/:courseId", isAuth, isStudent, joinCourse);
 router.get("/lectures/:id", isAuth, fetchLectures);
 router.get("/lecture/:id", isAuth, fetchLecture);
 router.get("/mycourse", isAuth, getMyCourses);
-router.post('/course/:id/notification', isAuth, isLecturer, uploadFiles, sendNotificationToCourseStudents)
+router.post('/course/notification', isAuth, isLecturer, uploadFiles, sendNotificationToCourseStudents)
 export default router;
