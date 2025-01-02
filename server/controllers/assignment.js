@@ -124,6 +124,23 @@ export const getStudentAssignments = TryCatch(async (req, res) => {
   });
 });
 
+export const getAssignmentDetails = TryCatch(async (req, res) => {
+  const { assignmentId } = req.params;
+
+  const assignment = await Assignment.findById(assignmentId)
+    .populate("instructor", "name email")
+    .populate("submissions.student", "name email");
+
+  if (!assignment) {
+    return res.status(404).json({ message: "Assignment not found" });
+  }
+
+  res.status(200).json({
+    message: "Assignment details fetched successfully",
+    assignment,
+  })
+});
+
 export const updateAssignment = TryCatch(async (req, res) => {
   const { assignmentId } = req.params;
 
