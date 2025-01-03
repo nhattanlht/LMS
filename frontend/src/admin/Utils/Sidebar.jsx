@@ -7,6 +7,7 @@ import { UserData } from "../../context/UserContext";
 
 const Sidebar = () => {
   const { user } = UserData();
+
   return (
     <div className="sidebar">
       <ul>
@@ -28,7 +29,7 @@ const Sidebar = () => {
           </Link>
         </li>
 
-        {user && user.mainrole === "superadmin" && (
+        {user && user.role === "superadmin" && (
           <li>
             <Link to={"/admin/users"}>
               <div className="icon">

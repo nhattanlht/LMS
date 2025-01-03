@@ -8,7 +8,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import toast from "react-hot-toast";
 
 const Forum = ({ forum, backToForums }) => {
-    const [questions, setQuestions] = useState(forum.questions);
+    const [questions, setQuestions] = useState([]);
     const [selectedQuestion, setSelectedQuestion] = useState(null);
     const [newQuestion, setNewQuestion] = useState("");
     const [newTitle, setNewTitle] = useState("");
@@ -19,7 +19,7 @@ const Forum = ({ forum, backToForums }) => {
 
     const fetchQuestions = async () => {
         try {
-        const { data } = await axios.get(`${server}/api/forums/${forum._id}`,
+        const { data } = await axios.get(`${server}/api/forums/${forum._id}/questions`,
           {
             headers: {
               token: localStorage.getItem("token"),
@@ -28,6 +28,7 @@ const Forum = ({ forum, backToForums }) => {
         );
         
         setQuestions(data.data);
+        console.log(data.data);
         } catch (error) {
         console.error("Error fetching questions:", error);
         }
@@ -37,10 +38,9 @@ const Forum = ({ forum, backToForums }) => {
         e.preventDefault();
         setIsLoading(true);
         try {
-        const { data } = await axios.post(`${server}/api/forums/question`, {
+        const { data } = await axios.post(`${server}/api/forums/${forum._id}/questions`, {
             title: newTitle,
             content: newQuestion,
-            forumId: forum._id,
         },
           {
             headers: {
@@ -54,7 +54,7 @@ const Forum = ({ forum, backToForums }) => {
         fetchQuestions();
         toast.success("Question created successfully!");
         } catch (error) {
-          toast.error("Error creating question:", error);
+          toast.error("Error creating question:", error.response.data.message);
         }finally{
           setIsLoading(false);
         }

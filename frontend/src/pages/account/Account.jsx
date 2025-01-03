@@ -175,7 +175,7 @@ const Account = ({ user }) => {
           />
         </div>
 
-        {user.mainrole === "student" && (
+        {user.role === "student" && (
           <>
             <div className="form-row">
               <label>
@@ -205,7 +205,7 @@ const Account = ({ user }) => {
           </>
         )}
 
-        {user.mainrole === "lecturer" && (
+        {user.role === "lecturer" && (
           <div className="form-row">
             <label>
               <strong>Faculty</strong>
@@ -239,7 +239,7 @@ const Account = ({ user }) => {
           Dashboard
         </button>
 
-        {user.role === "admin" && (
+        {user.mainrole === "admin"&& (
           <button
             onClick={() => navigate(`/admin/dashboard`)}
             className="common-btn account-btn"

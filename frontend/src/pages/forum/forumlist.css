@@ -107,7 +107,7 @@
     margin-bottom: 15px;
   }
   
-  .post-button {
+  .create-question-form .post-button {
     background-color: #8a4baf;
     color: #fff;
     border: none;
@@ -118,7 +118,7 @@
     transition: background-color 0.3s ease;
   }
   
-  .post-button:hover {
+  .create-question-form .post-button:hover {
     background-color: #6c399f;
   }
   
