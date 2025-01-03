@@ -179,7 +179,7 @@ export const getForums = TryCatch(async (req, res) => {
 export const getQuestions = TryCatch(async (req, res) => {
   const { forumId } = req.params;
 
-  const forum = await Forum.findById(forumId).populate('courseId').lean();
+  const forum = await Forum.findById(forumId).lean();
   if (!forum) {
     return res.status(404).json({
       message: 'Forum not found',
@@ -219,7 +219,7 @@ export const getQuestions = TryCatch(async (req, res) => {
 export const getAnswers = TryCatch(async (req, res) => {
   const { forumId, questionId } = req.params;
 
-  const forum = await Forum.findById(forumId).populate('courseId').lean();
+  const forum = await Forum.findById(forumId).lean();
   if (!forum) {
     return res.status(404).json({
       message: 'Forum not found',
