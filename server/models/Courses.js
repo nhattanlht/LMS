@@ -31,7 +31,6 @@ const schema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  attenders: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 });
 
 export const Courses = mongoose.model("Courses", schema);

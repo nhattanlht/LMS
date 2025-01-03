@@ -25,6 +25,7 @@ import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPassword from "./pages/auth/ResetPassword";
 import AssignmentDetails from "./pages/assignment/AssignmentDetails";
 import Message from "./pages/message/message";
+import ForumList from "./pages/forum/ForumList";
 import { useState } from "react";
 
 const App = () => {
@@ -80,7 +81,10 @@ const App = () => {
               element={isAuth ? <CourseStudy user={user} /> : <Login />}
               //element={ <CourseStudy /> }
             />
-
+            <Route
+              path="/course/study/:id/forums"
+              element={isAuth ? <ForumList user={user} /> : <Login />}
+            />
             <Route
               path="/lectures/:id"
               element={isAuth ? <Lecture user={user} /> : <Login />}

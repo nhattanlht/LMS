@@ -82,6 +82,11 @@ export const addParticipantsToCourse = TryCatch(async (req, res) => {
     return res.status(400).json({ message: "Course ID is required" });
   }
 
+  const course = await Courses.findById(courseId);
+  if(!course){ 
+    return res.status(404).json({ message: "Course not found" });
+  }
+
   if (!participants || (!Array.isArray(participants) && typeof participants !== "object")) {
     return res.status(400).json({ message: "Participants must be an array or a single participant object." });
   }
@@ -97,6 +102,13 @@ export const addParticipantsToCourse = TryCatch(async (req, res) => {
       return res.status(400).json({
         message: "Each participant must have a valid participant_id and role (student or lecturer).",
       });
+    }
+
+    const existingParticipant = await User.findById(participant.participant_id);
+    if(!existingParticipant){
+      return res.status(404).json({
+        message: "User not found.",
+      })
     }
   }
 
@@ -121,6 +133,16 @@ export const addParticipantsToCourse = TryCatch(async (req, res) => {
     enrollment.updated_at = new Date();
     await enrollment.save();
   }
+
+   // Update subscription for each participant
+
+   for (const participant of participantList) {
+     const user = await User.findById(participant.participant_id);
+     if (user && !user.subscription.includes(courseId)) {
+       user.subscription.push(courseId);
+       await user.save();
+     }
+   }
 
   res.status(200).json({ message: "Participants successfully added to the course." });
 });
