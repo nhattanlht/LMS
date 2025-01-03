@@ -4,6 +4,7 @@ import App from "./App.jsx";
 import { UserContextProvider } from "./context/UserContext.jsx";
 import { CourseContextProvider } from "./context/CourseContext.jsx";
 import { AssignmentContextProvider } from "./context/AssignmentContext.jsx";
+import { SubmissionsContextProvider } from "./context/SubmissionsContext";
 
 export const server = "http://localhost:3001";
 
@@ -12,7 +13,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <UserContextProvider>
       <CourseContextProvider>
         <AssignmentContextProvider>
-          <App />
+          <SubmissionsContextProvider>
+            <App />
+          </SubmissionsContextProvider>
         </AssignmentContextProvider>
       </CourseContextProvider>
     </UserContextProvider>

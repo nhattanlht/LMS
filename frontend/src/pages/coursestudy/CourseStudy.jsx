@@ -18,6 +18,8 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AddAssignmentModal from "../assignment/AddAssignmentModal";
 import { AssignmentData } from "../../context/AssignmentContext";
+import EnterGradeModal from "../assignment/EnterGradeModal";
+import ViewGradeModal from "../assignment/ViewGradeModal";
 
 const CourseStudy = ({ user }) => {
   // const [role, setRole] = useState("A");
@@ -32,9 +34,12 @@ const CourseStudy = ({ user }) => {
   const [editResource, setEditResource] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
   const [showAddAssignmentModal, setShowAddAssignmentModal] = useState(false);
-  const [showEnterGradeModal, setShowEnterGradeModal] = useState(false);
+  const [showGradeModal, setShowGradeModal] = useState(false);
   const { assignments, fetchInstructorAssignments, fetchStudentAssignments } =
     AssignmentData();
+  const [selectedAssignment, setSelectedAssignment] = useState("");
+  const [showViewGradeModal, setShowViewGradeModal] = useState(false);
+  const courseId = course._id;
 
   const handleSaveResourceEdit = () => {
     const updatedResources = resources.map((item) =>
@@ -81,6 +86,26 @@ const CourseStudy = ({ user }) => {
   const handleEditResource = (resource) => {
     setEditResource(resource); // Set resource to edit
     setShowEditResourceModal(true); // Open the edit resource modal
+  };
+
+  const handleGradeClick = () => {
+    setShowGradeModal(true);
+  };
+
+  const handleCloseGradeModal = () => {
+    setShowGradeModal(false);
+  };
+
+  const handleAssignmentChange = (e) => {
+    setSelectedAssignment(e.target.value);
+  };
+
+  const handleViewGradeClick = () => {
+    setShowViewGradeModal(true);
+  };
+
+  const handleCloseViewGradeModal = () => {
+    setShowViewGradeModal(false);
   };
 
   useEffect(() => {
@@ -179,7 +204,7 @@ const CourseStudy = ({ user }) => {
             {user.role === "lecturer" && (
               <div className="course-button">
                 <div className="course-links">
-                  <button className="edit-btn">
+                  <button onClick={handleGradeClick} className="edit-btn">
                     <FontAwesomeIcon icon={faPencilAlt} /> <p>Enter Grade</p>
                   </button>
 
@@ -189,16 +214,33 @@ const CourseStudy = ({ user }) => {
                 </div>
               </div>
             )}
+            {showGradeModal && (
+              <EnterGradeModal
+                courseId={courseId} // Truyền courseId vào modal
+                assignments={assignments} // Truyền assignments vào modal
+                selectedAssignment={selectedAssignment} // Truyền assignment được chọn vào modal
+                onAssignmentChange={handleAssignmentChange} // Truyền hàm xử lý thay đổi assignment vào modal
+                onClose={handleCloseGradeModal}
+              />
+            )}
             {/*Xem điểm */}
             {user.role === "student" && (
               <div className="course-button">
                 <div className="course-links">
-                  <button className="upload-btn">
+                  <button className="edit-btn" onClick={handleViewGradeClick}>
                     <FontAwesomeIcon icon={faEye} className="white-icon" />{" "}
                     <p>View Grade</p>
                   </button>
                 </div>
               </div>
+            )}
+
+            {showViewGradeModal && (
+              <ViewGradeModal
+                courseId={courseId}
+                user={user}
+                onClose={handleCloseViewGradeModal}
+              />
             )}
 
             <div className="container">
@@ -308,7 +350,7 @@ const CourseStudy = ({ user }) => {
                           <p>{assignment.description}</p>
                           <p>
                             Due Date:{" "}
-                            {new Date(assignment.dueDate).toLocaleDateString()}
+                            {new Date(assignment.dueDate).toLocaleString()}
                           </p>
                         </li>
                       ))}

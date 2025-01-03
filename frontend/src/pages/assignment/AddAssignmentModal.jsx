@@ -8,6 +8,7 @@ const AddAssignmentModal = ({ courseId, onClose }) => {
   const [description, setDescription] = useState("");
   const [startDate, setStartDate] = useState("");
   const [dueDate, setDueDate] = useState("");
+  const [type, setType] = useState("assignment");
   const [file, setFile] = useState(null);
 
   const handleSubmit = async (e) => {
@@ -17,12 +18,12 @@ const AddAssignmentModal = ({ courseId, onClose }) => {
     formData.append("description", description);
     formData.append("startDate", startDate);
     formData.append("dueDate", dueDate);
-    formData.append("courseId", courseId); // Sử dụng courseId từ props
+    formData.append("courseId", courseId);
+    formData.append("type", type);
     if (file) {
       formData.append("file", file);
     }
-    await addAssignment(formData);
-    onClose();
+    await addAssignment(formData, onClose); // Truyền hàm onClose vào hàm addAssignment
   };
 
   return (
@@ -52,7 +53,7 @@ const AddAssignmentModal = ({ courseId, onClose }) => {
           <div className="form-group">
             <label htmlFor="startDate">Start Date</label>
             <input
-              type="date"
+              type="datetime-local"
               id="startDate"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
@@ -62,12 +63,24 @@ const AddAssignmentModal = ({ courseId, onClose }) => {
           <div className="form-group">
             <label htmlFor="dueDate">Due Date</label>
             <input
-              type="date"
+              type="datetime-local"
               id="dueDate"
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
               required
             />
+          </div>
+          <div className="form-group">
+            <label htmlFor="type">Type</label>
+            <select
+              id="type"
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+              required
+            >
+              <option value="assignment">Assignment</option>
+              <option value="quiz">Quiz</option>
+            </select>
           </div>
           <div className="form-group">
             <label htmlFor="file">File</label>
@@ -77,8 +90,10 @@ const AddAssignmentModal = ({ courseId, onClose }) => {
               onChange={(e) => setFile(e.target.files[0])}
             />
           </div>
-          <button type="submit">Add Assignment</button>
-          <button type="button" onClick={onClose}>Cancel</button>
+          <div className="button-group">
+            <button type="submit">Add Assignment</button>
+            <button type="button" onClick={onClose}>Cancel</button>
+          </div>
         </form>
       </div>
     </div>

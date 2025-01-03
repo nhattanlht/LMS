@@ -38,9 +38,9 @@ const AssignmentDetails = ({ user }) => {
             <h2>{assignment.title}</h2>
             <p>{assignment.description}</p>
             <p>
-              Start Date: {new Date(assignment.startDate).toLocaleDateString()}
+              Start Date: {new Date(assignment.startDate).toLocaleString()}
             </p>
-            <p>Due Date: {new Date(assignment.dueDate).toLocaleDateString()}</p>
+            <p>Due Date: {new Date(assignment.dueDate).toLocaleString()}</p>
             <p>Course ID: {assignment.courseId}</p>
             <p>Instructor: {assignment.instructor.name}</p>
             <div className="button-group">
@@ -65,13 +65,14 @@ const AssignmentDetails = ({ user }) => {
               )}
             </div>
           </div>
-          <Submissions user={user} assignment={assignment} />
-          {user &&
-            user.role === "lecturer" &&
-            assignment.submissions.length === 0 && <p>No submissions</p>}
+          <Submissions user={user} assignmentId={assignmentId} dueDate={assignment.dueDate} />
+          {user && user.role === "lecturer" && assignment.submissions?.length === 0 && (
+            <p>No submissions</p>
+          )}
           {showModal && (
             <UpdateAssignmentModal
               assignment={assignment}
+              assignmentId={assignmentId} // Truyền assignmentId vào modal
               onClose={handleCloseModal}
             />
           )}
