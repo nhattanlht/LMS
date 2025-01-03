@@ -1,14 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./submissions.css";
 import { TiTick } from "react-icons/ti";
-import { AssignmentData } from "../../context/AssignmentContext";
+import { SubmissionsData } from "../../context/SubmissionsContext";
 
-const Submissions = ({ user, assignment }) => {
-  const { submitAssignment } = AssignmentData();
+const Submissions = ({ user, assignmentId, dueDate }) => {
+  const { submissions, fetchSubmissions, submitAssignment } = SubmissionsData();
   const [file, setFile] = useState(null);
 
+  useEffect(() => {
+    fetchSubmissions(assignmentId);
+  }, [assignmentId, fetchSubmissions]);
+
   const studentSubmission = user && user.role === "student"
-    ? assignment.submissions.find(submission => submission.student && submission.student._id === user._id)
+    ? submissions.find(submission => submission.student && submission.student._id === user._id)
     : null;
 
   const handleFileChange = (e) => {
@@ -19,11 +23,13 @@ const Submissions = ({ user, assignment }) => {
     e.preventDefault();
     if (window.confirm("You can only submit once and cannot edit after submission. Are you sure you want to submit?")) {
       const formData = new FormData();
-      formData.append("assignmentId", assignment._id);
+      formData.append("assignmentId", assignmentId);
       formData.append("file", file);
       await submitAssignment(formData);
     }
   };
+
+  const isLate = new Date() > new Date(dueDate);
 
   return (
     <div className="submissions">
@@ -36,7 +42,7 @@ const Submissions = ({ user, assignment }) => {
                 Submitted <TiTick className="tick-icon" />
               </>
             ) : (
-              "Not Submitted"
+              isLate ? "Submission (Late)" : "Not Submitted"
             )}
           </span>
         )}
@@ -52,23 +58,27 @@ const Submissions = ({ user, assignment }) => {
             </li>
           </ul>
         ) : (
-          <form onSubmit={handleSubmit}>
-            <input type="file" onChange={handleFileChange} required />
-            <button type="submit" className="common-btn">Submit Assignment</button>
-          </form>
+          !isLate && (
+            <form onSubmit={handleSubmit}>
+              <input type="file" onChange={handleFileChange} required />
+              <button type="submit" className="common-btn">Submit Assignment</button>
+            </form>
+          )
         )
       ) : (
         <ul>
-          {assignment.submissions.map((submission) => (
-            submission.student && (
+          {submissions.length > 0 ? (
+            submissions.map((submission) => (
               <li key={submission._id}>
                 <p>Student: {submission.student.name}</p>
                 <a href={submission.fileUrl} download target="_blank" rel="noopener noreferrer">
                   Download Submission
                 </a>
               </li>
-            )
-          ))}
+            ))
+          ) : (
+            <p>No submissions</p>
+          )}
         </ul>
       )}
     </div>
