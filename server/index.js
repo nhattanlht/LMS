@@ -5,13 +5,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import { connectDb } from "./database/db.js";
-// import Razorpay from "razorpay";
 import cors from "cors";
-
-// export const instance = new Razorpay({
-//   key_id: process.env.Razorpay_Key,
-//   key_secret: process.env.Razorpay_Secret,
-// });
 
 // using middlewares
 app.use(express.json());
