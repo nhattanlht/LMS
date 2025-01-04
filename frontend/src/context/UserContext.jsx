@@ -20,13 +20,18 @@ export const UserContextProvider = ({ children }) => {
         password,
       });
 
+      console.log(data);
+
       toast.success(data.message);
       localStorage.setItem("token", data.token);
       setUser(data.user);
       setIsAuth(true);
       setBtnLoading(false);
-      navigate("/");
-      fetchMyCourse();
+      if(data.user.mainrole === "admin") navigate("/admin/dashboard");
+      else {
+        navigate("/");
+        fetchMyCourse();
+      }
     } catch (error) {
       setBtnLoading(false);
       setIsAuth(false);

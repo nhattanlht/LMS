@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { UserData } from "../../context/UserContext";
-import {faBell, faSearch} from "@fortawesome/free-solid-svg-icons";
+import {faBell, faSearch, faTimes, faBars} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios"; 
 import { server } from "../../main";
@@ -13,6 +13,11 @@ const Header = ({ isAuth }) => {
   const [searchTerm, setSearchTerm] = useState(""); 
   const [searchResults, setSearchResults] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setMenuOpen((prev) => !prev);
+  };
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -59,18 +64,24 @@ const Header = ({ isAuth }) => {
   };
   return (
     <header className="header">
+      <div className="mobile-adjustment">
       <Link to="/" className="logo">E-Learning</Link>
 
-      <nav className="nav-links">
+      <button className="menu-toggle" onClick={toggleMenu}>
+        <FontAwesomeIcon icon={menuOpen ? faTimes : faBars} />
+      </button>
+      </div>
+      <nav className={`nav-links ${menuOpen ? "open" : ""}`}>
+        {user?.mainrole === "admin" && <Link to="/admin/dashboard">Dashboard</Link>}
         <Link to="/">Home</Link>
         <Link to="/courses">Courses</Link>
         <Link to="/about">About</Link>
       </nav>
 
-      <div className="header-actions">
+      <div className={`header-actions ${menuOpen ? "open" : ""}`}>
         
         <div className="search-bar">
-          <form onSubmit={handleSearchSubmit}>
+          <form onSubmit={handleSearchSubmit} className="search-form">
             <input
               type="text"
               placeholder="Search for courses..."
@@ -90,9 +101,9 @@ const Header = ({ isAuth }) => {
           </div>
 
           <div className="dropdown">
-            <button className="dropdown-button" onClick={toggleDropdown}>
+            <span className="dropdown-button" onClick={toggleDropdown}>
               {user?.profile?.firstName || "User"} ▾
-            </button>
+            </span>
             {isDropdownOpen && (
               <div className="dropdown-menu">
                 <Link to="/account" className="dropdown-item">Account</Link>
