@@ -66,3 +66,10 @@ export const isLecturer = (req, res, next) => {
     });
   }
 };
+
+export const isLecturerOrStudent = (req, res, next) => {
+  if (req.user.role === 'lecturer' || req.user.role === 'student') {
+    return next();
+  }
+  return res.status(403).json({ message: 'Access denied. Only lecturers and students can view grades' });
+};

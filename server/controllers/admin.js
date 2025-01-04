@@ -1,24 +1,29 @@
 import TryCatch from "../middlewares/TryCatch.js";
 import { Courses } from "../models/Courses.js";
 import { Lecture } from "../models/Lecture.js";
+import { Notification } from "../models/Notification.js";
+import Enrollment from "../models/Enrollment.js";
 import { rm } from "fs";
 import { promisify } from "util";
 import fs from "fs";
 import { User } from "../models/User.js";
 import { handleUpload } from "../config/cloudinary2.js";
+import { sendNotificationMail } from "../middlewares/sendMail.js";
+import { getReceiverSocketId, io } from "../config/socket.js";
 
 export const createCourse = TryCatch(async (req, res) => {
   const { title, description, startTime, endTime, duration, category } = req.body;
-  const image = req.file.path;
   
   if (!title || !description || !duration || !category) {
     return res.status(400).json({ message: 'All fields except image, startTime and endTime are required.' });
   }
 
-  const b64 = Buffer.from(req.file.buffer).toString("base64");
-  let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
-  const cldRes = await handleUpload(dataURI, "courses");
-
+  let cldRes;
+  if(req.file){
+    const b64 = Buffer.from(req.file.buffer).toString("base64");
+    let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+    cldRes = await handleUpload(dataURI, "courses");
+  }
   const newCourse = new Courses({
     title,
     description,
@@ -68,6 +73,78 @@ export const modifyCourse = TryCatch(async (req, res) => {
     message: 'Course updated successfully.',
     course: updatedCourse,
   });
+});
+
+export const addParticipantsToCourse = TryCatch(async (req, res) => {
+  const { courseId, participants } = req.body;
+
+  if (!courseId) {
+    return res.status(400).json({ message: "Course ID is required" });
+  }
+
+  const course = await Courses.findById(courseId);
+  if(!course){ 
+    return res.status(404).json({ message: "Course not found" });
+  }
+
+  if (!participants || (!Array.isArray(participants) && typeof participants !== "object")) {
+    return res.status(400).json({ message: "Participants must be an array or a single participant object." });
+  }
+
+  const validRoles = ["student", "lecturer"];
+
+  // Normalize participants to an array
+  const participantList = Array.isArray(participants) ? participants : [participants];
+
+  // Validate participants
+  for (const participant of participantList) {
+    if (!participant.participant_id || !validRoles.includes(participant.role)) {
+      return res.status(400).json({
+        message: "Each participant must have a valid participant_id and role (student or lecturer).",
+      });
+    }
+
+    const existingParticipant = await User.findById(participant.participant_id);
+    if(!existingParticipant){
+      return res.status(404).json({
+        message: "User not found.",
+      })
+    }
+  }
+
+  const enrollment = await Enrollment.findOne({ course_id: courseId });
+
+  if (!enrollment) {
+    // If no enrollment exists, create a new one
+    await Enrollment.create({
+      course_id: courseId,
+      participants: participantList,
+    });
+  } else {
+    // If enrollment exists, add participants to it
+    const participantIds = enrollment.participants.map((p) => p.participant_id.toString());
+
+    participantList.forEach((participant) => {
+      if (!participantIds.includes(participant.participant_id)) {
+        enrollment.participants.push(participant);
+      }
+    });
+
+    enrollment.updated_at = new Date();
+    await enrollment.save();
+  }
+
+   // Update subscription for each participant
+
+   for (const participant of participantList) {
+     const user = await User.findById(participant.participant_id);
+     if (user && !user.subscription.includes(courseId)) {
+       user.subscription.push(courseId);
+       await user.save();
+     }
+   }
+
+  res.status(200).json({ message: "Participants successfully added to the course." });
 });
 
 export const addLectures = TryCatch(async (req, res) => {
@@ -211,27 +288,73 @@ export const updateRole = TryCatch(async (req, res) => {
 });
 
 export const sendNotification = TryCatch(async (req, res) => {
-  const { sender, recipients, subject, message, file } = req.body;
+  const {recipientType, specificRecipients, subject, message } = req.body;
+  const sender = req.user._id;
 
-  if (!sender || !recipients || !subject || !message) {
-    return res.status(400).json({ message: 'Missing required fields: sender, recipient, subject, or message.' });
+  let file = null;
+  if(req.file){
+    const b64 = Buffer.from(req.file.buffer).toString("base64");
+    let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+    const cldRes = await handleUpload(dataURI, "courses");
+    file = {
+      filename: req.file.originalname,
+      path: cldRes.secure_url,
+    };
   }
 
-  const notification = new Notification({
-    sender,
-    recipients,
+  console.log(req.body);
+  if (!subject || !message || !recipientType) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+
+  let recipientIds = [];
+
+  if (recipientType === 'allUsers') {
+    recipientIds = await User.find().select('_id');
+  } else if (recipientType === 'allLecturers') {
+    recipientIds = await User.find({ mainrole: 'lecturer' }).select('_id');
+  } else if (recipientType === 'allStudents') {
+    recipientIds = await User.find({ mainrole: 'student' }).select('_id');
+  } else if (recipientType === 'specific') {
+    const recipientsEmail = specificRecipients.split(',');
+    const users = await User.find({ email: { $in: recipientsEmail } }).select('_id');
+    recipientIds = users.map((user) => user._id);
+  }
+  
+  const notification = await Notification.create({
+    sender: sender,
+    recipients: recipientIds,
     subject,
     message,
-    file,
+    file: file,
   });
 
-  const savedNotification = await notification.save();
+  const users = await User.find({ _id: { $in: recipientIds } });
+  const recipientEmails = users.map(user => user.email);
 
-  const data = {sender, recipients, message, file}
-  await sendNotificationMail({ subject, data });
+  let data;
+  if(file){
+    data = {sender, recipientEmails, message, file};
+  }else{
+    data = {sender, recipientEmails, message};
+  }
+  await sendNotificationMail(subject, data);
+
+  // // Notify users via socket
+  // recipientIds.forEach((recipientId) => {
+  //   const recipientSocketId = getReceiverSocketId(recipientId);
+  //   if (recipientSocketId) {
+  //     io.to(recipientSocketId).emit("newNotification", {
+  //       notificationId: notification._id,
+  //       subject,
+  //       message,
+  //       createdAt: notification.createdAt,
+  //     });
+  //   }
+  // });
 
   res.status(201).json({
     message: 'Notification created successfully.',
-    notification: savedNotification,
+    notification: notification,
   });
 });

@@ -8,13 +8,19 @@ import { FaBell } from "react-icons/fa";  // Import Bell Icon
 import axios from "axios";
 import { MdMail } from "react-icons/md"; // Import Mail Icon from React Icons
 
+import {faSearch} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { server } from "../../main";
 const Header = ({ isAuth }) => {
-  const { setIsAuth, setUser } = UserData();
+  const { user, setIsAuth, setUser } = UserData();
   const [searchTerm, setSearchTerm] = useState(""); 
   const [searchResults, setSearchResults] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+
 
   const navigate = useNavigate();
 
@@ -92,21 +98,40 @@ const Header = ({ isAuth }) => {
   };
 
   return (
-    <header>
-      <Link to={"/"} className="logo">E-Learning</Link>
+    <header className="header">
+      <Link to="/" className="logo">E-Learning</Link>
 
-      <div className="link">
-        <Link to={"/"}>Home</Link>
-        <Link to={"/courses"}>Courses</Link>
-        <Link to={"/about"}>About</Link>
+      <nav className="nav-links">
+        <Link to="/">Home</Link>
+        <Link to="/courses">Courses</Link>
+        <Link to="/about">About</Link>
         {isAuth ? (
           <>
             <Link to={"/account"}>Account</Link>
             <a onClick={logoutHandler}>Logout</a>
           </>
         ) : (
-          <Link to={"/login"}>Login</Link>
+          <Link to="/login" className="login-link">Login</Link>
         )}
+      </nav>
+
+      <div className="header-actions">
+        
+        <div className="search-bar">
+          <form onSubmit={handleSearchSubmit}>
+            <input
+              type="text"
+              placeholder="Search for courses..."
+              value={searchTerm}
+              onChange={handleSearchChange}
+            />
+            <button type="submit">
+              <FontAwesomeIcon icon={faSearch} />
+            </button>
+          </form>
+        </div>
+
+      
       </div>
 
       <div className="noti">
@@ -133,17 +158,7 @@ const Header = ({ isAuth }) => {
           )}
       </div>
 
-      <div className="search-bar">
-        <form onSubmit={handleSearchSubmit}>
-          <input
-            type="text"
-            placeholder="Search for courses..."
-            value={searchTerm}
-            onChange={handleSearchChange}
-          />
-          <button type="submit">Search</button>
-        </form>
-      </div>
+   
     </header>
   );
 };

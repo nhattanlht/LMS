@@ -36,7 +36,7 @@ const CourseNotStudy = () => {
             </div>
             <div className="course-header">
               <img
-                src={`${server}/${course.image}`}
+                src={course.image}
                 alt="Course"
                 className="course-image"
               />

@@ -99,9 +99,10 @@ ul li {
 .info{
   display: block;
 }
-.info p{
+.info a{
   font-size: 16px;
   color:purple;
+  text-decoration: none;
 }
 
 .course-title-bar {
@@ -199,19 +200,11 @@ ul li {
   border-radius: 8px;
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
   width: 400px;
+  .btn{
+    float:right;
+  }
 }
 
-
-.close-btn {
-  background-color: #dddddd;
-  color: black;
-  font-size: 16px;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 10px;
-}
 
 .success-message {
   color: #a72894; /* Màu chữ thành công */
@@ -222,49 +215,50 @@ ul li {
 
 
 .file-item-container {
+  font-size:14px;
+  border-bottom: 1px solid #ddd;
+  margin-bottom:5px;
+}
+.file-item-container:last-child {
+  border-bottom: none; /* Nếu sử dụng border để gạch dưới */
+  
+}
+.file-item{
   display: flex;
-  align-items: center;
   justify-content: space-between; 
   font-size:14px;
+  padding: 10px;
+}
+.file-item-icon{
+  display:flex;
+  align-items: right;
 }
 
-.file-item p{
-  font-size: 16px;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between; 
-  color:black;
-  font-weight: normal;
+.file-item-container {
+  ul, ol,li {
+    list-style-type: none; /* Loại bỏ ký hiệu đầu dòng */
+    padding: 0;           /* Loại bỏ padding mặc định nếu cần */
+    margin: 0;            /* Loại bỏ margin mặc định nếu cần */
+  }
+  p{
+    font-size: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between; 
+    color:black;
+    font-weight: normal;
+  }
+}
+ .time{
+  font-size: 12px;
+  color: gray;
+  text-align:left;
+  margin-top:1px;
+  margin-bottom:5px;
 }
 
-.file-actions {
-  display: flex;
-  gap: 10px; 
-  margin-right: 10px;
-  font-size:14px;
-}
 
-.file-name {
-  flex-grow: 1; 
-  word-wrap: break-word; 
-}
 
-.file-options {
-  cursor: pointer;
-  font-size: 20px;
-  color: black;
-  margin-left: auto; 
-  display: inline-block;
-}
-
-.file-options:hover {
-  color: #007bff;
-}
-
-.file-info {
-  font-size: 0.8rem;
-  color: #0c0101;
-}
 
 /* Modal Overlay */
 .modal-overlay {
@@ -277,8 +271,9 @@ ul li {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 9999;
 }
+
 
 /* Modal Content */
 .modal-content {
@@ -346,9 +341,9 @@ ul li {
   background-color: #8d2c79;
 }
 
-.close-btn {
-  background-color: #ddd;
-  color: black;
+.close-btn:hover {
+  background-color: red;
+  color: white;
   font-size: 16px;
   padding: 10px 20px;
   border: none;
@@ -393,16 +388,11 @@ ul li {
   color:white;
 }
 
-.icon{
+
+.ricon{
   font-size: 13px;
   float:center;
   color:#9b30b6;
-  margin-left:2px;
-}
-.whiteicon{
-  font-size: 13px;
-  float:center;
-  color:#fbf8fc;
 }
 
 /* Hover effect for Edit and Delete buttons */

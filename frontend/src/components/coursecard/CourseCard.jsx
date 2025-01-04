@@ -20,7 +20,7 @@ const CourseCard = ({ course }) => {
 
   return (
     <div className="course-card" onClick={handleCourseClick}>
-      <img src={`${server}/${course.image}`} alt={course.title} className="course-image" />
+      <img src={course.image} alt={course.title} className="course-image" />
       <h3>{course.title}</h3>
       <p>Start: {new Date(course.startTime).toLocaleDateString("en-GB", { timeZone: "UTC" })}</p>
       <p>End: {new Date(course.endTime).toLocaleDateString("en-GB", { timeZone: "UTC" })}</p>

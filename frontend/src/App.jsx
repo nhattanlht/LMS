@@ -12,7 +12,6 @@ import Account from "./pages/account/Account";
 import { UserData } from "./context/UserContext";
 import Loading from "./components/loading/Loading";
 import Courses from "./pages/courses/Courses";
-import PaymentSuccess from "./pages/paymentsuccess/PaymentSuccess";
 import Dashbord from "./pages/dashbord/Dashbord";
 import CourseStudy from "./pages/coursestudy/CourseStudy";
 import CourseNotStudy from "./pages/coursenotstudy/CourseNotStudy";
@@ -25,9 +24,15 @@ import AdminCourses from "./admin/Courses/AdminCourses";
 import AdminUsers from "./admin/Users/AdminUsers";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPassword from "./pages/auth/ResetPassword";
+import AssignmentDetails from "./pages/assignment/AssignmentDetails";
+
+import Message from "./pages/message/message";
+import ForumList from "./pages/forum/ForumList";
+import { useState } from "react";
 
 const App = () => {
   const { isAuth, user, loading } = UserData();
+  const [receiverId, setReceiverId] = useState(null);
   return (
     <>
       {loading ? (
@@ -36,7 +41,10 @@ const App = () => {
         <BrowserRouter>
           <Header isAuth={isAuth} />
           <Routes>
-            <Route path="/" element={ isAuth ? <Dashbord user={user}/> :<Home />} />
+            <Route
+              path="/"
+              element={isAuth ? <Dashbord user={user} /> : <Home />}
+            />
             <Route path="/about" element={<About />} />
             <Route
               path="/account"
@@ -58,10 +66,6 @@ const App = () => {
             />
            
             <Route
-              path="/payment-success/:id"
-              element={isAuth ? <PaymentSuccess user={user} /> : <Login />}
-            />
-            <Route
               path="/:id/dashboard"
               element={isAuth ? <Dashbord user={user} /> : <Login />}
             />
@@ -76,10 +80,13 @@ const App = () => {
             
             <Route
               path="/course/study/:id"
-              //element={isAuth ? <CourseStudy user={user} /> : <Login />}
-              element={ <CourseStudy /> }
+              element={isAuth ? <CourseStudy user={user} /> : <Login />}
+              //element={ <CourseStudy /> }
             />
-
+            <Route
+              path="/course/study/:id/forums"
+              element={isAuth ? <ForumList user={user} /> : <Login />}
+            />
             <Route
               path="/lectures/:id"
               element={isAuth ? <Lecture user={user} /> : <Login />}
@@ -97,11 +104,24 @@ const App = () => {
 
             <Route
               path="/admin/course"
-              element={isAuth ? <AdminCourses user={user} /> : <Login />}
+              // element={isAuth ? <AdminCourses user={user} /> : <Login />}
+              element={<AdminCourses user={user} />}
             />
             <Route
               path="/admin/users"
               element={isAuth ? <AdminUsers user={user} /> : <Login />}
+            />
+            <Route
+              path="/admin/users"
+              element={isAuth ? <AdminUsers user={user} /> : <Login />}
+            />
+            <Route
+              path="/assignments/details/:assignmentId"
+              element={isAuth ? <AssignmentDetails user={user} /> : <Login />}
+            />
+            <Route
+              path="/messages"
+              element={isAuth ? <Message user={user} receiverId={receiverId} setReceiverId={setReceiverId} /> : <Login />}
             />
           </Routes>
           <Footer />

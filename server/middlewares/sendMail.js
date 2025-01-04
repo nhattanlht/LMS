@@ -10,49 +10,66 @@ const sendMail = async (email, subject, data) => {
     },
   });
 
-  const html = `<!DOCTYPE html>
+    const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OTP Verification</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .container {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-        h1 {
-            color: red;
-        }
-        p {
-            margin-bottom: 20px;
-            color: #666;
-        }
-        .otp {
-            font-size: 36px;
-            color: #7b68ee; /* Purple text */
-            margin-bottom: 30px;
-        }
-    </style>
+    <title>OTP Verification - E-Learning Website</title>
 </head>
-<body>
-    <div class="container">
-        <h1>OTP Verification</h1>
-        <p>Hello ${data.name} your (One-Time Password) for your account verification is.</p>
-        <p class="otp">${data.otp}</p> 
-    </div>
+<body style="margin: 0; padding: 0; background-color: #f4f4f4; font-family: Arial, sans-serif;">
+
+    <!-- Email Wrapper -->
+    <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #f4f4f4; padding: 20px 0;">
+        <tr>
+            <td align="center">
+
+                <!-- Container -->
+                <table cellpadding="0" cellspacing="0" border="0" width="600" style="background-color: #fff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                    <tr>
+                        <td style="padding: 40px; text-align: center;">
+
+                            <!-- Title -->
+                            <h1 style="color: #333; margin-bottom: 10px; font-size: 24px; font-weight: bold;">OTP Verification</h1>
+                            <h2 style="color: #5a2d82; margin-top: 0; font-size: 18px; font-weight: normal;">E-Learning Website</h2>
+
+                            <!-- Greeting -->
+                            <p style="color: #666; font-size: 16px; line-height: 1.6; margin: 20px 0;">
+                                Hello <strong>${data.name}</strong>,
+                            </p>
+                            <p style="color: #666; font-size: 16px; line-height: 1.6; margin: 20px 0;">
+                                Your One-Time Password (OTP) for account verification is:
+                            </p>
+
+                            <!-- OTP Code -->
+                            <p style="font-size: 36px; color: #5a2d82; font-weight: bold; margin: 30px 0;">
+                                ${data.otp}
+                            </p>
+
+                            <!-- Button -->
+                            <a href="#" style="display: inline-block; padding: 10px 20px; font-size: 16px; color: #fff; background-color: #5a2d82; border-radius: 5px; text-decoration: none;">
+                                Verify Now
+                            </a>
+
+                            <!-- Footer -->
+                            <p style="color: #999; font-size: 12px; line-height: 1.6; margin-top: 40px;">
+                                If you did not request this OTP, please ignore this email.
+                            </p>
+                            <p style="color: #999; font-size: 12px; line-height: 1.6; margin-top: 5px;">
+                                Thank you,<br>
+                                LMS - Group 03 - Intro2SE CSC13002 CQ2022/1
+                            </p>
+
+                        </td>
+                    </tr>
+                </table>
+                <!-- End Container -->
+
+            </td>
+        </tr>
+    </table>
+    <!-- End Wrapper -->
+
 </body>
 </html>
 `;
@@ -83,60 +100,61 @@ export const sendForgotMail = async (subject, data) => {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reset Your Password</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f3f3f3;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      background-color: #ffffff;
-      padding: 20px;
-      margin: 20px auto;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      max-width: 600px;
-    }
-    h1 {
-      color: #5a2d82;
-    }
-    p {
-      color: #666666;
-    }
-    .button {
-      display: inline-block;
-      padding: 15px 25px;
-      margin: 20px 0;
-      background-color: #5a2d82;
-      color: white;
-      text-decoration: none;
-      border-radius: 4px;
-      font-size: 16px;
-    }
-    .footer {
-      margin-top: 20px;
-      color: #999999;
-      text-align: center;
-    }
-    .footer a {
-      color: #5a2d82;
-      text-decoration: none;
-    }
-  </style>
 </head>
-<body>
-  <div class="container">
-    <h1>Reset Your Password</h1>
-    <p>Hello,</p>
-    <p>You have requested to reset your password. Please click the button below to reset your password.</p>
-    <a href="${process.env.frontendurl}/reset-password/${data.token}" class="button">Reset Password</a>
-    <p>If you did not request this, please ignore this email.</p>
-    <div class="footer">
-      <p>Thank you,<br>Your Website Team</p>
-      <p><a href="https://yourwebsite.com">yourwebsite.com</a></p>
-    </div>
-  </div>
+<body style="margin: 0; padding: 0; background-color: #f3f3f3; font-family: Arial, sans-serif;">
+  <!-- Email Wrapper -->
+  <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #f3f3f3; padding: 20px 0;">
+    <tr>
+      <td align="center">
+
+        <!-- Container -->
+        <table cellpadding="0" cellspacing="0" border="0" width="600" style="background-color: #ffffff; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+          <tr>
+            <td style="padding: 30px; text-align: center;">
+
+              <!-- Title -->
+              <h1 style="color: #5a2d82; margin-bottom: 20px; font-size: 24px;">Reset Your Password</h1>
+
+              <!-- Greeting -->
+              <p style="color: #666666; margin-bottom: 20px; font-size: 16px; line-height: 1.6;">Hello <strong>${data.name}</strong>,</p>
+
+              <!-- Message -->
+              <p style="color: #666666; margin-bottom: 20px; font-size: 16px; line-height: 1.6;">
+                You have requested to reset your password. Please click the button below to proceed with resetting your password.
+              </p>
+
+              <!-- Button -->
+              <a href="${process.env.frontendurl}/reset-password/${data.token}" 
+                style="display: inline-block; padding: 15px 30px; background-color: #5a2d82; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">
+                Reset Password
+              </a>
+
+              <!-- Additional Info -->
+              <p style="color: #666666; margin-top: 30px; font-size: 14px; line-height: 1.6;">
+                If you did not request this, please ignore this email.
+              </p>
+
+            </td>
+          </tr>
+        </table>
+
+        <!-- Footer -->
+        <table cellpadding="0" cellspacing="0" border="0" width="600" style="margin-top: 20px;">
+          <tr>
+            <td align="center" style="color: #999999; font-size: 14px; text-align: center; padding: 10px;">
+              <p style="margin: 0;">Thank you,<br>LMS - Group 03 - Intro2SE CSC13002 CQ2022/1</p>
+              <p style="margin: 0;">
+                <a href="https://yourwebsite.com" style="color: #5a2d82; text-decoration: none;">yourwebsite.com</a>
+              </p>
+            </td>
+          </tr>
+        </table>
+        <!-- End Footer -->
+
+      </td>
+    </tr>
+  </table>
+  <!-- End Wrapper -->
 </body>
 </html>
 `;
@@ -160,68 +178,131 @@ export const sendNotificationMail = async (subject, data) => {
   });
 
   const html = `<!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${subject}</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        background-color: #f9f9f9;
-        margin: 0;
-        padding: 0;
-      }
-      .container {
-        background-color: #ffffff;
-        padding: 20px;
-        margin: 20px auto;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        max-width: 600px;
-      }
-      h1 {
-        color: #333;
-      }
-      p {
-        color: #666;
-        line-height: 1.6;
-      }
-      .button {
-        display: inline-block;
-        padding: 10px 20px;
-        margin: 20px 0;
-        background-color: #007BFF;
-        color: white;
-        text-decoration: none;
-        border-radius: 4px;
-        font-size: 16px;
-      }
-      .footer {
-        margin-top: 20px;
-        color: #999;
-        text-align: center;
-        font-size: 14px;
-      }
-      .footer a {
-        color: #007BFF;
-        text-decoration: none;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <h1>${subject}</h1>
-      <p>Dear ${data.recipientName || 'Leaner'},</p>
-      <p>${data.message}</p>
-    </div>
-  </body>
-  </html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${subject}</title>
+  <style>
+    /* General resets */
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+      font-family: Arial, sans-serif;
+    }
+
+    table {
+      border-spacing: 0;
+      width: 100%;
+    }
+
+    td {
+      padding: 0;
+    }
+
+    /* Email container */
+    .email-container {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    /* Header */
+    .email-header {
+      background-color: #007BFF;
+      color: #ffffff;
+      text-align: center;
+      padding: 20px;
+      font-size: 24px;
+    }
+
+    /* Body */
+    .email-body {
+      padding: 20px;
+      color: #333333;
+    }
+
+    .email-body p {
+      margin: 0 0 20px;
+      line-height: 1.6;
+      color: #666666;
+    }
+
+    .email-body a.button {
+      display: inline-block;
+      padding: 12px 24px;
+      background-color: #007BFF;
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 4px;
+      font-size: 16px;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+
+    .email-body a.button:hover {
+      background-color: #0056b3;
+    }
+
+    /* Footer */
+    .email-footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #f1f1f1;
+      font-size: 14px;
+      color: #999999;
+    }
+
+    .email-footer a {
+      color: #007BFF;
+      text-decoration: none;
+    }
+
+    .email-footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <table class="email-container">
+    <!-- Header -->
+    <tr>
+      <td class="email-header">
+        ${subject}
+      </td>
+    </tr>
+
+    <!-- Body -->
+    <tr>
+      <td class="email-body">
+        <p>Dear ${data.recipientName || 'Learner'},</p>
+        <p>${data.message}</p>
+        ${data.actionUrl 
+          ? `<a href="${data.actionUrl}" class="button">Take Action</a>` 
+          : ''}
+      </td>
+    </tr>
+    
+    <!-- Footer -->
+    <tr>
+      <td class="email-footer">
+        <p>If you have any questions, please contact us at <a href="mailto:support@example.com">support@example.com</a>.</p>
+        <p>Thank you,<br>The LMS Team</p>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
   `;
   
     await transport.sendMail({
-      from: data.sender,
-      to: data.recipients,
+      from: process.env.Gmail,
+      to: data.recipientEmails,
       subject,
       html,
       ...(data.file && {
