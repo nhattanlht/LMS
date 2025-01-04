@@ -40,8 +40,16 @@ const CourseStudy = ({ user }) => {
 
   const [resources, setResources] = useState([]);
   const [showAddResourceModal, setShowAddResourceModal] = useState(false);
+
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
+  const [file, setFile] = useState(null);  // Khai báo state cho tệp tin
+
+
+
   const [editingResource, setEditingResource] = useState(null);
-const [newTitle, setNewTitle] = useState("");
+  const [newTitle, setNewTitle] = useState("");
 
 // Khi nhấn vào nút "Edit", lưu trữ ID của tài nguyên cần sửa
 
@@ -125,6 +133,39 @@ const [newTitle, setNewTitle] = useState("");
         console.error("Error editing resource:", error);
       }
     };
+
+    const handleSendNotification = async () => {
+      const formData = new FormData();
+      const sender = user._id;
+      const recipients = course.attenders;
+      formData.append("subject", subject);
+      formData.append("message", message);
+      formData.append("recipients", recipients); // Assuming it's an array of user IDs
+      formData.append("sender", sender);
+
+      if (file) {
+        formData.append("file", file); // Gửi file nếu có
+      }
+        for (let pair of formData.entries()) {
+        console.log(pair[0] + ": " + pair[1]);
+      }
+    
+      try {
+        const response = await axios.post(`${server}/api/lecturer/notification`, formData, {
+          headers: {
+            token: localStorage.getItem("token"),
+            "Content-Type": "multipart/form-data", // This is important for file uploads
+          },
+        });
+        console.log("Response:", response.data);
+
+        alert("Notification sent successfully!");
+        setShowNotificationModal(false);
+      } catch (error) {
+        console.error("Error sending notification:", error);
+        alert("Failed to send notification");
+      }
+    };
     
     
     
@@ -196,7 +237,7 @@ const [newTitle, setNewTitle] = useState("");
                     timeZone: "UTC",
                   })}
                 </p>
-                <p>{course.description}</p>
+                <p className="course-description-box">{course.description}</p>
                 <h4>Lecturer: </h4>
                 {course.lecturers && course.lecturers.length > 0 ? (
                   <ul>
@@ -217,7 +258,7 @@ const [newTitle, setNewTitle] = useState("");
                     <FontAwesomeIcon icon={faPencilAlt} /> <p>Enter Grade</p>
                   </button>
 
-                  <button className="edit-btn">
+                  <button className="edit-btn" onClick={() => setShowNotificationModal(true)}>
                     <FontAwesomeIcon icon={faBell} /> <p>Send Notification</p>
                   </button>
                 </div>
@@ -390,39 +431,72 @@ const [newTitle, setNewTitle] = useState("");
               </div>
               {/* Modal Add Resource*/}
               {showAddResourceModal && (
-              <AddResourceModal
-                courseId={params.id}
-                onClose={() => setShowAddResourceModal(false)}
-                onAddResource={handleCreateResource}
-              />
+                    <AddResourceModal
+                      courseId={params.id}
+                      onClose={() => setShowAddResourceModal(false)}
+                      onAddResource={handleCreateResource}
+                    />
               )}
               {/* Modal Edit Resource*/}
-
               {editingResource && (
+                  <div className="modal-overlay">
+                  <div className="modal-content">
+
+                    <h3>Edit Resource</h3>
+                    <input
+                      type="text"
+                      value={newTitle}
+                      onChange={(e) => setNewTitle(e.target.value)}
+                      placeholder="Enter new title"
+                    />
+                    <button onClick={() => handleEditResource(editingResource._id, { ...editingResource, title: newTitle })}>
+                      Save
+                    </button>
+                    <button onClick={() => setEditingResource(null)}>Cancel</button>
+                  </div>
+                  </div>
+              )}
+              {/* Modal Send Notification */}
+              {showNotificationModal && (
             <div className="modal-overlay">
-            <div className="modal-content">
+              <div className="modal-content">
+                <h3>Send Notification</h3>
+                
+                
+                <p>Subject:</p>
+                <input
+                  type="text"
+                  value={subject}
+                  onChange={(e) => setSubject(e.target.value)}
+                  placeholder="Enter subject"
+                />
+                <p>Message:</p>
 
-              <h3>Edit Resource</h3>
-              <input
-                type="text"
-                value={newTitle}
-                onChange={(e) => setNewTitle(e.target.value)}
-                placeholder="Enter new title"
-              />
-              <button onClick={() => handleEditResource(editingResource._id, { ...editingResource, title: newTitle })}>
-                Save
-              </button>
-              <button onClick={() => setEditingResource(null)}>Cancel</button>
-            </div>
-            </div>
+                <textarea
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder="Enter message"
+                />
 
-          )}
-
-              
+                {/* Input for file upload */}
+                <p>File:</p>
+                <input
+                  type="file"
+                  onChange={(e) => setFile(e.target.files[0])}  // setFile is used to store the selected file
+                />
+                <button onClick={handleSendNotification}>Send</button>
+                <button onClick={() => setShowNotificationModal(false)}>Cancel</button>
+              </div>
             </div>
-          </div>
-        )
-      )}
+                )}
+
+
+
+                            
+                 </div>
+                 </div>
+               )
+              )}
     </>
   );
 };

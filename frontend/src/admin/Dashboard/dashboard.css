@@ -4,17 +4,54 @@
   align-items: center;
   flex-wrap: wrap;
 
-  .box {
-    margin-left: 20px;
-    background-color: #8a4baf;
-    padding: 5px;
-    border-radius: 5px;
-    text-align: center;
-    margin-top: 5px;
-    color: white;
 
-    &:hover {
-      background-color: #432456;
-    }
+  
+}
+.box {
+  margin-left: 20px;
+  background-color: #8a4baf;
+  padding: 5px;
+  border-radius: 5px;
+  text-align: center;
+  margin-top: 5px;
+ 
+  border: 2px solid rgb(209, 207, 207);
+
+  p{
+    color: white;
+    font-size:20px;
   }
+  &:hover{
+    background-color: #5f357e;
+  }
+
+}
+.notification-form {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.notification-form input,
+.notification-form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.notification-form button {
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.notification-form button:hover {
+  background-color: #45a049;
 }

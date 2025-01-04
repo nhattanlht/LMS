@@ -317,35 +317,6 @@
   }
 }
 
-@media (max-width: 480px) {
-  .logo {
-    font-size: 1.1rem;
-  }
-
-  .nav-links {
-    gap: 8px;
-  }
-
-  .search-bar input {
-    width: 150px;
-  }
-
-  .search-bar button {
-    padding: 4px 10px;
-  }
-
-  .dropdown-button {
-    font-size: 1rem;
-  }
-
-  .notification {
-    font-size: 1.4rem;
-  }
-
-  .header-actions {
-    gap: 10px;
-  }
-}
 .iconM{
   color:#8a4baf;
   margin-left:10px;
