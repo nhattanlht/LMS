@@ -87,6 +87,9 @@ const AdminDashbord = ({ user }) => {
             <p>Total Users</p>
             <p>{stats.totalUsers}</p>
           </div>
+          </div>
+          <div className="main-content">
+
 
           {/* Form gửi thông báo */}
           <div className="notification-form">

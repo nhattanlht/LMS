@@ -99,7 +99,7 @@ const Header = ({ isAuth }) => {
 
   return (
     <header className="header">
-      <Link to="/" className="logo">E-Learning</Link>
+      <Link to="/" className="logo">LMS </Link>
 
       <nav className="nav-links">
         <Link to="/">Home</Link>
