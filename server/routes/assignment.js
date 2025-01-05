@@ -1,45 +1,33 @@
 import express from "express";
 import { isAuth } from "../middlewares/isAuth.js";
 import { uploadFiles } from "../middlewares/multer.js";
-import { 
+
+// Import Assignment Controller
+import {
   createAssignment,
   getStudentAssignments,
+  getAssignmentDetails,
   updateAssignment,
   deleteAssignment,
-  submitAssignment,
-  updateSubmissionGrade,
-  getAllSubmissions,
-  getSubmissionDetails,
 } from "../controllers/assignment.js";
 
 const router = express.Router();
 
-//=======assignment=======
+//======= Assignment Routes =======
 
 // Tạo assignment mới (giảng viên tải file lên)
-router.post("/assignment", isAuth, uploadFiles, createAssignment);
+router.post("/assignments", isAuth, uploadFiles, createAssignment);
 
-// Lấy tất cả bài tập của sinh viên
-router.get("/assignment/:courseId", isAuth, getStudentAssignments);
+// Lấy tất cả bài tập
+router.get("/assignments/course/:courseId", isAuth, getStudentAssignments);
 
-// Xóa bài tập
-router.delete("/assignment/:assignmentId", isAuth, deleteAssignment);
+// Lấy thông tin chi tiết một bài tập
+router.get("/assignments/:assignmentId", isAuth, getAssignmentDetails);
 
 // Cập nhật bài tập
-router.put("/assignment/:assignmentId", isAuth, updateAssignment);
+router.put("/assignments/:assignmentId", isAuth, updateAssignment);
 
-//=======submissions=======
-
-// Nộp bài tập
-router.post("/assignment/submit", isAuth, uploadFiles, submitAssignment);
-
-// Cập nhật điểm và lời phê cho bài nộp
-router.patch("/assignment/:assignmentId/submission/:submissionId", isAuth, updateSubmissionGrade);
-
-// Lấy thông tin tất cả submission
-router.get("/assignments/:assignmentId/submissions", getAllSubmissions);
-
-//lấy thông tin một submission
-router.get("/assignments/:assignmentId/submissions/:submissionId", getSubmissionDetails);
+// Xóa bài tập
+router.delete("/assignments/:assignmentId", isAuth, deleteAssignment);
 
 export default router;

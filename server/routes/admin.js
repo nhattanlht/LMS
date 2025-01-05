@@ -13,6 +13,9 @@ import {
   updateRole,
   sendNotification,
   addParticipantsToCourse,
+  findUserByName,
+  createUser,
+  modifyUser,
 } from "../controllers/admin.js";
 import { uploadFiles } from "../middlewares/multer2.js";
 
@@ -20,7 +23,7 @@ const router = express.Router();
 
 router.post("/course/new", isAuth, isAdmin, uploadFiles, createCourse);
 router.post("/course/many", isAuth, isAdmin, createManyCourses);
-router.put("/course/:id", isAuth, isAdmin, modifyCourse);
+router.put("/course/data/:id", isAuth, isAdmin, uploadFiles, modifyCourse);
 router.post("/course/add/participants", isAuth, isAdmin, addParticipantsToCourse);
 router.post("/course/:id", isAuth, isAdmin, uploadFiles, addLectures);
 router.delete("/course/:id", isAuth, isAdmin, deleteCourse);
@@ -29,6 +32,9 @@ router.delete("/lecture/:id", isAuth, isAdmin, deleteLecture);
 router.get("/stats", isAuth, isAdmin, getAllStats);
 router.put("/user/:id", isAuth, updateRole);
 router.get("/users", isAuth, isAdmin, getAllUser);
+router.get("/users/many", isAuth, isAdmin, findUserByName);
+router.post("/user/new", isAuth, isAdmin, createUser);
+router.put("/user/data/:id", isAuth, isAdmin, modifyUser);
 router.post("/notification", isAuth, isAdmin, uploadFiles, sendNotification);
 
 export default router;

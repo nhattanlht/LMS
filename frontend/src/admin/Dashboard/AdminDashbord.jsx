@@ -8,7 +8,7 @@ import "./dashboard.css";
 const AdminDashbord = ({ user }) => {
   const navigate = useNavigate();
 
-  if (user && user.role !== "admin") return navigate("/");
+  if (user && user.mainrole !== "admin") return navigate("/");
 
   const [stats, setStats] = useState([]);
 
@@ -30,25 +30,24 @@ const AdminDashbord = ({ user }) => {
     fetchStats();
   }, []);
   return (
-    <div>
-      <Layout>
-        <div className="main-content">
-          <div className="box">
-            <p>Total Courses</p>
-            <p>{stats.totalCoures}</p>
+  <div>
+    <Layout>
+      <div className="dashboard-main-content">
+        <h1 className="dashboard-title">Admin Dashboard</h1>
+        <div className="dashboard-stats">
+          <div className="dashboard-box">
+            <p className="stat-title">Total Courses</p>
+            <p className="stat-value">{stats.totalCourses}</p>
           </div>
-          <div className="box">
-            <p>Total Lectures</p>
-            <p>{stats.totalLectures}</p>
-          </div>
-          <div className="box">
-            <p>Total Users</p>
-            <p>{stats.totalUsers}</p>
+          <div className="dashboard-box">
+            <p className="stat-title">Total Users</p>
+            <p className="stat-value">{stats.totalUsers}</p>
           </div>
         </div>
-      </Layout>
-    </div>
-  );
+      </div>
+    </Layout>
+  </div>
+);
 };
 
 export default AdminDashbord;

@@ -41,6 +41,14 @@ export const getCourseByName = TryCatch(async (req, res) => {
   res.status(200).json({ courses });
 });
 
+export const getParticipants = TryCatch(async (req, res) => {
+  const participants = await Enrollment.findOne({ course_id: req.params.id }).populate("participants.participant_id", "name email _id");
+
+  return res.status(200).json({
+    participants: participants.participants,
+  });
+});
+
 export const fetchLectures = TryCatch(async (req, res) => {
   const lectures = await Lecture.find({ course: req.params.id });
 
@@ -76,18 +84,7 @@ export const fetchLecture = TryCatch(async (req, res) => {
 });
 
 export const getMyCourses = TryCatch(async (req, res) => {
-  const enrollments = await Enrollment.find({
-    "participants.participant_id": req.user._id,
-  }).populate({
-    path: "course_id",
-    select: "title description startTime endTime",
-  });
-
-  if (!enrollments || enrollments.length === 0) {
-    return res.status(404).json({ message: "No courses found for this user." });
-  }
-
-  const courses = enrollments.map((enrollment) => enrollment.course_id);
+  const courses = await Courses.find({ _id: req.user.subscription });
 
   res.status(200).json({ courses });
 });

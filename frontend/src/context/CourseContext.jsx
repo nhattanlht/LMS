@@ -8,6 +8,7 @@ export const CourseContextProvider = ({ children }) => {
   const [courses, setCourses] = useState([]);
   const [course, setCourse] = useState([]);
   const [mycourse, setMyCourse] = useState([]);
+  const [participants, setParticipants] = useState([]);
 
   async function fetchCourses() {
     try {
@@ -46,6 +47,20 @@ export const CourseContextProvider = ({ children }) => {
     }
   }
 
+  async function fetchParticipants(id) {
+    try {
+      const { data } = await axios.get(`${server}/api/course/${id}/participants`, {
+        headers: {
+          token: localStorage.getItem("token"),
+        },
+      });
+
+      setParticipants(data.participants);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   useEffect(() => {
     fetchCourses();
     fetchMyCourse();
@@ -59,6 +74,8 @@ export const CourseContextProvider = ({ children }) => {
         course,
         mycourse,
         fetchMyCourse,
+        participants,
+        fetchParticipants,
       }}
     >
       {children}

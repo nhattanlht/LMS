@@ -12,7 +12,7 @@ export const AssignmentContextProvider = ({ children }) => {
 
   const fetchInstructorAssignments = async (courseId) => {
     try {
-      const { data } = await axios.get(`${server}/api/assignment/instructor/${courseId}`, {
+      const { data } = await axios.get(`${server}/api/assignments/course/${courseId}`, {
         headers: {
           token: localStorage.getItem("token"),
         },
@@ -25,12 +25,13 @@ export const AssignmentContextProvider = ({ children }) => {
 
   const fetchStudentAssignments = async (courseId) => {
     try {
-      const { data } = await axios.get(`${server}/api/assignment/student/${courseId}`, {
+      const { data } = await axios.get(`${server}/api/assignments/course/${courseId}`, {
         headers: {
           token: localStorage.getItem("token"),
         },
       });
       setAssignments(data.assignments);
+      return data.assignments;
     } catch (error) {
       console.log(error);
     }
@@ -38,7 +39,7 @@ export const AssignmentContextProvider = ({ children }) => {
 
   const fetchAssignment = async (assignmentId) => {
     try {
-      const { data } = await axios.get(`${server}/api/assignment/${assignmentId}`, {
+      const { data } = await axios.get(`${server}/api/assignments/${assignmentId}`, {
         headers: {
           token: localStorage.getItem("token"),
         },
@@ -64,13 +65,14 @@ export const AssignmentContextProvider = ({ children }) => {
 
   const addAssignment = async (formData, navigate) => {
     try {
-      const { data } = await axios.post(`${server}/api/assignment`, formData, {
+      const { data } = await axios.post(`${server}/api/assignments`, formData, {
         headers: {
           token: localStorage.getItem("token"),
         },
       });
       toast.success(data.message);
       navigate("/assignments");
+      onClose();
     } catch (error) {
       toast.error(error.response.data.message);
     }
@@ -78,7 +80,7 @@ export const AssignmentContextProvider = ({ children }) => {
 
   const updateAssignment = async (assignmentId, updatedAssignment) => {
     try {
-      const { data } = await axios.put(`${server}/api/assignment/${assignmentId}`, updatedAssignment, {
+      const { data } = await axios.put(`${server}/api/assignments/${assignmentId}`, updatedAssignment, {
         headers: {
           token: localStorage.getItem("token"),
         },
@@ -92,7 +94,7 @@ export const AssignmentContextProvider = ({ children }) => {
 
   const deleteAssignment = async (assignmentId) => {
     try {
-      const { data } = await axios.delete(`${server}/api/assignment/${assignmentId}`, {
+      const { data } = await axios.delete(`${server}/api/assignments/${assignmentId}`, {
         headers: {
           token: localStorage.getItem("token"),
         },

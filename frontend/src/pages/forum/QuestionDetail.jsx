@@ -5,7 +5,7 @@ import "./questionDetail.css";
 import moment from "moment";
 import { IoIosArrowBack, IoIosSend } from "react-icons/io";
 const QuestionDetail = ({ question, backToList, forumId }) => {
-  const [answers, setAnswers] = useState(question.answers);
+  const [answers, setAnswers] = useState([]);
   const [answerContent, setAnswerContent] = useState("");
 
   useEffect(() => {
@@ -14,7 +14,7 @@ const QuestionDetail = ({ question, backToList, forumId }) => {
 
   const fetchAnswers = async () => {
     try {
-      const { data } = await axios.get(`${server}/api/posts/${forumId}/${question._id}`, {
+      const { data } = await axios.get(`${server}/api/forums/${forumId}/questions/${question._id}/answers`, {
         headers: {
           token: localStorage.getItem("token"),
         },
@@ -29,9 +29,7 @@ const QuestionDetail = ({ question, backToList, forumId }) => {
   const handleAddAnswer = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${server}/api/forums/answer`, {
-        forumId: forumId,
-        questionId: question._id,
+      await axios.post(`${server}/api/forums/${forumId}/questions/${question._id}/answers`, {
         content: answerContent,
       },
       {

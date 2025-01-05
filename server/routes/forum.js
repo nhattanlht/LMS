@@ -8,11 +8,12 @@ import {
     getForums,
     getQuestions,
     getAnswers,
-} from "../controllers/forum.js";            
+} from "../controllers/forum.js";
+
 router.post('/forums', isAuth, createForum);
-router.post('/forums/question', isAuth, createQuestion);
-router.post('/forums/answer', isAuth, createAnswer);
-router.get('/forums', isAuth, getForums);
-router.get('/forums/:forumId', isAuth, getQuestions);
-router.get('/posts/:forumId/:questionId', isAuth, getAnswers);
+router.post('/forums/:forumId/questions', isAuth, createQuestion);
+router.post('/forums/:forumId/questions/:questionId/answers', isAuth, createAnswer);
+router.get('/forums/:courseId', isAuth, getForums);
+router.get('/forums/:forumId/questions', isAuth, getQuestions);
+router.get('/forums/:forumId/questions/:questionId/answers', isAuth, getAnswers);
 export default router;
