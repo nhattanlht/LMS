@@ -3,7 +3,7 @@
 /* Toàn bộ container */
 .message-container {
     display: flex;
-    height: 80vh;
+    height: 60vh;
     width: 100%;
     overflow: hidden;
     padding: 20px;

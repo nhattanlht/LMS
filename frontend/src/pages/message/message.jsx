@@ -1,20 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { server } from '../../main'; // Đảm bảo server được cấu hình đúng
 import { TextField, Button, Paper, Typography, List, ListItem, ListItemText, Badge } from '@mui/material';
 import './Message.css'; // Import file CSS
 import io from 'socket.io-client';
 
-// Lấy userId từ localStorage sau khi người dùng đăng nhập
 const userId = localStorage.getItem('userId'); // Giả sử bạn lưu userId trong localStorage sau khi đăng nhập
 
-// Nếu không tìm thấy userId, có thể redirect hoặc thông báo lỗi
 if (!userId) {
   console.error('User is not logged in!');
-  // Bạn có thể redirect tới trang đăng nhập hoặc xử lý khác tại đây
 }
 
-const socket = io('http://localhost:3001', {
+const socket = io('http://localhost:5001', {
   query: { userId }, // Truyền userId thực tế vào query của Socket.IO
 });
 
@@ -28,7 +25,9 @@ const Message = ({ user, receiverId, setReceiverId }) => {
   const [searchResults, setSearchResults] = useState([]);
   const [isSending, setIsSending] = useState(false);
 
-  // Hàm lấy danh sách hội thoại
+  // Tạo ref để tham chiếu đến phần tử chứa tin nhắn
+  const messagesEndRef = useRef(null);
+
   const fetchConversations = async () => {
     try {
       const { data } = await axios.get(`${server}/api/conversations`, {
@@ -47,7 +46,6 @@ const Message = ({ user, receiverId, setReceiverId }) => {
     }
   };
 
-  // Hàm lấy tin nhắn
   const fetchMessages = async () => {
     if (!receiverId) return;
     try {
@@ -60,7 +58,6 @@ const Message = ({ user, receiverId, setReceiverId }) => {
     }
   };
 
-  // Hàm gửi tin nhắn
   const sendMessage = async () => {
     if (!newMessage || !receiverId || isSending) return;
     setIsSending(true);
@@ -70,7 +67,7 @@ const Message = ({ user, receiverId, setReceiverId }) => {
       });
       setNewMessage('');
       fetchMessages();
-      socket.emit('send_message', { receiverId, message: newMessage }); // Gửi tin nhắn qua socket
+      socket.emit('send_message', { receiverId, message: newMessage });
     } catch (error) {
       console.error('Error sending message:', error);
     } finally {
@@ -78,14 +75,12 @@ const Message = ({ user, receiverId, setReceiverId }) => {
     }
   };
 
-  // Hàm để chọn người nhận
   const handleSelectUser = (id) => {
     setReceiverId(id);
     setShowSearch(false);
     fetchMessages();
   };
 
-  // Hàm tìm kiếm người dùng
   const handleEmailChange = async (e) => {
     const email = e.target.value;
     setNewChatEmail(email);
@@ -105,7 +100,6 @@ const Message = ({ user, receiverId, setReceiverId }) => {
     }
   };
 
-  // Lắng nghe sự kiện tin nhắn mới từ server
   useEffect(() => {
     socket.on('newMessage', (messageData) => {
       if (messageData.receiverId === user._id) {
@@ -120,6 +114,13 @@ const Message = ({ user, receiverId, setReceiverId }) => {
       socket.off('newMessage');
     };
   }, [receiverId]);
+
+  // Hàm cuộn xuống phần tử mới nhất khi có tin nhắn mới hoặc khi bắt đầu cuộc trò chuyện
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
 
   return (
     <div className="message-container">
@@ -187,6 +188,8 @@ const Message = ({ user, receiverId, setReceiverId }) => {
               {msg.message}
             </Typography>
           ))}
+          {/* Thêm ref vào phần tử cuối cùng trong danh sách tin nhắn */}
+          <div ref={messagesEndRef} />
         </Paper>
 
         <div className="message-input">
