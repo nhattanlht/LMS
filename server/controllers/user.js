@@ -378,9 +378,9 @@ export const searchUserByEmail = async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ message: "User  not found" });
+      return res.status(404).json([]);  // Trả về mảng rỗng khi không tìm thấy người dùng
     }
-    res.json({ user });
+    res.json([user]);  // Trả về một mảng chứa người dùng
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
