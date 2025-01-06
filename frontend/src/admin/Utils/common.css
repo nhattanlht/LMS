@@ -1,4 +1,4 @@
-.sidebar {
+.admin-sidebar {
   width: 15%;
   height: auto;
   left: 0;
@@ -39,6 +39,23 @@
           @media (max-width: 768px) {
             display: none;
           }
+        }
+      }
+
+      .logout-btn{
+        display: flex;
+        align-items: center;
+
+        .icon{
+          color: #551a8b;
+        }
+        span {
+          margin-left: 15px;
+          color: #551a8b;
+          @media (max-width: 768px) {
+            display: none;
+          }
+          
         }
       }
     }

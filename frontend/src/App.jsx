@@ -93,9 +93,12 @@ const App = () => {
             />
 
           
-              <Route path="/search" element={<Search />} />
-             
-              <Route path="/notification" element={<Noti />} />
+            <Route path="/search" element={<Search />} />
+            
+            <Route 
+              path="/notification" 
+              element={isAuth ? <Noti user={user} /> : <Login />}
+            />
 
             <Route
               path="/admin/dashboard"

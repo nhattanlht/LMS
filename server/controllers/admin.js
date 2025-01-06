@@ -4,13 +4,19 @@ import { Lecture } from "../models/Lecture.js";
 import { Notification } from "../models/Notification.js";
 import Enrollment from "../models/Enrollment.js";
 import { rm } from "fs";
-import { promisify } from "util";
-import fs from "fs";
+// import { promisify } from "util";
+// import fs from "fs";
 import bcrypt from "bcrypt";
 import { User } from "../models/User.js";
 import { handleUpload } from "../config/cloudinary2.js";
 import { sendNotificationMail } from "../middlewares/sendMail.js";
 import { getReceiverSocketId, io } from "../config/socket.js";
+import { Assignment } from "../models/Assignment.js";
+import { Resources } from "../models/Resources.js";
+import { Submission } from "../models/Submission.js";
+import { Forum } from "../models/Forum.js";
+import Conversation from "../models/Conversation.js";
+import Message from "../models/message.js";
 
 export const createCourse = TryCatch(async (req, res) => {
   const { title, description, startDate, endDate, summary} = req.body;
@@ -191,6 +197,74 @@ export const modifyUser = TryCatch(async (req, res) => {
   });
 });
 
+export const deleteUsers = TryCatch(async (req, res) => {
+  const { ids } = req.body; // Array of user IDs to delete
+
+  if (!Array.isArray(ids) || ids.length === 0) {
+    return res.status(400).json({ message: "Invalid user IDs" });
+  }
+
+  // Validate if users exist
+  const users = await User.find({ _id: { $in: ids } });
+  if (users.length === 0) {
+    return res.status(404).json({ message: "No users found" });
+  }
+
+  // Remove users from assignments
+  await Assignment.updateMany(
+    { instructor: { $in: ids } },
+    { $unset: { instructor: "" } }
+  );
+
+  // Delete submissions related to users
+  await Submission.deleteMany({ student: { $in: ids } });
+
+  // Remove users from conversations
+  await Conversation.updateMany(
+    { participants: { $in: ids } },
+    { $pull: { participants: { $in: ids } } }
+  );
+
+  // Delete messages sent or received by users
+  await Message.deleteMany({
+    $or: [{ senderId: { $in: ids } }, { receiverId: { $in: ids } }],
+  });
+
+  // Remove users from forums and questions/answers
+  await Forum.updateMany(
+    { createdBy: { $in: ids } },
+    { $unset: { createdBy: "" } }
+  );
+
+  await Forum.updateMany(
+    { "questions.createdBy": { $in: ids } },
+    { $pull: { questions: { createdBy: { $in: ids } } } }
+  );
+
+  // Remove users from notifications
+  await Notification.updateMany(
+    { $or: [{ sender: { $in: ids } }, { recipients: { $in: ids } }] },
+    { $pull: { recipients: { $in: ids } } }
+  );
+
+  // Remove resources uploaded by users
+  await Resources.deleteMany({ uploadedBy: { $in: ids } });
+
+  // Remove users from enrollments
+  await Enrollment.updateMany(
+    { "participants.participant_id": { $in: ids } },
+    { $pull: { participants: { participant_id: { $in: ids } } } }
+  );
+
+  // Delete the users themselves
+  await User.deleteMany({ _id: { $in: ids } });
+
+  res.status(200).json({
+    message: "Users and related data deleted successfully",
+    deletedUsers: ids,
+  });
+});
+
 export const findUserByName = TryCatch(async (req, res) => {
   const {name} = req.query;
 
@@ -320,56 +394,91 @@ export const deleteLecture = TryCatch(async (req, res) => {
   res.json({ message: "Lecture Deleted" });
 });
 
-const unlinkAsync = promisify(fs.unlink);
+// const unlinkAsync = promisify(fs.unlink);
+
 
 export const deleteCourse = TryCatch(async (req, res) => {
-  const course = await Courses.findById(req.params.id);
+  const { id } = req.params;
 
-  const lectures = await Lecture.find({ course: course._id });
+  // Find the course
+  const course = await Courses.findById(id);
+  if (!course) {
+    return res.status(404).json({ message: "Course not found" });
+  }
 
-  await Promise.all(
-    lectures.map(async (lecture) => {
-      await unlinkAsync(lecture.video);
-      console.log("video deleted");
-    })
+  // Remove the course from users' subscriptions
+  await User.updateMany(
+    { subscription: id },
+    { $pull: { subscription: id } }
   );
 
-  rm(course.image, () => {
-    console.log("image deleted");
-  });
+  // Delete related forums
+  await Forum.deleteMany({ id });
 
-  await Lecture.find({ course: req.params.id }).deleteMany();
+  // Delete related assignments and their submissions
+  const assignments = await Assignment.find({ id });
+  const assignmentIds = assignments.map((a) => a._id);
 
-  await course.deleteOne();
+  // Delete assignments
+  await Assignment.deleteMany({ id });
 
-  await User.updateMany({}, { $pull: { subscription: req.params.id } });
+  // Delete submissions related to assignments
+  await Submission.deleteMany({ assignmentId: { $in: assignmentIds } });
 
-  res.json({
-    message: "Course Deleted",
-  });
+  // Delete related resources
+  await Resources.deleteMany({ course: id });
+
+  // Delete enrollments for the course
+  await Enrollment.deleteMany({ course_id: id });
+
+  // Delete the course itself
+  await Courses.findByIdAndDelete(id);
+
+  res.status(200).json({ message: "Course and related data deleted successfully" });
 });
-
 
 // Delete many courses
 export const deleteManyCourses = TryCatch(async (req, res) => {
-  const { ids } = req.body;
+  const { ids } = req.body; // Array of course IDs to delete
 
-  // Validate that ids is an array of ObjectId-like strings
   if (!Array.isArray(ids) || ids.length === 0) {
-    return res.status(400).json({ message: 'Please provide a valid array of course IDs.' });
+    return res.status(400).json({ message: "Invalid course IDs" });
   }
 
-  // Ensure all IDs are valid ObjectId strings
-  const isValidObjectId = ids.every(id => /^[a-fA-F0-9]{24}$/.test(id));
-  if (!isValidObjectId) {
-    return res.status(400).json({ message: 'Invalid course ID(s) provided.' });
+  // Find the courses
+  const courses = await Courses.find({ _id: { $in: ids } });
+  if (courses.length === 0) {
+    return res.status(404).json({ message: "No courses found" });
   }
 
-  const deletedCourses = await Courses.deleteMany({ _id: { $in: ids } });
+  // Remove the courses from users' subscriptions
+  await User.updateMany(
+    { subscription: { $in: ids } },
+    { $pull: { subscription: { $in: ids } } }
+  );
 
-  res.json({
-    message: `${deletedCourses.deletedCount} course(s) deleted successfully.`,
-    result: deletedCourses,
+  // Delete related forums
+  await Forum.deleteMany({ courseId: { $in: ids } });
+
+  // Delete related assignments and their submissions
+  const assignments = await Assignment.find({ courseId: { $in: ids } });
+  const assignmentIds = assignments.map((a) => a._id);
+
+  await Assignment.deleteMany({ courseId: { $in: ids } });
+  await Submission.deleteMany({ assignmentId: { $in: assignmentIds } });
+
+  // Delete related resources
+  await Resources.deleteMany({ course: { $in: ids } });
+
+  // Delete enrollments for the courses
+  await Enrollment.deleteMany({ course_id: { $in: ids } });
+
+  // Delete the courses
+  await Courses.deleteMany({ _id: { $in: ids } });
+
+  return res.status(200).json({
+    message: "Courses and related data deleted successfully",
+    deletedCourses: ids,
   });
 });
 
@@ -494,3 +603,4 @@ export const sendNotification = TryCatch(async (req, res) => {
     notification: notification,
   });
 });
+

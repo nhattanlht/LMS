@@ -16,6 +16,7 @@ import {
   findUserByName,
   createUser,
   modifyUser,
+  deleteUsers,
 } from "../controllers/admin.js";
 import { uploadFiles } from "../middlewares/multer2.js";
 
@@ -35,6 +36,6 @@ router.get("/users", isAuth, isAdmin, getAllUser);
 router.get("/users/many", isAuth, isAdmin, findUserByName);
 router.post("/user/new", isAuth, isAdmin, createUser);
 router.put("/user/data/:id", isAuth, isAdmin, modifyUser);
+router.delete("/user", isAuth, isAdmin, deleteUsers);
 router.post("/notification", isAuth, isAdmin, uploadFiles, sendNotification);
-
 export default router;

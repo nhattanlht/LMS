@@ -159,15 +159,10 @@ const AdminDashbord = ({ user }) => {
             </div>
           </div>
         )}
-      </Layout>
-    </div>
-  );
-          
         </div>
-      </div>
     </Layout>
   </div>
-);
+  );
 };
 
 export default AdminDashbord;
