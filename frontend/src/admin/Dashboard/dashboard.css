@@ -45,7 +45,7 @@
 
 .notification-form button {
   padding: 10px 20px;
-  background-color: #4caf50;
+  background-color: #8a4baf;
   color: white;
   border: none;
   border-radius: 5px;
@@ -53,5 +53,76 @@
 }
 
 .notification-form button:hover {
-  background-color: #45a049;
+  background-color:#af76d0;
+}
+.open-modal-button {
+  padding: 10px 20px;
+  background-color: #792c91;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  gap: 5px;
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: left;
+  margin-left:10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 400px;
+  label {
+    font-size: 16px;          
+    color: #373535;            
+    display: block;        
+    margin-bottom: 8px;    
+    margin-top:8px;
+    font-weight: normal;
+
+  }
+}
+
+.modal-buttons {
+  margin-top: 20px;
+}
+
+.modal-buttons button {
+  margin: 0 10px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.modal-buttons button:first-child {
+  background-color: #a032ad;
+  color: white;
+}
+
+.modal-buttons button:last-child {
+  background-color: #ac3fae;
+  color: white;
+}
+.ic {
+  align-self:center;
+  margin-right:10px;
+  font-size:20px;
+  color:white;
+  display:flex;
+  gap: 10px; 
 }

@@ -4,6 +4,7 @@ import Layout from "../Utils/Layout";
 import axios from "axios";
 import { server } from "../../main";
 import "./dashboard.css";
+import { FaBell } from "react-icons/fa"; 
 
 const AdminDashbord = ({ user }) => {
   const navigate = useNavigate();
@@ -13,11 +14,11 @@ const AdminDashbord = ({ user }) => {
   const [stats, setStats] = useState([]);
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
-  const [recipientType, setRecipientType] = useState("allUsers"); // Mặc định gửi cho tất cả người dùng
-  const [specificRecipients, setSpecificRecipients] = useState(""); // Địa chỉ email người nhận (dành cho 'specific' recipient type)
-  const [file, setFile] = useState(null); // File đính kèm nếu có
+  const [recipientType, setRecipientType] = useState("allUsers");
+  const [specificRecipients, setSpecificRecipients] = useState("");
+  const [file, setFile] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false); 
 
-  // Fetch thống kê
   async function fetchStats() {
     try {
       const { data } = await axios.get(`${server}/api/stats`, {
@@ -25,14 +26,10 @@ const AdminDashbord = ({ user }) => {
           token: localStorage.getItem("token"),
         },
       });
-
       setStats(data.stats);
-    } catch (error) {
-      
-    }
+    } catch (error) {}
   }
 
-  // Gửi thông báo
   const handleSendNotification = async () => {
     try {
       const formData = new FormData();
@@ -50,24 +47,24 @@ const AdminDashbord = ({ user }) => {
         headers: {
           token: localStorage.getItem("token"),
           "Content-Type": "multipart/form-data",
-
         },
       });
 
       console.log(data);
       alert("Notification sent successfully!");
+      setIsModalOpen(false); 
     } catch (error) {
-      console.log("Sending data:", {
-        recipientType,
-        subject,
-        message,
-        specificRecipients,
-        file,
-      });
-      console.log("Error fetching stats:", error.response?.data || error.message);
-      console.error("Error sending notification:", error);
+      console.error("Error sending notification:", error.response?.data || error.message);
       alert("Failed to send notification!");
     }
+  };
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false); 
   };
 
   useEffect(() => {
@@ -87,63 +84,79 @@ const AdminDashbord = ({ user }) => {
             <p>Total Users</p>
             <p>{stats.totalUsers}</p>
           </div>
+        </div>
+
+        {/* Nút mở modal */}
+        <div className="main-content">
+          <button onClick={openModal} className="open-modal-button">
+          <div className ="ic">
+            <FaBell />
+          Send Notification 
+          
           </div>
-          <div className="main-content">
 
+          </button>
+        </div>
 
-          {/* Form gửi thông báo */}
-          <div className="notification-form">
-            <h3>Send Notification</h3>
-            <div>
-              <label>Subject:</label>
-              <input
-                type="text"
-                value={subject}
-                onChange={(e) => setSubject(e.target.value)}
-                placeholder="Enter notification subject"
-              />
-            </div>
-            <div>
-              <label>Message:</label>
-              <textarea
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="Enter your message"
-              />
-            </div>
-            <div>
-              <label>Recipient Type:</label>
-              <select
-                value={recipientType}
-                onChange={(e) => setRecipientType(e.target.value)}
-              >
-                <option value="allUsers">All Users</option>
-                <option value="allLecturers">All Lecturers</option>
-                <option value="allStudents">All Students</option>
-                <option value="specific">Specific Emails</option>
-              </select>
-            </div>
-            {recipientType === "specific" && (
+        {/* Modal */}
+        {isModalOpen && (
+          <div className="modal">
+            <div className="modal-content">
+              <h3>Send Notification</h3>
               <div>
-                <label>Specific Recipients (comma separated emails):</label>
+                <label>Subject:</label>
                 <input
                   type="text"
-                  value={specificRecipients}
-                  onChange={(e) => setSpecificRecipients(e.target.value)}
-                  placeholder="Enter emails"
+                  value={subject}
+                  onChange={(e) => setSubject(e.target.value)}
+                  placeholder="Enter notification subject"
                 />
               </div>
-            )}
-            <div>
-              <label>File (optional):</label>
-              <input
-                type="file"
-                onChange={(e) => setFile(e.target.files[0])}
-              />
+              <div>
+                <label>Message:</label>
+                <textarea
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder="Enter your message"
+                />
+              </div>
+              <div>
+                <label>Recipient Type:</label>
+                <select
+                  value={recipientType}
+                  onChange={(e) => setRecipientType(e.target.value)}
+                >
+                  <option value="allUsers">All Users</option>
+                  <option value="allLecturers">All Lecturers</option>
+                  <option value="allStudents">All Students</option>
+                  <option value="specific">Specific Emails</option>
+                </select>
+              </div>
+              {recipientType === "specific" && (
+                <div>
+                  <label>Specific Recipients (comma separated emails):</label>
+                  <input
+                    type="text"
+                    value={specificRecipients}
+                    onChange={(e) => setSpecificRecipients(e.target.value)}
+                    placeholder="Enter emails"
+                  />
+                </div>
+              )}
+              <div>
+                <label>File (optional):</label>
+                <input
+                  type="file"
+                  onChange={(e) => setFile(e.target.files[0])}
+                />
+              </div>
+              <div className="modal-buttons">
+                <button onClick={handleSendNotification}>Send</button>
+                <button onClick={closeModal}>Cancel</button>
+              </div>
             </div>
-            <button onClick={handleSendNotification}>Send Notification</button>
           </div>
-        </div>
+        )}
       </Layout>
     </div>
   );

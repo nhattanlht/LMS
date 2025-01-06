@@ -136,24 +136,16 @@ const CourseStudy = ({ user }) => {
 
     const handleSendNotification = async () => {
       const formData = new FormData();
-      const sender = user._id;
       formData.append("subject", subject);
       formData.append("message", message);
-      formData.append("recipients", JSON.stringify(course.attenders));
-      formData.append("sender", sender);
-
+      formData.append("courseId", course._id);
       if (file) {
         formData.append("file", file); // Gửi file nếu có
       }
-        for (let pair of formData.entries()) {
-        console.log(pair[0] + ": " + pair[1]);
-      }
-    
       try {
-        const response = await axios.post(`${server}/api/lecturer/notification`, formData, {
+        const response = await axios.post(`${server}/api/course/notification`, formData, {
           headers: {
             token: localStorage.getItem("token"),
-            "Content-Type": "multipart/form-data", // This is important for file uploads
           },
         });
 
