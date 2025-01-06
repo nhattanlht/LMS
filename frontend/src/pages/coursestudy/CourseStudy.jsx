@@ -137,10 +137,9 @@ const CourseStudy = ({ user }) => {
     const handleSendNotification = async () => {
       const formData = new FormData();
       const sender = user._id;
-      const recipients = course.attenders;
       formData.append("subject", subject);
       formData.append("message", message);
-      formData.append("recipients", recipients); // Assuming it's an array of user IDs
+      formData.append("recipients", JSON.stringify(course.attenders));
       formData.append("sender", sender);
 
       if (file) {
@@ -157,12 +156,12 @@ const CourseStudy = ({ user }) => {
             "Content-Type": "multipart/form-data", // This is important for file uploads
           },
         });
-        console.log("Response:", response.data);
 
         alert("Notification sent successfully!");
         setShowNotificationModal(false);
       } catch (error) {
-        console.error("Error sending notification:", error);
+        console.error("Error sending notification:", error.data);
+        
         alert("Failed to send notification");
       }
     };
