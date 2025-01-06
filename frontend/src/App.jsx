@@ -16,6 +16,7 @@ import Dashbord from "./pages/dashbord/Dashbord";
 import CourseStudy from "./pages/coursestudy/CourseStudy";
 import CourseNotStudy from "./pages/coursenotstudy/CourseNotStudy";
 import Search from "./pages/search/Search";
+import Noti from "./pages/notification/Noti";
 
 import Lecture from "./pages/lecture/Lecture";
 import AdminDashbord from "./admin/Dashboard/AdminDashbord";
@@ -24,6 +25,7 @@ import AdminUsers from "./admin/Users/AdminUsers";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPassword from "./pages/auth/ResetPassword";
 import AssignmentDetails from "./pages/assignment/AssignmentDetails";
+
 import Message from "./pages/message/message";
 import ForumList from "./pages/forum/ForumList";
 import { useState } from "react";
@@ -93,6 +95,7 @@ const App = () => {
           
               <Route path="/search" element={<Search />} />
              
+              <Route path="/notification" element={<Noti />} />
 
             <Route
               path="/admin/dashboard"
@@ -101,16 +104,14 @@ const App = () => {
 
             <Route
               path="/admin/course"
-              element={isAuth ? <AdminCourses user={user} /> : <Login />}              
+               element={isAuth ? <AdminCourses user={user} /> : <Login />}
             />
+           
             <Route
               path="/admin/users"
               element={isAuth ? <AdminUsers user={user} /> : <Login />}
             />
-            <Route
-              path="/admin/users"
-              element={isAuth ? <AdminUsers user={user} /> : <Login />}
-            />
+            
             <Route
               path="/assignments/details/:assignmentId"
               element={isAuth ? <AssignmentDetails user={user} /> : <Login />}

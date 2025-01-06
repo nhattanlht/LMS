@@ -11,8 +11,8 @@ const Footer = () => {
     <footer>
       <div className="footer-content">
         <p>
-          &copy; 2024 Your E-Learning Platform. All rights reserved. <br /> Made
-          with ❤️ <a href="">Prashant Kumar</a>
+          &copy; 2025 - All rights reserved. <br /> Made
+          with ❤️ Diệu Thảo, Anh Khoa, Nhật Tân, Thành Tâm, Xuân Quỳnh
         </p>
         <div className="social-links">
           <a href="">

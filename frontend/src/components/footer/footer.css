@@ -10,6 +10,9 @@ footer {
     margin: 0 auto;
 
     p {
+      font-family: 'Roboto', sans-serif;
+      color:white;
+
       margin: 0;
       font-size: 14px;
     }

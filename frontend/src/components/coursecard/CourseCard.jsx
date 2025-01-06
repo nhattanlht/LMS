@@ -11,7 +11,9 @@ const CourseCard = ({ course }) => {
   const handleCourseClick = () => {
     if (!isAuth) {
       navigate("/login");
-    } else if (!user.subscription.includes(course._id)) {
+    } else if (user.mainrole === "admin") {
+      navigate(`/course/study/${course._id}`);
+    }else if (!user.subscription.includes(course._id)) {
       navigate(`/course/${course._id}/not-subscribed`);
     } else {
       navigate(`/course/study/${course._id}`);
