@@ -7,30 +7,27 @@ const schema = new mongoose.Schema({
   },
   description: {
     type: String,
-    required: true,
   },
   image: {
     type: String
   },
-  startTime: Date,
-  endTime: Date,
-  duration: {
-    type: Number,
-    required: true,
+  startDate: {
+    type: Date,
+    required: true
   },
+  endDate: {
+    type: Date,
+    required: true
+  },
+  summary: String,
   resources: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Resources' }],
   assignments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Assignment' }],
-  category: {
-    type: String,
-    required: true,
-  },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId, ref: 'User',
   },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
+}, {
+  timestamps: true,
+  collection: 'courses'
 });
 
 export const Courses = mongoose.model("Courses", schema);

@@ -1,8 +1,24 @@
-.main-content {
+/* General Styling */
+.dashboard-main-content {
+  padding: 20px;
+  min-height: 100vh;
+}
+
+.dashboard-title {
+  font-size: 28px;
+  margin-bottom: 20px;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+}
+
+/* Stats Section */
+.dashboard-stats {
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
 
 
   
@@ -94,6 +110,41 @@
     margin-top:8px;
     font-weight: normal;
 
+
+.dashboard-box {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  flex: 1;
+  max-width: 300px;
+  min-width: 200px;
+}
+
+.stat-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: bold;
+  color: #8a4baf;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .dashboard-stats {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .dashboard-box {
+    width: 100%;
+    max-width: 90%;
   }
 }
 

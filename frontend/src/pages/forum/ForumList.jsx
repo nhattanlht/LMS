@@ -12,6 +12,7 @@ const ForumsList = ({ user }) => {
   const navigate = useNavigate();
   const params = useParams();
   const courseId = params.id;
+  const [courseTitle, setCourseTitle] = useState("");
   const [forums, setForums] = useState([]);
   const [selectedForum, setSelectedForum] = useState(null);
   const [error, setError] = useState(null);
@@ -30,17 +31,17 @@ const ForumsList = ({ user }) => {
   const fetchForums = async () => {
     try {
       setLoading(true);
-      const {data} = await axios.get(`${server}/api/forums?courseId=${courseId}`,
+      const {data} = await axios.get(`${server}/api/forums/${courseId}`,
         {
             headers: {
               token: localStorage.getItem("token"),
             },
           }
       );
-      console.log(data.data);
       setForums(data.data);
+      setCourseTitle(data.data[0].courseId.title);
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to fetch forums.");
+      toast.error(err.response?.data?.message || "Failed to fetch forums.");
     } finally {
       setLoading(false);
     }
@@ -53,7 +54,7 @@ const ForumsList = ({ user }) => {
     const { data } = await axios.post(`${server}/api/forums`,
        {
         title: newTitle,
-        course: courseId,
+        courseId: courseId,
     }, {
       headers: {
         token: localStorage.getItem("token"),
@@ -64,7 +65,6 @@ const ForumsList = ({ user }) => {
     toast.success("Forum created successfully!");
     } catch (err) {
       console.log(err);
-      setError("Failed to create the forum. Please try again.");
       toast.error("Error creating question:", error);
     }finally {
       setIsCreating(false);
@@ -72,7 +72,6 @@ const ForumsList = ({ user }) => {
 };
 
   if (loading) return <Loading />;
-  if (error) return <p>Error: {error}</p>;
 
   return (
     <div className="forums-list">
@@ -83,7 +82,7 @@ const ForumsList = ({ user }) => {
     />
   ) : (
     <div>
-      <h2 className="forums-header">Forums for {courseId}</h2>
+      <h2 className="forums-header">Forums for {courseTitle}</h2>
       <button className="back-button" onClick={backToCourseHandler}>
         <IoIosArrowBack />
         Back to Course
@@ -100,11 +99,8 @@ const ForumsList = ({ user }) => {
           >
             <h3 className="forum-title">{forum.title}</h3>
             <div className="forum-meta">
-              <span className="username">
-                {forum.createdBy?.name || "Anonymous"}
-              </span>
               <span className="created-at">
-                {" • " + moment(forum.createdAt).format("MMM Do, YYYY")}
+                { moment(forum.createdAt).format("MMM Do, YYYY")}
               </span>
             </div>
           </div>

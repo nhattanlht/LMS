@@ -9,6 +9,7 @@ import axios from "axios";
 import { MdMail } from "react-icons/md"; // Import Mail Icon from React Icons
 
 import {faSearch} from "@fortawesome/free-solid-svg-icons";
+import {faBell, faSearch, faTimes, faBars} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { server } from "../../main";
 const Header = ({ isAuth }) => {
@@ -19,6 +20,11 @@ const Header = ({ isAuth }) => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setMenuOpen((prev) => !prev);
+  };
 
 
 
@@ -100,8 +106,15 @@ const Header = ({ isAuth }) => {
   return (
     <header className="header">
       <Link to="/" className="logo">LMS </Link>
+      <div className="mobile-adjustment">
+      <Link to="/" className="logo">E-Learning</Link>
 
-      <nav className="nav-links">
+      <button className="menu-toggle" onClick={toggleMenu}>
+        <FontAwesomeIcon icon={menuOpen ? faTimes : faBars} />
+      </button>
+      </div>
+      <nav className={`nav-links ${menuOpen ? "open" : ""}`}>
+        {user?.mainrole === "admin" && <Link to="/admin/dashboard">Dashboard</Link>}
         <Link to="/">Home</Link>
         <Link to="/courses">Courses</Link>
         <Link to="/about">About</Link>
@@ -115,10 +128,10 @@ const Header = ({ isAuth }) => {
         )}
       </nav>
 
-      <div className="header-actions">
+      <div className={`header-actions ${menuOpen ? "open" : ""}`}>
         
         <div className="search-bar">
-          <form onSubmit={handleSearchSubmit}>
+          <form onSubmit={handleSearchSubmit} className="search-form">
             <input
               type="text"
               placeholder="Search for courses..."
@@ -156,6 +169,22 @@ const Header = ({ isAuth }) => {
               )}
             </div>
           )}
+          <div className="dropdown">
+            <span className="dropdown-button" onClick={toggleDropdown}>
+              {user?.profile?.firstName || "User"} ▾
+            </span>
+            {isDropdownOpen && (
+              <div className="dropdown-menu">
+                <Link to="/account" className="dropdown-item">Account</Link>
+                <Link to="/messages" className="dropdown-item">Messages</Link>
+                <span onClick={logoutHandler} className="dropdown-item">Logout</span>
+              </div>
+            )}
+          </div>
+          </>
+        ) : (
+          <Link to="/login" className="login-link">Login</Link>
+        )}
       </div>
 
    

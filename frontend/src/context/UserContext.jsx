@@ -20,13 +20,19 @@ export const UserContextProvider = ({ children }) => {
         password,
       });
 
+      console.log(data);
+
       toast.success(data.message);
-      localStorage.setItem("token", data.token);
+      localStorage.setItem("token", data.token); // Lưu token vào localStorage
+      localStorage.setItem("userId", data.user._id); // Lưu userId vào localStorage
       setUser(data.user);
       setIsAuth(true);
       setBtnLoading(false);
-      navigate("/");
-      fetchMyCourse();
+      if(data.user.mainrole === "admin") navigate("/admin/dashboard");
+      else {
+        navigate("/");
+        fetchMyCourse();
+      }
     } catch (error) {
       setBtnLoading(false);
       setIsAuth(false);

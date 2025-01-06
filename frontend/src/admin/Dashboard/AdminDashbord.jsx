@@ -72,12 +72,14 @@ const AdminDashbord = ({ user }) => {
   }, []);
 
   return (
-    <div>
-      <Layout>
-        <div className="main-content">
-          <div className="box">
-            <p>Total Courses</p>
-            <p>{stats.totalCoures}</p>
+  <div>
+    <Layout>
+      <div className="dashboard-main-content">
+        <h1 className="dashboard-title">Admin Dashboard</h1>
+        <div className="dashboard-stats">
+          <div className="dashboard-box">
+            <p className="stat-title">Total Courses</p>
+            <p className="stat-value">{stats.totalCourses}</p>
           </div>
 
           <div className="box">
@@ -160,6 +162,12 @@ const AdminDashbord = ({ user }) => {
       </Layout>
     </div>
   );
+          
+        </div>
+      </div>
+    </Layout>
+  </div>
+);
 };
 
 export default AdminDashbord;

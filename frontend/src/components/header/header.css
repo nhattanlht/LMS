@@ -1,11 +1,12 @@
 /* General header styling */
 .header {
+  width: auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 20px;
   background-color: #ffffff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
 }
 /* Cải thiện kiểu dáng của dropdown thông báo */
 .notification-dropdown {
@@ -141,8 +142,8 @@
 /* Dropdown menu styling */
 .dropdown-menu {
   position: absolute;
-  top: 80px;
-  right: 40px;
+  top: 60px;
+  right: 20px;
   background-color: white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
@@ -201,7 +202,7 @@
 }
 
 .notification::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   right: 0;
@@ -221,12 +222,12 @@
 
 .search-bar form {
   display: flex;
+  flex-direction: row;
   align-items: center;
   border: 1px solid #ddd;
   border-radius: 12px;
-  padding: 5px 10px;
-  background-color: #fafafa;
   transition: border-color 0.3s ease;
+  margin-left: 10px;
 }
 
 .search-bar form:focus-within {
@@ -236,25 +237,35 @@
 .search-bar input {
   border: none;
   outline: none;
-  padding: 5px;
   font-size: 1rem;
   width: 200px;
   border-radius: 12px;
-  background-color: #fafafa;
 }
 
 .search-bar button {
-  background-color: #fafafa;
+  background-color: white;
   border: none;
   color: #8a4baf;
-  padding: 4px 12px;
   margin-left: 5px;
+  margin-top: 0;
+  display: flex;
+  align-items: center;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
 .search-bar button:hover {
   color: #6c399f;
+  background-color: #fafafa;
+}
+
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  background-color: #8a4baf;
+  cursor: pointer;
 }
 
 /* Responsive Styles */
@@ -275,6 +286,12 @@
     gap: 10px;
     margin-top: 20px;
     width: 100%;
+    display: none;
+  }
+
+  .open{
+    display: flex;
+    align-items: flex-end;
   }
 
   .nav-links a {
@@ -293,6 +310,7 @@
     width: 100%;
     border-radius: 12px;
     margin-bottom: 15px;
+    margin-left: 0;
   }
 
   .search-bar input {
@@ -305,6 +323,10 @@
     padding: 8px;
   }
 
+  .dropdown{
+    position: relative;
+  }
+
   .notification,
   .dropdown-button {
     font-size: 1.4rem;
@@ -312,8 +334,19 @@
 
   .dropdown-menu {
     right: 10px;
-    top: 60px;
+    top: 40px;
     min-width: 120px;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  .mobile-adjustment{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
   }
 }
 

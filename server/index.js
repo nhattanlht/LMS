@@ -5,13 +5,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import { connectDb } from "./database/db.js";
-// import Razorpay from "razorpay";
 import cors from "cors";
-
-// export const instance = new Razorpay({
-//   key_id: process.env.Razorpay_Key,
-//   key_secret: process.env.Razorpay_Secret,
-// });
 
 // using middlewares
 app.use(express.json());
@@ -30,6 +24,7 @@ import courseRoutes from "./routes/course.js";
 import adminRoutes from "./routes/admin.js";
 import forumRoutes from "./routes/forum.js";
 import asssignmentRoutes from "./routes/assignment.js";
+import submissionRoutes from "./routes/submission.js";
 import messageRoutes from "./routes/message.js";
 import resourceRoutes from "./routes/resources.js";
 
@@ -40,9 +35,9 @@ app.use("/api", courseRoutes);
 app.use("/api", adminRoutes);
 app.use("/api", forumRoutes);
 app.use("/api", asssignmentRoutes);
+app.use("/api/", submissionRoutes);
 app.use("/api", messageRoutes);
 app.use("/api", resourceRoutes);
-
 
 
 
