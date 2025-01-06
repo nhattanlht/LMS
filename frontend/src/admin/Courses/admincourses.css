@@ -56,12 +56,18 @@
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-left: 0;
 }
 
 .course-table th,
 .course-table td {
   padding: 12px 16px;
   text-align: left;
+}
+
+.course-table th {
+  background-color: #8a4baf;
+  color: white;
 }
 
 .course-table thead {
@@ -91,4 +97,8 @@
 
 .course-user-management input[type="text"]{
   margin-bottom: 10px;
+}
+
+.course-user-management button{
+  margin-right: 4px;
 }

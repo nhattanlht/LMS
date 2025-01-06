@@ -8,12 +8,19 @@
   background-color: #ffffff;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
 }
+
+.user-action{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 /* Cải thiện kiểu dáng của dropdown thông báo */
 .notification-dropdown {
   font-size: 14px;
   position: absolute;
-  top: 100%;
-  right: 20px;
+  top: 40px;
+  right: 0;
   background-color: white;
   border: 1px solid #ccc;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);  /* Thêm bóng cho dropdown */
@@ -44,17 +51,18 @@
 
 /* Thêm biểu tượng thông báo và màu sắc cho chuông khi có thông báo mới */
 .noti {
-  position: absolute;
-  top: 100%;
-  right: 20px;
-   color: purple;
+  position: relative;
+  color: #8a4baf;
+  font-weight: bold;
   cursor: pointer;
-  top: 20px;
-
-  padding: 10px 15px;
   font-size: 29px;
-  margin: 0;
+  margin-right: 20px;
   z-index: 2;
+}
+
+.noti .read {
+  color: #333; /* Màu chữ thông báo đã đọc */
+  font-weight: normal;
 }
 
 .notification-icon {

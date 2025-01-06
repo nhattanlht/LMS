@@ -322,6 +322,7 @@ export const getNotification = TryCatch(async (req, res) => {
 
   // Fetch notifications where the user is a recipient
   const notifications = await Notification.find({ recipients: userId })
+    .populate("sender", "name email")
     .sort({ createdAt: -1 })
     .lean();
 

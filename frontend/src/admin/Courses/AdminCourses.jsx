@@ -77,9 +77,29 @@ const AdminCourses = ({ user }) => {
   };
 
   const handleDeleteSelected = () => {
-    if (selectedCourses.length > 0) {
-      // deleteCourses(selectedCourses);
+    if (selectedCourses.length > 0 && confirm("Are you sure you want to delete these courses?")) {
+      deleteCourses(selectedCourses);
       setSelectedCourses([]);
+    }
+  };
+
+  const deleteCourses = async (courseIds) => {
+    try {
+      const {data} = await axios.delete(`${server}/api/course`, 
+        {
+        headers: {
+          token: localStorage.getItem("token"),
+        },
+        data: {
+          ids: courseIds,
+        }
+      });
+
+      toast.success(data.message);
+      await fetchCourses();
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
     }
   };
 
@@ -212,7 +232,7 @@ const AdminCourses = ({ user }) => {
             </form>
           </div>
 
-          {selectedCourses.length > 0 && (
+          {(selectedCourses.length > 0 && user.role === "superadmin") && (
             <button onClick={handleDeleteSelected} className="delete-button">
               Delete Selected
             </button>

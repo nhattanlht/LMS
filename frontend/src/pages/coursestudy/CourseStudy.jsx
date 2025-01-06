@@ -34,7 +34,7 @@ const CourseStudy = ({ user }) => {
   const [loading, setLoading] = useState(true);
   const { fetchCourse, course } = CourseData();
   const [showAddAssignmentModal, setShowAddAssignmentModal] = useState(false);
-  
+
 
   const [showEnterGradeModal, setShowEnterGradeModal] = useState(false);
   const [showGradeModal, setShowGradeModal] = useState(false);
@@ -57,112 +57,112 @@ const CourseStudy = ({ user }) => {
   const [editingResource, setEditingResource] = useState(null);
   const [newTitle, setNewTitle] = useState("");
 
-// Khi nhấn vào nút "Edit", lưu trữ ID của tài nguyên cần sửa
+  // Khi nhấn vào nút "Edit", lưu trữ ID của tài nguyên cần sửa
 
 
 
-    const loadResources = async (courseID) => {
-      try {
-        const response = await axios.get(
-          `${server}/api/resource/${params.id}`,
-          {
-            headers: {
-              token: localStorage.getItem("token"),
-            },
-          }
-        );
-        setResources(response.data.resources);
-
-      } catch (error) {
-        console.error("Error fetching resources:", error);
-      }
-    };
-  
-    const handleCreateResource = async (formData) => {
-
-        try {
-          const response = await axios.post(
-            `${server}/api/resource`,
-            formData,
-            {
-              headers: {
-                token: localStorage.getItem("token"),
-              },
-            }
-          );
-          setResources((prev) => [...prev, response.data.resource]);
-          navigate(`/course/study/${params.id}`); // Chuyển hướng về trang chi tiết khóa học
-          // Assuming response returns the created resource
-        } catch (error) {
-          console.error("Error creating resource:", error);
+  const loadResources = async (courseID) => {
+    try {
+      const response = await axios.get(
+        `${server}/api/resource/${params.id}`,
+        {
+          headers: {
+            token: localStorage.getItem("token"),
+          },
         }
-    };
-  
-    const handleDeleteResource = async (resourceId) => {
-      if (!window.confirm("Are you sure you want to delete?")) return;
+      );
+      setResources(response.data.resources);
 
-      try {
-        await axios.delete(`${server}/api/resource/${resourceId}`, {
+    } catch (error) {
+      console.error("Error fetching resources:", error);
+    }
+  };
+
+  const handleCreateResource = async (formData) => {
+
+    try {
+      const response = await axios.post(
+        `${server}/api/resource`,
+        formData,
+        {
           headers: {
             token: localStorage.getItem("token"),
           },
-        });
-        setResources((prev) => prev.filter((r) => r._id !== resourceId));
-        alert("Deleted resource successfully!");  // Thông báo thêm resource thành công
-        navigate(`/course/study/${params.id}`); // Chuyển hướng về trang chi tiết khóa học
+        }
+      );
+      setResources((prev) => [...prev, response.data.resource]);
+      navigate(`/course/study/${params.id}`); // Chuyển hướng về trang chi tiết khóa học
+      // Assuming response returns the created resource
+    } catch (error) {
+      console.error("Error creating resource:", error);
+    }
+  };
 
-      } catch (error) {
-        console.error("Error deleting resource:", error);
-      }
-    };
-  
-    const handleEditResource = async (resourceId, updatedResource) => {
-      if (!window.confirm("Are you sure you want to save changes?")) return;
+  const handleDeleteResource = async (resourceId) => {
+    if (!window.confirm("Are you sure you want to delete?")) return;
 
-      try {
-        const response = await axios.put(
-          `${server}/api/resource/${resourceId}`,
-          updatedResource,
-          {
-            headers: {
-              token: localStorage.getItem("token"),
-            },
-          }
-        );
-        setResources((prev) =>
-          prev.map((r) => (r._id === resourceId ? response.data : r))
-        );
-        setEditingResource(null); // Đóng modal sau khi lưu
-        alert("Resource updated successfully!"); // Thông báo chỉnh sửa resource thành công
-        navigate(`/course/study/${params.id}`); // Chuyển hướng về trang chi tiết khóa học
-      } catch (error) {
-        console.error("Error editing resource:", error);
-      }
-    };
+    try {
+      await axios.delete(`${server}/api/resource/${resourceId}`, {
+        headers: {
+          token: localStorage.getItem("token"),
+        },
+      });
+      setResources((prev) => prev.filter((r) => r._id !== resourceId));
+      alert("Deleted resource successfully!");  // Thông báo thêm resource thành công
+      navigate(`/course/study/${params.id}`); // Chuyển hướng về trang chi tiết khóa học
 
-    const handleSendNotification = async () => {
-      const formData = new FormData();
-      formData.append("subject", subject);
-      formData.append("message", message);
-      formData.append("courseId", course._id);
-      if (file) {
-        formData.append("file", file); // Gửi file nếu có
-      }
-      try {
-        const response = await axios.post(`${server}/api/course/notification`, formData, {
+    } catch (error) {
+      console.error("Error deleting resource:", error);
+    }
+  };
+
+  const handleEditResource = async (resourceId, updatedResource) => {
+    if (!window.confirm("Are you sure you want to save changes?")) return;
+
+    try {
+      const response = await axios.put(
+        `${server}/api/resource/${resourceId}`,
+        updatedResource,
+        {
           headers: {
             token: localStorage.getItem("token"),
           },
-        });
+        }
+      );
+      setResources((prev) =>
+        prev.map((r) => (r._id === resourceId ? response.data : r))
+      );
+      setEditingResource(null); // Đóng modal sau khi lưu
+      alert("Resource updated successfully!"); // Thông báo chỉnh sửa resource thành công
+      navigate(`/course/study/${params.id}`); // Chuyển hướng về trang chi tiết khóa học
+    } catch (error) {
+      console.error("Error editing resource:", error);
+    }
+  };
 
-        alert("Notification sent successfully!");
-        setShowNotificationModal(false);
-      } catch (error) {
-        console.error("Error sending notification:", error.data);
-        
-        alert("Failed to send notification");
-      }
-    };
+  const handleSendNotification = async () => {
+    const formData = new FormData();
+    formData.append("subject", subject);
+    formData.append("message", message);
+    formData.append("courseId", course._id);
+    if (file) {
+      formData.append("file", file); // Gửi file nếu có
+    }
+    try {
+      const response = await axios.post(`${server}/api/course/notification`, formData, {
+        headers: {
+          token: localStorage.getItem("token"),
+        },
+      });
+
+      alert("Notification sent successfully!");
+      setShowNotificationModal(false);
+    } catch (error) {
+      console.error("Error sending notification:", error.data);
+
+      alert("Failed to send notification");
+    }
+  };
 
   const handleGradeClick = () => {
     setShowGradeModal(true);
@@ -184,27 +184,15 @@ const CourseStudy = ({ user }) => {
     setShowViewGradeModal(false);
   };
 
-  useEffect(() => {
-    /*
-    const token = localStorage.getItem('token');
-    
-    
-    
-    // Mở modal chỉnh sửa khi nhấn "Edit"
-    
-    const handleEditClick = (resourceId) => {
-      const resource = resources.find((r) => r._id === resourceId);
-  setEditingResource(resource);
-  setNewTitle(resource.title); // Hiển thị tiêu đề hiện tại để người dùng chỉnh sửa    
-    };
-    
+  // Mở modal chỉnh sửa khi nhấn "Edit"
 
+  const handleEditClick = (resourceId) => {
+    const resource = resources.find((r) => r._id === resourceId);
+    setEditingResource(resource);
+    setNewTitle(resource.title); // Hiển thị tiêu đề hiện tại để người dùng chỉnh sửa    
+  };
 
   useEffect(() => {
-
-
-    
-
     const loadCourseData = async () => {
       try {
         await fetchCourse(params.id);
@@ -345,61 +333,61 @@ const CourseStudy = ({ user }) => {
                       </div>
                     )}
                     <ul>
-                    {resources.length === 0 ? (
-                  <p>No file.</p>
-                ) : (
-                  resources.map((item) => (
-                    <div className="file-item-container">
-                    <li key={item._id} className="file-item">
-                      <p>{item.title}</p>
-                      <div className="file-item-icon">
-                        <a
-                          href={item.file}
-                          download
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="edit-btn"
-                        >
+                      {resources.length === 0 ? (
+                        <p>No file.</p>
+                      ) : (
+                        resources.map((item) => (
+                          <div className="file-item-container">
+                            <li key={item._id} className="file-item">
+                              <p>{item.title}</p>
+                              <div className="file-item-icon">
+                                <a
+                                  href={item.file}
+                                  download
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="edit-btn"
+                                >
 
-                        <FontAwesomeIcon icon={faDownload} className="ricon" />
-                        </a>
-                        {user.role === "lecturer" && (
-                          <>
-                            <button
-                              className="edit-btn"
-                              onClick={() => handleEditClick(item._id)}
-                              
-                            >
-                              <FontAwesomeIcon icon={faEdit} className="ricon" />
-                            </button>
+                                  <FontAwesomeIcon icon={faDownload} className="ricon" />
+                                </a>
+                                {user.role === "lecturer" && (
+                                  <>
+                                    <button
+                                      className="edit-btn"
+                                      onClick={() => handleEditClick(item._id)}
 
-                            <button
-                              className="edit-btn"
-                              onClick={() => handleDeleteResource(item._id)}
-                            >
-                              <FontAwesomeIcon icon={faTrash} className="ricon" />
-                            </button>
-                            </>
-                        )}  
+                                    >
+                                      <FontAwesomeIcon icon={faEdit} className="ricon" />
+                                    </button>
 
-                        </div>
-                    
-                    </li>
-                    <div className="time">
-                    Created at: {new Date(item.createdAt).toLocaleString('en-GB', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit',
-                  })}       
-                   </div>
+                                    <button
+                                      className="edit-btn"
+                                      onClick={() => handleDeleteResource(item._id)}
+                                    >
+                                      <FontAwesomeIcon icon={faTrash} className="ricon" />
+                                    </button>
+                                  </>
+                                )}
 
-                    </div>
+                              </div>
 
-                  ))
-                )}
+                            </li>
+                            <div className="time">
+                              Created at: {new Date(item.createdAt).toLocaleString('en-GB', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                second: '2-digit',
+                              })}
+                            </div>
+
+                          </div>
+
+                        ))
+                      )}
                     </ul>
                   </div>
                   {/* Assignment Column */}
@@ -469,15 +457,15 @@ const CourseStudy = ({ user }) => {
               </div>
               {/* Modal Add Resource*/}
               {showAddResourceModal && (
-                    <AddResourceModal
-                      courseId={params.id}
-                      onClose={() => setShowAddResourceModal(false)}
-                      onAddResource={handleCreateResource}
-                    />
+                <AddResourceModal
+                  courseId={params.id}
+                  onClose={() => setShowAddResourceModal(false)}
+                  onAddResource={handleCreateResource}
+                />
               )}
               {/* Modal Edit Resource*/}
               {editingResource && (
-                  <div className="modal-overlay">
+                <div className="modal-overlay">
                   <div className="modal-content">
 
                     <h3>Edit Resource</h3>
@@ -492,49 +480,43 @@ const CourseStudy = ({ user }) => {
                     </button>
                     <button onClick={() => setEditingResource(null)}>Cancel</button>
                   </div>
-                  </div>
+                </div>
               )}
               {/* Modal Send Notification */}
               {showNotificationModal && (
-            <div className="modal-overlay">
-              <div className="modal-content">
-                <h3>Send Notification</h3>
-                
-                
-                <p>Subject:</p>
-                <input
-                  type="text"
-                  value={subject}
-                  onChange={(e) => setSubject(e.target.value)}
-                  placeholder="Enter subject"
-                />
-                <p>Message:</p>
+                <div className="modal-overlay">
+                  <div className="modal-content">
+                    <h3>Send Notification</h3>
+                    <p>Subject:</p>
+                    <input
+                      type="text"
+                      value={subject}
+                      onChange={(e) => setSubject(e.target.value)}
+                      placeholder="Enter subject"
+                    />
+                    <p>Message:</p>
 
-                <textarea
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Enter message"
-                />
+                    <textarea
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      placeholder="Enter message"
+                    />
 
-                {/* Input for file upload */}
-                <p>File:</p>
-                <input
-                  type="file"
-                  onChange={(e) => setFile(e.target.files[0])}  // setFile is used to store the selected file
-                />
-                <button onClick={handleSendNotification}>Send</button>
-                <button onClick={() => setShowNotificationModal(false)}>Cancel</button>
-              </div>
-            </div>
-                )}
-
-
-
-                            
-                 </div>
-                 </div>
-               )
+                    {/* Input for file upload */}
+                    <p>File:</p>
+                    <input
+                      type="file"
+                      onChange={(e) => setFile(e.target.files[0])}  // setFile is used to store the selected file
+                    />
+                    <button onClick={handleSendNotification}>Send</button>
+                    <button onClick={() => setShowNotificationModal(false)}>Cancel</button>
+                  </div>
+                </div>
               )}
+            </div>
+          </div>
+        )
+      )}
     </>
   );
 };

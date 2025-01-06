@@ -71,9 +71,28 @@ const AdminUsers = ({ user }) => {
   };
 
   const handleDeleteSelected = () => {
-    if (selectedUsers.length > 0) {
-      // deleteUsers(selectedUsers);
+    if (selectedUsers.length > 0 && confirm("Are you sure you want to delete these users?")) {
+      deleteUsers(selectedUsers);
       setSelectedUsers([]);
+    }
+  };
+
+  const deleteUsers = async (users) => {
+    try{
+      const {data} = await axios.delete(`${server}/api/user`, {
+        headers: {
+          token: localStorage.getItem("token"),
+        },
+        data: {
+          ids: users,
+        },
+      });
+
+      toast.success(data.message);
+      fetchUsers();
+    }catch(error){
+      console.log(error);
+      toast.error(error.response.data.message);
     }
   };
 
@@ -258,7 +277,7 @@ const AdminUsers = ({ user }) => {
             </form>
           </div>
 
-          {selectedUsers.length > 0 && (
+          {(selectedUsers.length > 0 && user.role === "superadmin") && (
             <button onClick={handleDeleteSelected} className="delete-button">
               Delete Users
             </button>
