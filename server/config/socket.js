@@ -76,7 +76,7 @@ io.on('connection', (socket) => {
 
 // Chạy server tại cổng 5001
 server.listen(5001, () => {
-    console.log('Server running on port 5001');
+    console.log('Socket running on port 5001');
   });
 
 export { app, io, server };
