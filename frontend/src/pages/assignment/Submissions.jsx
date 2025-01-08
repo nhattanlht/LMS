@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import "./submissions.css";
 import { TiTick } from "react-icons/ti";
 import { SubmissionsData } from "../../context/SubmissionsContext";
@@ -6,28 +6,33 @@ import { SubmissionsData } from "../../context/SubmissionsContext";
 const Submissions = ({ user, assignmentId, dueDate }) => {
   const { submissions, fetchSubmissions, submitAssignment } = SubmissionsData();
   const [file, setFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     fetchSubmissions(assignmentId);
   }, [assignmentId, fetchSubmissions]);
 
-  const studentSubmission = user && user.role === "student"
-    ? submissions.find(submission => submission.student && submission.student._id === user._id)
-    : null;
+  const studentSubmission = useMemo(() => {
+    return user && user.role === "student"
+      ? submissions.find(submission => submission.student && submission.student._id === user._id)
+      : null;
+  }, [user, submissions]);
 
-  const handleFileChange = (e) => {
+  const handleFileChange = useCallback((e) => {
     setFile(e.target.files[0]);
-  };
+  }, []);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
     if (window.confirm("You can only submit once and cannot edit after submission. Are you sure you want to submit?")) {
+      setIsLoading(true);
       const formData = new FormData();
       formData.append("assignmentId", assignmentId);
       formData.append("file", file);
       await submitAssignment(formData);
+      setIsLoading(false);
     }
-  };
+  }, [assignmentId, file, submitAssignment]);
 
   const isLate = new Date() > new Date(dueDate);
 
@@ -61,7 +66,9 @@ const Submissions = ({ user, assignmentId, dueDate }) => {
           !isLate && (
             <form onSubmit={handleSubmit}>
               <input type="file" onChange={handleFileChange} required />
-              <button type="submit" className="common-btn">Submit Assignment</button>
+              <button type="submit" className="common-btn" disabled={isLoading}>
+                {isLoading ? "Submitting..." : "Submit Assignment"}
+              </button>
             </form>
           )
         )

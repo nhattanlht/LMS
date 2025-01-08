@@ -26,7 +26,7 @@ const AssignmentDetails = ({ user }) => {
   const handleDelete = async () => {
     if (confirm("Are you sure you want to delete this assignment?")) {
       await deleteAssignment(assignmentId);
-      navigate("/assignments");
+      navigate(`/course/study/${assignment.courseId}`);
     }
   };
 
