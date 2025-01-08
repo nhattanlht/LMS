@@ -364,7 +364,7 @@ const CourseStudy = ({ user }) => {
                     />
                   )}
 
-                  {/* Test Column */}
+                  {/* Test Column
                   <div className="col">
                     <h3>Test</h3>
                     <hr></hr>
@@ -380,7 +380,7 @@ const CourseStudy = ({ user }) => {
                         </button>
                       </div>
                     )}
-                  </div>
+                  </div> */}
                 </div>
               </div>
               <div className="sidebar">

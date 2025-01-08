@@ -49,11 +49,27 @@ export const SubmissionsContextProvider = ({ children }) => {
     }
   };
 
+  const submitAssignment = async (formData) => {
+    try {
+      const { data } = await axios.post(`${server}/api/submissions`, formData, {
+        headers: {
+          token: localStorage.getItem("token"),
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      toast.success(data.message);
+      fetchSubmissions(formData.get("assignmentId")); // Fetch submissions again after submitting
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
+  };
+
   return (
     <SubmissionsContext.Provider
       value={{
         submissions,
         fetchSubmissions,
+        submitAssignment,
         getSubmissionDetails,
         updateSubmissionGrade,
       }}

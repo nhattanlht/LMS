@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { AssignmentData } from "../../context/AssignmentContext";
 import "./addAssignmentModal.css";
 
@@ -10,9 +10,11 @@ const AddAssignmentModal = ({ courseId, onClose }) => {
   const [dueDate, setDueDate] = useState("");
   const [type, setType] = useState("assignment");
   const [file, setFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
@@ -23,8 +25,9 @@ const AddAssignmentModal = ({ courseId, onClose }) => {
     if (file) {
       formData.append("file", file);
     }
-    await addAssignment(formData, onClose); // Truyền hàm onClose vào hàm addAssignment
-  };
+    await addAssignment(formData, onClose);
+    setIsLoading(false);
+  }, [title, description, startDate, dueDate, courseId, type, file, addAssignment, onClose]);
 
   return (
     <div className="modal">
@@ -91,7 +94,9 @@ const AddAssignmentModal = ({ courseId, onClose }) => {
             />
           </div>
           <div className="button-group">
-            <button type="submit">Add Assignment</button>
+            <button type="submit" disabled={isLoading}>
+              {isLoading ? "Adding..." : "Add Assignment"}
+            </button>
             <button type="button" onClick={onClose}>Cancel</button>
           </div>
         </form>

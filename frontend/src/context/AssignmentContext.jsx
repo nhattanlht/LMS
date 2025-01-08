@@ -63,7 +63,7 @@ export const AssignmentContextProvider = ({ children }) => {
     }
   };
 
-  const addAssignment = async (formData, navigate) => {
+  const addAssignment = async (formData, onClose) => {
     try {
       const { data } = await axios.post(`${server}/api/assignments`, formData, {
         headers: {
@@ -71,7 +71,7 @@ export const AssignmentContextProvider = ({ children }) => {
         },
       });
       toast.success(data.message);
-      navigate("/assignments");
+      setAssignments((prevAssignments) => [...prevAssignments, data.assignment]);
       onClose();
     } catch (error) {
       toast.error(error.response.data.message);
@@ -106,22 +106,22 @@ export const AssignmentContextProvider = ({ children }) => {
     }
   };
 
-  const submitAssignment = async (formData) => {
-    try {
-      const { data } = await axios.post(`${server}/api/assignment/submit`, formData, {
-        headers: {
-          token: localStorage.getItem("token"),
-        },
-      });
-      toast.success(data.message);
-      setAssignment((prevAssignment) => ({
-        ...prevAssignment,
-        submissions: [...prevAssignment.submissions, data.submission],
-      }));
-    } catch (error) {
-      toast.error(error.response.data.message);
-    }
-  };
+  // const submitAssignment = async (formData) => {
+  //   try {
+  //     const { data } = await axios.post(`${server}/api/assignment/submit`, formData, {
+  //       headers: {
+  //         token: localStorage.getItem("token"),
+  //       },
+  //     });
+  //     toast.success(data.message);
+  //     setAssignment((prevAssignment) => ({
+  //       ...prevAssignment,
+  //       submissions: [...prevAssignment.submissions, data.submission],
+  //     }));
+  //   } catch (error) {
+  //     toast.error(error.response.data.message);
+  //   }
+  // };
 
   return (
     <AssignmentContext.Provider
@@ -136,7 +136,7 @@ export const AssignmentContextProvider = ({ children }) => {
         addAssignment,
         updateAssignment,
         deleteAssignment,
-        submitAssignment,
+        //submitAssignment,
       }}
     >
       {children}
