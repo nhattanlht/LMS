@@ -1,5 +1,6 @@
 import TryCatch from "../middlewares/TryCatch.js";
 import { Resources } from "../models/Resources.js";
+import { handleUpload } from "../config/cloudinary2.js";
 
 // Tạo tài nguyên mới
 export const createResource = TryCatch(async (req, res) => {

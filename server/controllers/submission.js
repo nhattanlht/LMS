@@ -1,6 +1,7 @@
 import TryCatch from "../middlewares/TryCatch.js";
 import { Assignment } from "../models/Assignment.js";
 import { Submission } from "../models/Submission.js";
+import { handleUpload } from "../config/cloudinary2.js";
 
 export const submitAssignment = TryCatch(async (req, res) => {
   if (!req.file) {

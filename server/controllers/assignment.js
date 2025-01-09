@@ -1,6 +1,7 @@
 // Assignment Controller
 import TryCatch from "../middlewares/TryCatch.js";
 import { Assignment } from "../models/Assignment.js";
+import { handleUpload } from "../config/cloudinary2.js";
 
 export const createAssignment = TryCatch(async (req, res) => {
   if (!req.file) {
