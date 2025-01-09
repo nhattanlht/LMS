@@ -1,6 +1,5 @@
 // Assignment Controller
 import TryCatch from "../middlewares/TryCatch.js";
-import cloudinary from "../config/cloudinary.js";
 import { Assignment } from "../models/Assignment.js";
 
 export const createAssignment = TryCatch(async (req, res) => {
@@ -8,9 +7,9 @@ export const createAssignment = TryCatch(async (req, res) => {
     return res.status(400).json({ message: "No file uploaded" });
   }
 
-  const result = await cloudinary.uploader.upload(req.file.path, {
-    resource_type: "auto",
-  });
+  const b64 = Buffer.from(req.file.buffer).toString("base64");
+  let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+  const result = await handleUpload(dataURI, "assignments");
 
   if (!req.body.courseId) {
     return res.status(400).json({ message: "Course ID is required" });

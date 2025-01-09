@@ -1,6 +1,6 @@
 import express from "express";
 import { isAuth } from "../middlewares/isAuth.js";
-import { uploadFiles } from "../middlewares/multer.js";
+import { uploadFiles } from "../middlewares/multer2.js";
 
 // Import Submission Controller
 import {

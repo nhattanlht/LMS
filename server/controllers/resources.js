@@ -1,6 +1,5 @@
 import TryCatch from "../middlewares/TryCatch.js";
 import { Resources } from "../models/Resources.js";
-import cloudinary from "../config/cloudinary.js";
 
 // Tạo tài nguyên mới
 export const createResource = TryCatch(async (req, res) => {
@@ -9,9 +8,9 @@ export const createResource = TryCatch(async (req, res) => {
   }
 
   // Upload file lên Cloudinary
-  const result = await cloudinary.uploader.upload(req.file.path, {
-    resource_type: "auto",
-  });
+  const b64 = Buffer.from(req.file.buffer).toString("base64");
+  let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+  const result = await handleUpload(dataURI, "resources");
 
   const resource = await Resources.create({
     title: req.body.title,
