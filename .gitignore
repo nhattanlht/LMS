@@ -13,9 +13,11 @@ Thumbs.db
 
 # Frontend
 frontend/node_modules/
+frontend/dist/
 
 # Backend
 server/node_modules/
 server/.env
 
 server/uploads/
+
