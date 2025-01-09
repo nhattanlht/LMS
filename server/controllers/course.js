@@ -157,8 +157,8 @@ export const sendNotificationToCourseStudents = TryCatch(async (req, res) => {
 
   // Find the course enrollment and populate participants
   const enrollment = await Enrollment.findOne({ course_id: courseId }).populate(
-    "participants.participant_id",
-    "email _id"
+    "participants.participant_id course_id",
+    "email _id title"
   );
 
   if (!enrollment) {
@@ -172,6 +172,15 @@ export const sendNotificationToCourseStudents = TryCatch(async (req, res) => {
     return res.status(404).json({ message: "No students found in the course." });
   }
 
+  // Notify students via email
+  const recipientEmails = students.map((s) => s.participant_id.email);
+  let data = {sender: senderId, recipientEmails, message, course: enrollment.course_id.title};
+  if(file){
+    data = {...data, file};
+  }
+  await sendNotificationMail(subject, data);
+
+  
   // Create notification in the database
   const recipientIds = students.map((s) => s.participant_id._id);
   const notificationData = {
@@ -184,28 +193,13 @@ export const sendNotificationToCourseStudents = TryCatch(async (req, res) => {
 
   const notification = await Notification.create(notificationData);
 
-  // Notify students via email
-  const recipientEmails = students.map((s) => s.participant_id.email);
-  let data;
-  if(file){
-    data = {sender: senderId, recipientEmails, message, file};
-  }else{
-    data = {sender: senderId, recipientEmails, message};
-  }
-  await sendNotificationMail(subject, data);
-
   // Notify students via socket
-  // students.forEach((student) => {
-  //   const studentSocketId = getReceiverSocketId(student.participant_id._id);
-  //   if (studentSocketId) {
-  //     io.to(studentSocketId).emit("newNotification", {
-  //       notificationId: notification._id,
-  //       subject,
-  //       message,
-  //       createdAt: notification.createdAt,
-  //     });
-  //   }
-  // });
+  students.forEach((student) => {
+    const studentSocketId = getReceiverSocketId(student.participant_id._id);
+    if (studentSocketId) {
+      io.to(studentSocketId).emit("newNotification", notification);
+    }
+  });
 
   res.status(200).json({ 
     message: "Notification sent successfully.",

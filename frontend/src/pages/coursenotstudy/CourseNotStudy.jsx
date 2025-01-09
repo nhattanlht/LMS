@@ -43,13 +43,13 @@ const CourseNotStudy = () => {
               <div className="course-info">
                 <p>
                   Start:{" "}
-                  {new Date(course.startTime).toLocaleDateString("en-GB", {
+                  {new Date(course.startDate).toLocaleDateString("en-GB", {
                     timeZone: "UTC",
                   })}
                 </p>
                 <p>
                   End:{" "}
-                  {new Date(course.endTime).toLocaleDateString("en-GB", {
+                  {new Date(course.endDate).toLocaleDateString("en-GB", {
                     timeZone: "UTC",
                   })}
                 </p>

@@ -6,6 +6,17 @@ import { MdMail } from "react-icons/md"; // Import Mail Icon from React Icons
 import { FaBell } from "react-icons/fa";  // Import Bell Icon from React Icons
 import { FaDownload } from "react-icons/fa";
 import { server } from "../../main";
+import io from 'socket.io-client';
+
+const userId = localStorage.getItem('userId'); // Giả sử bạn lưu userId trong localStorage sau khi đăng nhập
+
+if (!userId) {
+  console.error('User is not logged in!');
+}
+
+const socket = io('http://localhost:5001', {
+  query: { userId }, // Truyền userId thực tế vào query của Socket.IO
+});
 
 const Noti = ({ user }) => {
   const [notifications, setNotifications] = useState([]);
@@ -36,8 +47,7 @@ const Noti = ({ user }) => {
 
         const notificationsWithRoles = data.notifications.map((notification) => ({
           ...notification,
-          isSender: notification.senderId === token,
-          isReceiver: notification.receiverId === token,
+          isSender: notification.sender?._id === user._id,
         }));
 
         const sortedNotifications = notificationsWithRoles.sort(
@@ -82,6 +92,7 @@ const Noti = ({ user }) => {
             notif._id === notification._id ? { ...notif, read: true } : notif
           )
         );
+
       } else {
         console.error('Failed to mark notification as read');
       }
@@ -96,7 +107,12 @@ const Noti = ({ user }) => {
   };
 
   useEffect(() => {
+    socket.on('newNotification', (notification) => {
+      setNotifications((prevNotifications) => [notification, ...prevNotifications]);
+    });
+
     getNotifications();
+    return () => socket.off("newNotification");
   }, []);
 
 
@@ -119,8 +135,8 @@ const Noti = ({ user }) => {
 
               <div
                 key={notification._id}
-                className={`notification-item ${isRead(notification) || notification.read ? 'read' : ''}`} // Thêm lớp 'read' nếu đã xem
-                onClick={() => handleNotificationClick(notification)} // Khi click vào thông báo, gọi hàm đánh dấu là đã đọc
+                className={`notification-item ${notification.isSender || isRead(notification) || notification.read ? 'read' : ''}`}
+                onClick={() => {if(!notification.isSender)handleNotificationClick(notification)}} // Khi click vào thông báo, gọi hàm đánh dấu là đã đọc
               >
                 <div className="notification-title">
 

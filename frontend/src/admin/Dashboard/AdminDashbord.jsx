@@ -5,6 +5,7 @@ import axios from "axios";
 import { server } from "../../main";
 import "./dashboard.css";
 import { FaBell } from "react-icons/fa"; 
+import toast from "react-hot-toast";
 
 const AdminDashbord = ({ user }) => {
   const navigate = useNavigate();
@@ -51,11 +52,11 @@ const AdminDashbord = ({ user }) => {
       });
 
       console.log(data);
-      alert("Notification sent successfully!");
+      toast.success("Notification sent successfully!");
       setIsModalOpen(false); 
     } catch (error) {
       console.error("Error sending notification:", error.response?.data || error.message);
-      alert("Failed to send notification!");
+      toast.error("Failed to send notification!");
     }
   };
 
@@ -82,9 +83,9 @@ const AdminDashbord = ({ user }) => {
             <p className="stat-value">{stats.totalCourses}</p>
           </div>
 
-          <div className="box">
-            <p>Total Users</p>
-            <p>{stats.totalUsers}</p>
+          <div className="dashboard-box">
+            <p className="stat-title">Total Users</p>
+            <p className="stat-value">{stats.totalUsers}</p>
           </div>
         </div>
 

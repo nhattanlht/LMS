@@ -198,9 +198,11 @@ const AdminCourses = ({ user }) => {
         toast.success(data.message);
         setSelectedCourse(null);
         setAddedParticipants([]);
+        setBtnLoading(false);
       }catch(error){
         console.log(error);
         toast.error(error.response.data.message);
+        setBtnLoading(false);
       }
     }
   };

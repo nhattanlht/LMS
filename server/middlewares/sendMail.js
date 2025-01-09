@@ -182,7 +182,7 @@ export const sendNotificationMail = async (subject, data) => {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${subject}</title>
+  <title>${data.course ? `${data.course} -`: ""}${subject}</title>
   <style>
     /* General resets */
     body {
@@ -214,7 +214,7 @@ export const sendNotificationMail = async (subject, data) => {
 
     /* Header */
     .email-header {
-      background-color: #007BFF;
+      background-color: #8a4baf;
       color: #ffffff;
       text-align: center;
       padding: 20px;
@@ -236,7 +236,7 @@ export const sendNotificationMail = async (subject, data) => {
     .email-body a.button {
       display: inline-block;
       padding: 12px 24px;
-      background-color: #007BFF;
+      background-color: #8a4baf;
       color: #ffffff;
       text-decoration: none;
       border-radius: 4px;
@@ -246,7 +246,7 @@ export const sendNotificationMail = async (subject, data) => {
     }
 
     .email-body a.button:hover {
-      background-color: #0056b3;
+      background-color: #5f357e;
     }
 
     /* Footer */
@@ -259,7 +259,7 @@ export const sendNotificationMail = async (subject, data) => {
     }
 
     .email-footer a {
-      color: #007BFF;
+      color: #8a4baf;
       text-decoration: none;
     }
 
@@ -273,6 +273,7 @@ export const sendNotificationMail = async (subject, data) => {
     <!-- Header -->
     <tr>
       <td class="email-header">
+        ${data.course ? `<div>${data.course}</div>` : ""}
         ${subject}
       </td>
     </tr>
@@ -280,7 +281,7 @@ export const sendNotificationMail = async (subject, data) => {
     <!-- Body -->
     <tr>
       <td class="email-body">
-        <p>Dear ${data.recipientName || 'Learner'},</p>
+        <p>Dear ${data.recipientName || 'User'},</p>
         <p>${data.message}</p>
         ${data.actionUrl 
           ? `<a href="${data.actionUrl}" class="button">Take Action</a>` 
