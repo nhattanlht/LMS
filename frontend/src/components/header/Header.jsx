@@ -11,12 +11,24 @@ import { MdMail } from "react-icons/md"; // Import Mail Icon from React Icons
 import { faSearch, faTimes, faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { server } from "../../main";
+import io from 'socket.io-client';
+
+const userId = localStorage.getItem('userId'); // Giả sử bạn lưu userId trong localStorage sau khi đăng nhập
+
+if (!userId) {
+  console.error('User is not logged in!');
+}
+
+const socket = io('http://localhost:5001', {
+  query: { userId }, // Truyền userId thực tế vào query của Socket.IO
+});
 const Header = ({ isAuth }) => {
   const { user, setIsAuth, setUser } = UserData();
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [notifications, setNotifications] = useState([]);
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
   const [loading, setLoading] = useState(true);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -24,8 +36,6 @@ const Header = ({ isAuth }) => {
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev);
   };
-
-
 
   const navigate = useNavigate();
 
@@ -84,6 +94,7 @@ const Header = ({ isAuth }) => {
 
       if (response.data.notifications) {
         setNotifications(response.data.notifications);
+        setUnreadNotifications(response.data.unread);
       } else {
         toast.error("Failed to fetch notifications.");
       }
@@ -97,7 +108,14 @@ const Header = ({ isAuth }) => {
 
   useEffect(() => {
     if (isAuth) {
+      socket.on('newNotification', (notification) => {
+          setNotifications((prevNotifications) => [notification, ...prevNotifications]);
+          console.log('New notification:', notification);
+          setUnreadNotifications((prevUnread) => prevUnread + 1);
+      });
+
       getNotifications();
+      return () => socket.off("newNotification"); // Cleanup listener
     }
   }, [isAuth]);
 
@@ -108,7 +126,7 @@ const Header = ({ isAuth }) => {
 
   const isRead = (notification) => {
     const readBy = notification.readBy.map((id) => id.toString());
-    return readBy.includes(user._id);
+    return readBy.includes(user._id) || notification.sender?._id.toString() === user._id.toString();
   };
 
   return (
@@ -149,7 +167,10 @@ const Header = ({ isAuth }) => {
       {isAuth ? (
         <div className="user-action">
           <div className="noti">
-            <FaBell onClick={showNotificationDropdown} className="notification-icon" />
+            <div className="noti-icon" onClick={showNotificationDropdown} >
+            <FaBell className="notification-icon" />
+            {(unreadNotifications > 0) &&<div className="unread-notifications">{unreadNotifications}</div>}
+            </div>
             {showDropdown && (
               <div className="notification-dropdown">
                 {loading ? (

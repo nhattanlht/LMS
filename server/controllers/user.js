@@ -293,6 +293,9 @@ export const sendNotification = TryCatch(async (req, res) => {
       });
   }
 
+  const data = { sender, recipients, message, file };
+  await sendNotificationMail({ subject, data });
+
   const notification = new Notification({
     sender,
     recipients,
@@ -302,9 +305,6 @@ export const sendNotification = TryCatch(async (req, res) => {
   });
 
   const savedNotification = await notification.save();
-
-  const data = { sender, recipients, message, file };
-  await sendNotificationMail({ subject, data });
 
   res.status(201).json({
     message: "Notification created successfully.",
@@ -321,7 +321,12 @@ export const getNotification = TryCatch(async (req, res) => {
   }
 
   // Fetch notifications where the user is a recipient
-  const notifications = await Notification.find({ recipients: userId })
+  const notifications = await Notification.find({ 
+    $or:[
+      {recipients: userId },
+      {sender: userId}
+    ]
+  })
     .populate("sender", "name email")
     .sort({ createdAt: -1 })
     .lean();
@@ -332,9 +337,15 @@ export const getNotification = TryCatch(async (req, res) => {
       .json({ message: "No notifications found.", notifications: [] });
   }
 
+  const unreadNotifications = notifications.filter((notification) => {
+    const readBy = notification.readBy.map((id) => id.toString());
+    return !readBy.includes(userId.toString()) && notification.sender._id.toString() !== userId.toString();
+  });
+
   res.status(200).json({
     message: "Notifications retrieved successfully.",
     notifications,
+    unread: unreadNotifications.length,
   });
 });
 

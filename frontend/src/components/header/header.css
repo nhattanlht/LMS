@@ -30,8 +30,16 @@
   padding: 12px 18px; /* Tăng padding để nội dung không bị bó hẹp */
   max-height: 350px; /* Đặt chiều cao tối đa cho dropdown */
   overflow-y: auto;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
+.noti-icon:hover + .notification-dropdown,
+.notification-dropdown:hover {
+  opacity: 1;
+  visibility: visible;
+}
 /* Cải thiện giao diện từng item thông báo */
 .notification-dropdown .item {
   padding: 8px 12px;
@@ -58,6 +66,16 @@
   font-size: 29px;
   margin-right: 20px;
   z-index: 2;
+}
+
+.unread-notifications{
+  position: absolute;
+  background-color: red;
+  color: white;
+  font-size: small;
+  padding: 1px 4px;
+  top: 50%;
+  left: 50%;
 }
 
 .noti .read {

@@ -566,14 +566,7 @@ export const sendNotification = TryCatch(async (req, res) => {
     recipientIds = users.map((user) => user._id);
   }
   
-  const notification = await Notification.create({
-    sender: sender,
-    recipients: recipientIds,
-    subject,
-    message,
-    file: file,
-  });
-
+  
   const users = await User.find({ _id: { $in: recipientIds } });
   const recipientEmails = users.map(user => user.email);
 
@@ -584,19 +577,23 @@ export const sendNotification = TryCatch(async (req, res) => {
     data = {sender, recipientEmails, message};
   }
   await sendNotificationMail(subject, data);
+  
+  const notification = await Notification.create({
+    sender: sender,
+    recipients: recipientIds,
+    subject,
+    message,
+    file: file,
+  });
 
-  // // Notify users via socket
-  // recipientIds.forEach((recipientId) => {
-  //   const recipientSocketId = getReceiverSocketId(recipientId);
-  //   if (recipientSocketId) {
-  //     io.to(recipientSocketId).emit("newNotification", {
-  //       notificationId: notification._id,
-  //       subject,
-  //       message,
-  //       createdAt: notification.createdAt,
-  //     });
-  //   }
-  // });
+
+  // Notify users via socket
+  recipientIds.forEach((recipientId) => {
+    const recipientSocketId = getReceiverSocketId(recipientId);
+    if (recipientSocketId) {
+      io.to(recipientSocketId).emit("newNotification", notification);
+    }
+  });
 
   res.status(201).json({
     message: 'Notification created successfully.',
