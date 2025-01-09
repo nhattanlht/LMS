@@ -143,7 +143,7 @@ const Noti = ({ user }) => {
                   <div className="notification-time">{new Date(notification.createdAt).toLocaleString()}</div>
 
                   <div className="notification-tcontent">{notification.subject}</div>
-                  <p>By: {selectedNotification.sender.name}</p>
+                  <p>By: {notification.sender?.name}</p>
                   <div className="notification-tmessage">
                     {notification.message.length > 500
                       ? `${notification.message.slice(0, 100)}...`
