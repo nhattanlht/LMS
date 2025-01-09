@@ -58,7 +58,7 @@ const AssignmentDetails = ({ user }) => {
                   <button onClick={handleUpdateClick} className="common-btn">
                     Update Assignment
                   </button>
-                  <button onClick={handleDelete} className="delete-btn">
+                  <button onClick={handleDelete} className="delete_ass-btn">
                     Delete Assignment
                   </button>
                 </>
