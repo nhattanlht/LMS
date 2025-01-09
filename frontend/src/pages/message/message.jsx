@@ -25,15 +25,16 @@ const Message = ({ user, receiverId, setReceiverId }) => {
   const [searchResults, setSearchResults] = useState([]);
   const [isSending, setIsSending] = useState(false);
 
-  // Tạo ref để tham chiếu đến phần tử chứa tin nhắn
-  const messagesEndRef = useRef(null);
+  const messagesEndRef = useRef(null); // Tạo ref để cuộn xuống cuối danh sách tin nhắn
 
+  // Fetch danh sách cuộc trò chuyện
   const fetchConversations = async () => {
     try {
       const { data } = await axios.get(`${server}/api/conversations`, {
         headers: { token: localStorage.getItem('token') },
       });
       setConversations(data);
+
       const unread = data.reduce((count, conversation) => {
         const unreadMessages = conversation.messages.filter(
           (msg) => !msg.read && msg.receiverId === user._id
@@ -46,6 +47,7 @@ const Message = ({ user, receiverId, setReceiverId }) => {
     }
   };
 
+  // Fetch tin nhắn
   const fetchMessages = async () => {
     if (!receiverId) return;
     try {
@@ -58,16 +60,17 @@ const Message = ({ user, receiverId, setReceiverId }) => {
     }
   };
 
+  // Gửi tin nhắn
   const sendMessage = async () => {
-    if (!newMessage || !receiverId || isSending) return;
+    if (!newMessage.trim() || !receiverId || isSending) return;
     setIsSending(true);
     try {
       await axios.post(`${server}/api/send/${receiverId}`, { message: newMessage }, {
         headers: { token: localStorage.getItem('token') },
       });
+      socket.emit('send_message', { receiverId, message: newMessage });
       setNewMessage('');
       fetchMessages();
-      socket.emit('send_message', { receiverId, message: newMessage });
     } catch (error) {
       console.error('Error sending message:', error);
     } finally {
@@ -75,12 +78,14 @@ const Message = ({ user, receiverId, setReceiverId }) => {
     }
   };
 
+  // Chọn người dùng từ danh sách
   const handleSelectUser = (id) => {
     setReceiverId(id);
     setShowSearch(false);
     fetchMessages();
   };
 
+  // Tìm kiếm người dùng
   const handleEmailChange = async (e) => {
     const email = e.target.value;
     setNewChatEmail(email);
@@ -115,7 +120,6 @@ const Message = ({ user, receiverId, setReceiverId }) => {
     };
   }, [receiverId]);
 
-  // Hàm cuộn xuống phần tử mới nhất khi có tin nhắn mới hoặc khi bắt đầu cuộc trò chuyện
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -137,6 +141,7 @@ const Message = ({ user, receiverId, setReceiverId }) => {
             variant="outlined"
             fullWidth
             className="search-input"
+            placeholder="Enter email to search"
           />
         )}
 
@@ -168,9 +173,8 @@ const Message = ({ user, receiverId, setReceiverId }) => {
                 key={conversation._id}
                 button
                 selected={receiverId === otherUser._id}
-                onClick={() => {
-                  handleSelectUser(otherUser._id);
-                }}
+                onClick={() => handleSelectUser(otherUser._id)}
+                classes={{ selected: 'Mui-selected' }}
               >
                 <Badge color="error" badgeContent={unreadMessages.length} invisible={unreadMessages.length === 0}>
                   <ListItemText primary={otherUser.name || 'Unknown User'} />
@@ -182,13 +186,28 @@ const Message = ({ user, receiverId, setReceiverId }) => {
       </div>
 
       <div className="chat-area">
+        {/* Header hiển thị tên người dùng đang nhắn tin */}
+        <Paper className="chat-header" elevation={3}>
+          {receiverId ? (
+            <Typography className="chat-header-title">
+              Chatting with: <span className="chat-user-name">
+                {conversations.find((conv) =>
+                  conv.participants.some((p) => p._id === receiverId)
+                )?.participants.find((p) => p._id !== user._id)?.name || 'Unknown User'}
+              </span>
+            </Typography>
+          ) : (
+            <Typography className="chat-header-title">
+              Select a conversation to start chatting
+            </Typography>
+          )}
+        </Paper>
         <Paper className="messages">
           {messages.map((msg, index) => (
             <Typography key={index} className={`message ${msg.senderId === user._id ? 'sender' : 'receiver'}`}>
               {msg.message}
             </Typography>
           ))}
-          {/* Thêm ref vào phần tử cuối cùng trong danh sách tin nhắn */}
           <div ref={messagesEndRef} />
         </Paper>
 
