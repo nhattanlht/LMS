@@ -49,13 +49,13 @@ const AssignmentDetails = ({ user }) => {
                 download
                 target="_blank"
                 rel="noopener noreferrer"
-                className="common-btn"
+                className="common_ass-btn"
               >
                 Download File
               </a>
               {user && user.role === "lecturer" && (
                 <>
-                  <button onClick={handleUpdateClick} className="common-btn">
+                  <button onClick={handleUpdateClick} className="common_ass-btn">
                     Update Assignment
                   </button>
                   <button onClick={handleDelete} className="delete_ass-btn">
