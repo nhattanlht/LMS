@@ -40,9 +40,9 @@
   gap: 10px; /* Khoảng cách giữa các nút */
 }
 
-.common-btn {
+.common_ass-btn {
   display: inline-block;
-  padding: 10px 20px;
+  padding: 10px 30px;
   background-color: #8a4baf;
   color: #fff;
   text-decoration: none;
@@ -51,13 +51,13 @@
   cursor: pointer;
 }
 
-.common-btn:hover {
+.common_ass-btn:hover {
   background-color: #6a2e8c;
 }
 
 .button-group.delete_ass-btn {
   background-color: #e24a4a;
-  padding: 10px 20px;
+  padding: 10px 50px;
   border: none;
   color: #fff;
   text-decoration: none;
