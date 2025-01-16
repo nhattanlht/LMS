@@ -109,9 +109,11 @@ const Header = ({ isAuth }) => {
   useEffect(() => {
     if (isAuth) {
       socket.on('newNotification', (notification) => {
+        if(notification.recipients.includes(user._id)){
           setNotifications((prevNotifications) => [notification, ...prevNotifications]);
           console.log('New notification:', notification);
           setUnreadNotifications((prevUnread) => prevUnread + 1);
+        }
       });
 
       getNotifications();
@@ -126,7 +128,7 @@ const Header = ({ isAuth }) => {
 
   const isRead = (notification) => {
     const readBy = notification.readBy.map((id) => id.toString());
-    return readBy.includes(user._id) || notification.sender?._id.toString() === user._id.toString();
+    return readBy.includes(user._id) || notification.sender === user._id;
   };
 
   return (

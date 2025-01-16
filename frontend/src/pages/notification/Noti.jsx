@@ -108,7 +108,10 @@ const Noti = ({ user }) => {
 
   useEffect(() => {
     socket.on('newNotification', (notification) => {
-      setNotifications((prevNotifications) => [notification, ...prevNotifications]);
+      if(notification.recipients.includes(user._id)){
+        setNotifications((prevNotifications) => [notification, ...prevNotifications]);
+      }
+
     });
 
     getNotifications();
