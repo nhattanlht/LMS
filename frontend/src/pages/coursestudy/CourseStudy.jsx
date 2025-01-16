@@ -19,14 +19,82 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AddAssignmentModal from "../assignment/AddAssignmentModal";
 import AddResourceModal from "../resource/AddResourceModal";
 
-
 import { AssignmentData } from "../../context/AssignmentContext";
 import axios from "axios";
 
-
-
 import EnterGradeModal from "../assignment/EnterGradeModal";
 import ViewGradeModal from "../assignment/ViewGradeModal";
+
+const getDaysInMonth = (year, month) => {
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  const days = new Array(42).fill(null);
+
+  for (let i = 0; i < daysInMonth; i++) {
+    days[i + firstDay] = i + 1;
+  }
+
+  return days;
+};
+
+const Calendar = ({ date, assignments }) => {
+  // Create helper function to get assignment info for a day
+  const getDueDatesInfo = (day) => {
+    if (!day) return null;
+    
+    const dueAssignments = assignments.filter(assignment => {
+      const dueDate = new Date(assignment.dueDate);
+      return dueDate.getDate() === day &&
+             dueDate.getMonth() === date.getMonth() &&
+             dueDate.getFullYear() === date.getFullYear() &&
+             dueDate >= new Date();
+    });
+
+    if (dueAssignments.length === 0) return null;
+
+    // Create tooltip content
+    const tooltipContent = dueAssignments.map(assignment => 
+      `${assignment.title}\nDue: ${new Date(assignment.dueDate).toLocaleString()}`
+    ).join('\n\n');
+
+    return {
+      hasDeadlines: true,
+      count: dueAssignments.length,
+      tooltip: tooltipContent
+    };
+  };
+
+  return (
+    <div className="calendar">
+      <div className="calendar-header">
+        {date.toLocaleString("default", { month: "long", year: "numeric" })}
+      </div>
+      <div className="calendar-weekdays">
+        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+          <div key={day} className="weekday">{day}</div>
+        ))}
+      </div>
+      <div className="calendar-days">
+        {getDaysInMonth(date.getFullYear(), date.getMonth()).map((day, index) => {
+          const dateInfo = getDueDatesInfo(day);
+          return (
+            <div 
+              key={index} 
+              className={`day ${dateInfo?.hasDeadlines ? 'due-date' : ''}`}
+              title={dateInfo?.tooltip || ''}
+            >
+              {day || ''}
+              {dateInfo?.count > 1 && (
+                <span className="deadline-count">{dateInfo.count}</span>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
 
 const CourseStudy = ({ user }) => {
   // const [role, setRole] = useState("A");
@@ -35,8 +103,6 @@ const CourseStudy = ({ user }) => {
   const { fetchCourse, course } = CourseData();
   const [showAddAssignmentModal, setShowAddAssignmentModal] = useState(false);
 
-
-  const [showEnterGradeModal, setShowEnterGradeModal] = useState(false);
   const [showGradeModal, setShowGradeModal] = useState(false);
   const { assignments, fetchInstructorAssignments, fetchStudentAssignments } =
     AssignmentData();
@@ -50,46 +116,33 @@ const CourseStudy = ({ user }) => {
   const [showNotificationModal, setShowNotificationModal] = useState(false);
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
-  const [file, setFile] = useState(null);  // Khai báo state cho tệp tin
-
-
+  const [file, setFile] = useState(null); // Khai báo state cho tệp tin
 
   const [editingResource, setEditingResource] = useState(null);
   const [newTitle, setNewTitle] = useState("");
 
   // Khi nhấn vào nút "Edit", lưu trữ ID của tài nguyên cần sửa
 
-
-
   const loadResources = async (courseID) => {
     try {
-      const response = await axios.get(
-        `${server}/api/resource/${params.id}`,
-        {
-          headers: {
-            token: localStorage.getItem("token"),
-          },
-        }
-      );
+      const response = await axios.get(`${server}/api/resource/${params.id}`, {
+        headers: {
+          token: localStorage.getItem("token"),
+        },
+      });
       setResources(response.data.resources);
-
     } catch (error) {
       console.error("Error fetching resources:", error);
     }
   };
 
   const handleCreateResource = async (formData) => {
-
     try {
-      const response = await axios.post(
-        `${server}/api/resource`,
-        formData,
-        {
-          headers: {
-            token: localStorage.getItem("token"),
-          },
-        }
-      );
+      const response = await axios.post(`${server}/api/resource`, formData, {
+        headers: {
+          token: localStorage.getItem("token"),
+        },
+      });
       setResources((prev) => [...prev, response.data.resource]);
       navigate(`/course/study/${params.id}`); // Chuyển hướng về trang chi tiết khóa học
       // Assuming response returns the created resource
@@ -108,9 +161,8 @@ const CourseStudy = ({ user }) => {
         },
       });
       setResources((prev) => prev.filter((r) => r._id !== resourceId));
-      alert("Deleted resource successfully!");  // Thông báo thêm resource thành công
+      alert("Deleted resource successfully!"); // Thông báo thêm resource thành công
       navigate(`/course/study/${params.id}`); // Chuyển hướng về trang chi tiết khóa học
-
     } catch (error) {
       console.error("Error deleting resource:", error);
     }
@@ -149,11 +201,15 @@ const CourseStudy = ({ user }) => {
       formData.append("file", file); // Gửi file nếu có
     }
     try {
-      const response = await axios.post(`${server}/api/course/notification`, formData, {
-        headers: {
-          token: localStorage.getItem("token"),
-        },
-      });
+      const response = await axios.post(
+        `${server}/api/course/notification`,
+        formData,
+        {
+          headers: {
+            token: localStorage.getItem("token"),
+          },
+        }
+      );
 
       alert("Notification sent successfully!");
       setShowNotificationModal(false);
@@ -189,7 +245,7 @@ const CourseStudy = ({ user }) => {
   const handleEditClick = (resourceId) => {
     const resource = resources.find((r) => r._id === resourceId);
     setEditingResource(resource);
-    setNewTitle(resource.title); // Hiển thị tiêu đề hiện tại để người dùng chỉnh sửa    
+    setNewTitle(resource.title); // Hiển thị tiêu đề hiện tại để người dùng chỉnh sửa
   };
 
   useEffect(() => {
@@ -197,7 +253,6 @@ const CourseStudy = ({ user }) => {
       try {
         await fetchCourse(params.id);
         await loadResources(params.id);
-
 
         if (user.role === "lecturer") {
           await fetchInstructorAssignments(params.id);
@@ -267,7 +322,10 @@ const CourseStudy = ({ user }) => {
                     <FontAwesomeIcon icon={faPencilAlt} /> <p>Enter Grade</p>
                   </button>
 
-                  <button className="edit-btn" onClick={() => setShowNotificationModal(true)}>
+                  <button
+                    className="edit-btn"
+                    onClick={() => setShowNotificationModal(true)}
+                  >
                     <FontAwesomeIcon icon={faBell} /> <p>Send Notification</p>
                   </button>
                 </div>
@@ -348,44 +406,53 @@ const CourseStudy = ({ user }) => {
                                   rel="noopener noreferrer"
                                   className="edit-btn"
                                 >
-
-                                  <FontAwesomeIcon icon={faDownload} className="ricon" />
+                                  <FontAwesomeIcon
+                                    icon={faDownload}
+                                    className="ricon"
+                                  />
                                 </a>
                                 {user.role === "lecturer" && (
                                   <>
                                     <button
                                       className="edit-btn"
                                       onClick={() => handleEditClick(item._id)}
-
                                     >
-                                      <FontAwesomeIcon icon={faEdit} className="ricon" />
+                                      <FontAwesomeIcon
+                                        icon={faEdit}
+                                        className="ricon"
+                                      />
                                     </button>
 
                                     <button
                                       className="edit-btn"
-                                      onClick={() => handleDeleteResource(item._id)}
+                                      onClick={() =>
+                                        handleDeleteResource(item._id)
+                                      }
                                     >
-                                      <FontAwesomeIcon icon={faTrash} className="ricon" />
+                                      <FontAwesomeIcon
+                                        icon={faTrash}
+                                        className="ricon"
+                                      />
                                     </button>
                                   </>
                                 )}
-
                               </div>
-
                             </li>
                             <div className="time">
-                              Created at: {new Date(item.createdAt).toLocaleString('en-GB', {
-                                day: '2-digit',
-                                month: '2-digit',
-                                year: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit',
-                                second: '2-digit',
-                              })}
+                              Created at:{" "}
+                              {new Date(item.createdAt).toLocaleString(
+                                "en-GB",
+                                {
+                                  day: "2-digit",
+                                  month: "2-digit",
+                                  year: "numeric",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                  second: "2-digit",
+                                }
+                              )}
                             </div>
-
                           </div>
-
                         ))
                       )}
                     </ul>
@@ -452,8 +519,19 @@ const CourseStudy = ({ user }) => {
               </div>
               <div className="sidebar">
                 <h2>Event</h2>
-                <hr></hr>
-                <ul></ul>
+                <hr />
+                {[0, 1, 2].map((monthOffset) => {
+                  const date = new Date();
+                  date.setMonth(date.getMonth() + monthOffset);
+                  return (
+                    <Calendar
+                      key={monthOffset}
+                      date={date}
+                      assignments={assignments}
+                    />
+                  );
+                })}
+                <hr />
               </div>
               {/* Modal Add Resource*/}
               {showAddResourceModal && (
@@ -467,7 +545,6 @@ const CourseStudy = ({ user }) => {
               {editingResource && (
                 <div className="modal-overlay">
                   <div className="modal-content">
-
                     <h3>Edit Resource</h3>
                     <input
                       type="text"
@@ -475,10 +552,19 @@ const CourseStudy = ({ user }) => {
                       onChange={(e) => setNewTitle(e.target.value)}
                       placeholder="Enter new title"
                     />
-                    <button onClick={() => handleEditResource(editingResource._id, { ...editingResource, title: newTitle })}>
+                    <button
+                      onClick={() =>
+                        handleEditResource(editingResource._id, {
+                          ...editingResource,
+                          title: newTitle,
+                        })
+                      }
+                    >
                       Save
                     </button>
-                    <button onClick={() => setEditingResource(null)}>Cancel</button>
+                    <button onClick={() => setEditingResource(null)}>
+                      Cancel
+                    </button>
                   </div>
                 </div>
               )}
@@ -506,10 +592,12 @@ const CourseStudy = ({ user }) => {
                     <p>File:</p>
                     <input
                       type="file"
-                      onChange={(e) => setFile(e.target.files[0])}  // setFile is used to store the selected file
+                      onChange={(e) => setFile(e.target.files[0])} // setFile is used to store the selected file
                     />
                     <button onClick={handleSendNotification}>Send</button>
-                    <button onClick={() => setShowNotificationModal(false)}>Cancel</button>
+                    <button onClick={() => setShowNotificationModal(false)}>
+                      Cancel
+                    </button>
                   </div>
                 </div>
               )}

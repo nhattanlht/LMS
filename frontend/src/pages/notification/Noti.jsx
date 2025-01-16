@@ -171,7 +171,7 @@ const Noti = ({ user }) => {
                   <div className="notification-sender">
 
                     <h3 className="notification-header">
-                      <MdMail className="icon" />
+                      <MdMail className="iconD" />
                       {selectedNotification.subject}</h3>
 
                     <p>By: {selectedNotification.sender.name} • {selectedNotification.sender.email}</p>

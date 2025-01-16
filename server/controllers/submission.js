@@ -18,6 +18,12 @@ export const submitAssignment = TryCatch(async (req, res) => {
     return res.status(404).json({ message: "Assignment not found" });
   }
 
+  // Check if the current date is after the due date
+  const currentDate = new Date();
+  if (currentDate > assignment.dueDate) {
+    return res.status(400).json({ message: "The due date for this assignment has passed" });
+  }
+
   const existingSubmission = await Submission.findOne({
     assignmentId: assignment._id,
     student: req.user._id,
