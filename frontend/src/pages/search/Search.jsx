@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import CourseCard from "../../components/coursecard/CourseCard";
+import { server } from "../../main";
 
 const Search = () => {
   const [searchResults, setSearchResults] = useState([]);
@@ -18,14 +19,10 @@ const Search = () => {
 
   const fetchSearchResults = async (searchTerm) => {
     try {
-      const { data } = await axios.get("http://localhost:3001/api/course/all");
-      const coursesArray = Object.values(data.courses);
+      const { data } = await axios.get(`${server}/api/course/one?name=${searchTerm}`);
+      console.log(data);
 
-      const filteredResults = coursesArray.filter((course) =>
-        course.title.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-
-      setSearchResults(filteredResults);
+      setSearchResults(data.courses);
     } catch (error) {
       console.error("Error fetching courses:", error);
     }
