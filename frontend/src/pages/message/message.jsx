@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { server } from '../../main'; // Đảm bảo server được cấu hình đúng
 import { TextField, Button, Paper, Typography, List, ListItem, ListItemText, Badge } from '@mui/material';
-import './Message.css'; // Import file CSS
+import './message.css'; // Import file CSS
 import io from 'socket.io-client';
 
 const userId = localStorage.getItem('userId'); // Giả sử bạn lưu userId trong localStorage sau khi đăng nhập
