@@ -11,7 +11,7 @@ if (!userId) {
   console.error('User is not logged in!');
 }
 
-const socket = io('http://localhost:5001', {
+const socket = io('https://lms-wm28.onrender.com', {
   query: { userId }, // Truyền userId thực tế vào query của Socket.IO
 });
 

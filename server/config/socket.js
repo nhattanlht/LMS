@@ -10,7 +10,7 @@ const server = http.createServer(app);
 // Cấu hình CORS để cho phép client React kết nối
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5173"], // URL của client
+    origin: ["https://lms-frontend-f4l5.onrender.com"], // URL của client
     methods: ["GET", "POST"],
   },
 });
