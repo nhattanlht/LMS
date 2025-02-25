@@ -4,13 +4,16 @@ import { Server } from 'socket.io';
 import http from 'http';
 import express from 'express';
 
+import dotenv from "dotenv";
+dotenv.config();
+
 const app = express();
 const server = http.createServer(app);
 
 // Cấu hình CORS để cho phép client React kết nối
 const io = new Server(server, {
   cors: {
-    origin: ["https://lms-frontend-f4l5.onrender.com"], // URL của client
+    origin: [process.env.PORT], // URL của client
     methods: ["GET", "POST"],
   },
 });
