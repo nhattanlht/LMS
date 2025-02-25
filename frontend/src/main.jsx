@@ -6,7 +6,7 @@ import { CourseContextProvider } from "./context/CourseContext.jsx";
 import { AssignmentContextProvider } from "./context/AssignmentContext.jsx";
 import { SubmissionsContextProvider } from "./context/SubmissionsContext";
 
-export const server = import.meta.env.VITE_SERVER_URL;;
+export const server = import.meta.env.VITE_SERVER_URL;
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
