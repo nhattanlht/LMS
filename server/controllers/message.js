@@ -1,7 +1,7 @@
 import CryptoJS from "crypto-js";  // Import thư viện mã hóa
 import Conversation from "../models/Conversation.js";
 import Message from "../models/message.js";
-import { getReceiverSocketId, io } from "../config/socket.js";
+import { getReceiverSocketId, io } from "../index.js";
 
 // Khóa bảo mật cho mã hóa/giải mã
 const secretKey = process.env.SECRET_KEY || "your-secret-key";  // Sử dụng biến môi trường cho khóa bảo mật
