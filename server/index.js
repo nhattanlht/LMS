@@ -42,7 +42,7 @@ app.use("/api", messageRoutes);
 app.use("/api", resourceRoutes);
 
 // WebSocket
-const io = new Server(server, {
+const io = new Server(Server, {
   cors: {
     origin: [process.env.frontendurl], // URL của client
     methods: ["GET", "POST"],
