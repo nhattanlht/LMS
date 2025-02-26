@@ -43,6 +43,7 @@ app.use("/api", messageRoutes);
 app.use("/api", resourceRoutes);
 
 // WebSocket
+import http from "http"; // ✅ Import thêm http
 const server = http.createServer(app); // ✅ Tạo HTTP server từ app
 const io = new Server(server, {
   cors: {
