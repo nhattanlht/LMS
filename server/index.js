@@ -8,6 +8,7 @@ import { connectDb } from "./database/db.js";
 import cors from "cors";
 import { Server } from "socket.io";
 
+
 // using middlewares
 app.use(express.json());
 app.use(cors());
@@ -42,7 +43,8 @@ app.use("/api", messageRoutes);
 app.use("/api", resourceRoutes);
 
 // WebSocket
-const io = new Server(Server, {
+const server = http.createServer(app); // ✅ Tạo HTTP server từ app
+const io = new Server(server, {
   cors: {
     origin: [process.env.frontendurl], // URL của client
     methods: ["GET", "POST"],
