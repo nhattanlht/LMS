@@ -1,5 +1,4 @@
 // server.js
-
 import { Server } from 'socket.io';
 import http from 'http';
 import express from 'express';
@@ -9,6 +8,7 @@ dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
+const port = process.env.PORT || 5000; // Dùng biến môi trường
 
 // Cấu hình CORS để cho phép client React kết nối
 const io = new Server(server, {
@@ -77,9 +77,8 @@ io.on('connection', (socket) => {
   });
 });
 
-// Chạy server tại cổng 5001
-server.listen(5001, () => {
-    console.log('Socket running on port 5001');
+server.listen(port, () => {
+    console.log('Socket running');
   });
 
 export { app, io, server };
