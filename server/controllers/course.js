@@ -4,12 +4,11 @@ import { Courses } from "../models/Courses.js";
 import { Lecture } from "../models/Lecture.js";
 import { User } from "../models/User.js";
 import { Progress } from "../models/Progress.js";
-import mongoose from "mongoose";
 import Enrollment from "../models/Enrollment.js";
 import { handleUpload } from "../config/cloudinary2.js";
 import {Notification} from "../models/Notification.js";
 import { sendNotificationMail } from "../middlewares/sendMail.js";
-import { getReceiverSocketId, io } from "../config/socket.js";
+import { getReceiverSocketId, io } from "../index.js";
 
 export const getAllCourses = TryCatch(async (req, res) => {
   const courses = await Courses.find();

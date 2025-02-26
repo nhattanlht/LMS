@@ -10,7 +10,7 @@ import bcrypt from "bcrypt";
 import { User } from "../models/User.js";
 import { handleUpload } from "../config/cloudinary2.js";
 import { sendNotificationMail } from "../middlewares/sendMail.js";
-import { getReceiverSocketId, io } from "../config/socket.js";
+import { getReceiverSocketId, io } from "../index.js";
 import { Assignment } from "../models/Assignment.js";
 import { Resources } from "../models/Resources.js";
 import { Submission } from "../models/Submission.js";
