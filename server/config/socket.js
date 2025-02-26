@@ -13,7 +13,7 @@ const server = http.createServer(app);
 // Cấu hình CORS để cho phép client React kết nối
 const io = new Server(server, {
   cors: {
-    origin: [process.env.PORT], // URL của client
+    origin: [process.env.frontendurl], // URL của client
     methods: ["GET", "POST"],
   },
 });
