@@ -108,6 +108,7 @@ io.on('connection', (socket) => {
   });
 });
 
+export { io };
 
 app.listen(port, () => {
   console.log(`🚀 Server & WebSocket running on port ${port}`);
