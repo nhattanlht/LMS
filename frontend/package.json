@@ -1,8 +1,7 @@
 {
   "name": "frontend",
   "private": true,
-  "homepage": "./",
-  "main": "/src/main.jsx",
+  "homepage": "https://github.com/nhattanlht/LMS.git",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
