@@ -13,6 +13,7 @@ if (!userId) {
 
 const socket = io(server, {
   query: { userId }, // Truyền userId thực tế vào query của Socket.IO
+  secure: true,
 });
 
 const Message = ({ user, receiverId, setReceiverId }) => {
