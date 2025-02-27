@@ -2,7 +2,7 @@
   "name": "frontend",
   "private": true,
   "homepage": "./",
-  "main": "index.html",
+  "main": "/src/main.jsx",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
