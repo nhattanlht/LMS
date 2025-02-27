@@ -19,9 +19,11 @@ if (!userId) {
   console.error('User is not logged in!');
 }
 
-const socket = io('http://localhost:5001', {
+const socket = io(server, {
   query: { userId }, // Truyền userId thực tế vào query của Socket.IO
+  secure: true,
 });
+
 const Header = ({ isAuth }) => {
   const { user, setIsAuth, setUser } = UserData();
   const [searchTerm, setSearchTerm] = useState("");
